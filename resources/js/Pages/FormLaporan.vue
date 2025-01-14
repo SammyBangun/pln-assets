@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="bg-cover bg-center min-h-screen flex flex-col items-center justify-center text-center">
         <h1>Form Laporan</h1>
         <form>
             <div class="form-group">
