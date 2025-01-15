@@ -1,7 +1,7 @@
 <template>
     <footer class="bg-black text-white py-6 text-sm">
         <div class="container mx-auto text-center">
-            <p class="font-bold text-lg">PLN - Providing Information for PKL Students</p>
+            <p class="font-bold text-lg">PT. PLN NUSANTARA POWER </p>
             <div class="mt-4 space-y-2">
                 <p>Youtube:
                     <a href="https://youtube.com/@plnnusantarapowerupbelawan?si=nGc81MAD0SWU0LSd"
@@ -15,7 +15,6 @@
                         Plnnp Belawan
                     </a>
                 </p>
-                <p>Phone: (Tambahkan nomor jika ada)</p>
                 <p>Address: Jl. Pulau Sicanang No.1, Belawan Pulau Sicanang, Medan Kota Belawan, Kota Medan, Sumatera
                     Utara</p>
             </div>
