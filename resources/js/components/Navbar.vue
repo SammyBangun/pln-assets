@@ -5,10 +5,10 @@
         </div>
         <ul class="flex space-x-6 mr-32">
             <li>
-                <router-link to="/" class="hover:text-gray-200 font-semibold">Form Laporan</router-link>
+                <Link href="/dashboard" class="hover:text-gray-200 font-semibold">Form Laporan</Link>
             </li>
             <li>
-                <router-link to="/riwayat" class="hover:text-gray-200 font-semibold">Riwayat Laporan</router-link>
+                <Link href="/riwayat" class="hover:text-gray-200 font-semibold">Riwayat Laporan</Link>
             </li>
         </ul>
         <div class="relative">
@@ -17,19 +17,19 @@
                 class="flex items-center space-x-2 cursor-pointer mr-14 border-2 border-white rounded-full px-4 py-2">
                 <span class="font-medium">{{ $page.props.auth.user.name }}</span>
             </div>
-
+            
             <!-- Dropdown menu -->
             <div v-if="isDropdownOpen" class="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-lg">
                 <ul>
                     <li>
-                        <router-link to="/profile" class="block px-4 py-2 hover:bg-gray-100">
+                        <Link href="/profile" class="block px-4 py-2 hover:bg-gray-100">
                             Profile
-                        </router-link>
+                        </Link>
                     </li>
                     <li>
-                        <router-link to="/settings" class="block px-4 py-2 hover:bg-gray-100">
+                        <Link href="/settings" class="block px-4 py-2 hover:bg-gray-100">
                             Settings
-                        </router-link>
+                        </Link>
                     </li>
                     <li>
                         <button @click="logout" class="block w-full text-left px-4 py-2 hover:bg-gray-100">
@@ -43,27 +43,32 @@
 </template>
 
 <script>
+import { Link } from '@inertiajs/vue3'
+
 export default {
     name: 'Navbar',
+    components: {
+        Link
+    },
     data() {
         return {
             isDropdownOpen: false,
             username: "Nama User",
-        };
+        }
     },
     methods: {
         toggleDropdown() {
-            this.isDropdownOpen = !this.isDropdownOpen;
+            this.isDropdownOpen = !this.isDropdownOpen
         },
         logout() {
-            this.$inertia.post('/logout');
-            this.isDropdownOpen = false;
-            this.$page.props.auth.user = null;
-            this.$page.props.auth.role = null;
-            this.$page.props.auth.name = null;
+            this.$inertia.post('/logout')
+            this.isDropdownOpen = false
+            this.$page.props.auth.user = null
+            this.$page.props.auth.role = null
+            this.$page.props.auth.name = null
         },
     },
-};
+}
 </script>
 
 <style scoped>
