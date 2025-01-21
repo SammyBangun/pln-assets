@@ -1,76 +1,108 @@
+<script setup>
+import { ref } from 'vue';
+import { Link } from '@inertiajs/vue3';
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import Dropdown from '@/Components/Dropdown.vue';
+import DropdownLink from '@/Components/DropdownLink.vue';
+import NavLink from '@/Components/NavLink.vue';
+import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+
+const showingNavigationDropdown = ref(false);
+
+const toggleDropdown = () => {
+    showingNavigationDropdown.value = !showingNavigationDropdown.value;
+};
+</script>
+
 <template>
-    <nav class="flex items-center justify-between bg-yellow-500 text-white p-4 h-16">
-        <div class="text-xl font-bold">
-            <img src="../../../public/img/logopln.png" width="200" alt="">
-        </div>
-        <ul class="flex space-x-6 mr-32">
-            <li>
-                <Link href="/dashboard" class="hover:text-gray-200 font-semibold">Form Laporan</Link>
-            </li>
-            <li>
-                <Link href="/riwayat" class="hover:text-gray-200 font-semibold">Riwayat Laporan</Link>
-            </li>
-        </ul>
-        <div class="relative">
-            <!-- Trigger untuk dropdown -->
-            <div @click="toggleDropdown"
-                class="flex items-center space-x-2 cursor-pointer mr-14 border-2 border-white rounded-full px-4 py-2">
-                <span class="font-medium">{{ $page.props.auth.user.name }}</span>
+    <nav class="border-b border-gray-100 bg-yellow-400">
+        <!-- Primary Navigation Menu -->
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 justify-between">
+                <div class="flex">
+                    <!-- Logo -->
+                    <div class="flex shrink-0 items-center">
+                        <Link href="/dashboard">
+                        <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800" />
+                        </Link>
+                    </div>
+
+                    <!-- Navigation Links -->
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <NavLink href="/dashboard" :active="route().current('dashboard')">
+                            Form Laporan
+                        </NavLink>
+                        <NavLink href="/riwayat" :active="route().current('riwayat')">
+                            Riwayat Laporan
+                        </NavLink>
+
+                    </div>
+                </div>
+
+                <div class="hidden sm:ms-6 sm:flex sm:items-center">
+                    <!-- Settings Dropdown -->
+                    <Dropdown align="right" width="48">
+                        <template #trigger>
+                            <button
+                                class="flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 hover:text-gray-700 focus:outline-none">
+                                {{ $page.props.auth.user.name }}
+                                <svg class="-me-0.5 ms-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                    viewBox="0 0 20 20">
+                                    <path
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                </svg>
+                            </button>
+                        </template>
+
+                        <template #content>
+                            <DropdownLink href="/profile">Profile</DropdownLink>
+                            <DropdownLink href="/logout" method="post" as="button">
+                                Log Out
+                            </DropdownLink>
+                        </template>
+                    </Dropdown>
+                </div>
+
+                <!-- Hamburger -->
+                <div class="-me-2 flex items-center sm:hidden">
+                    <button @click="toggleDropdown"
+                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path v-show="!showingNavigationDropdown" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            <path v-show="showingNavigationDropdown" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
             </div>
-            
-            <!-- Dropdown menu -->
-            <div v-if="isDropdownOpen" class="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-lg">
-                <ul>
-                    <li>
-                        <Link href="/profile" class="block px-4 py-2 hover:bg-gray-100">
-                            Profile
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/settings" class="block px-4 py-2 hover:bg-gray-100">
-                            Settings
-                        </Link>
-                    </li>
-                    <li>
-                        <button @click="logout" class="block w-full text-left px-4 py-2 hover:bg-gray-100">
-                            Logout
-                        </button>
-                    </li>
-                </ul>
+        </div>
+
+        <!-- Responsive Navigation Menu -->
+        <div v-show="showingNavigationDropdown" class="sm:hidden">
+            <div class="space-y-1 pb-3 pt-2">
+                <ResponsiveNavLink href="/dashboard" :active="route().current('dashboard')">
+                    Form Laporan
+                </ResponsiveNavLink>
+                <ResponsiveNavLink href="/riwayat" :active="route().current('riwayat')">
+                    Riwayat Laporan
+                </ResponsiveNavLink>
+            </div>
+            <!-- Responsive Settings Options -->
+            <div class="border-t border-gray-200 pb-1 pt-4">
+                <div class="px-4">
+                    <div class="text-base font-medium text-gray-800">{{ $page.props.auth.user.name }}</div>
+                    <div class="text-sm font-medium text-gray-500">{{ $page.props.auth.user.email }}</div>
+                </div>
+
+                <div class="mt-3 space-y-1">
+                    <ResponsiveNavLink href="/profile">Profile</ResponsiveNavLink>
+                    <ResponsiveNavLink href="/logout" method="post" as="button">
+                        Log Out
+                    </ResponsiveNavLink>
+                </div>
             </div>
         </div>
     </nav>
 </template>
-
-<script>
-import { Link } from '@inertiajs/vue3'
-
-export default {
-    name: 'Navbar',
-    components: {
-        Link
-    },
-    data() {
-        return {
-            isDropdownOpen: false,
-            username: "Nama User",
-        }
-    },
-    methods: {
-        toggleDropdown() {
-            this.isDropdownOpen = !this.isDropdownOpen
-        },
-        logout() {
-            this.$inertia.post('/logout')
-            this.isDropdownOpen = false
-            this.$page.props.auth.user = null
-            this.$page.props.auth.role = null
-            this.$page.props.auth.name = null
-        },
-    },
-}
-</script>
-
-<style scoped>
-/* Opsional: tambahkan transisi untuk dropdown */
-</style>

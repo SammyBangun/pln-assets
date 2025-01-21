@@ -29,11 +29,11 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/form', function () {
     return Inertia::render('FormLaporan');
-});
+})->name('form')->middleware('auth');
 
 Route::get('/riwayat', function () {
     return Inertia::render('RiwayatLaporan');
-});
+})->name('riwayat')->middleware('auth');
 
 
 require __DIR__ . '/auth.php';
