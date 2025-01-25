@@ -5,6 +5,7 @@ use App\Http\Middleware\CheckRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\AssetController;
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
@@ -44,5 +45,9 @@ Route::get('/form', function () {
 Route::get('/riwayat', function () {
     return Inertia::render('RiwayatLaporan');
 });
+
+// Route untuk manajemen asset
+Route::resource('assets', AssetController::class);
+
 
 require __DIR__ . '/auth.php';
