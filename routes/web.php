@@ -5,6 +5,7 @@ use App\Http\Middleware\CheckRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\AssetController;
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
@@ -43,6 +44,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Assets');
     })->name('assets');
 
+    // Route untuk form laporan
+    Route::get('/form', function () {
+        return Inertia::render('FormLaporan');
+    });
+
+    // Route untuk riwayat laporan
+    Route::get('/riwayat', function () {
+        return Inertia::render('RiwayatLaporan');
+    });
+
+    // Route untuk manajemen asset
+    Route::resource('assets', AssetController::class);
     // Route untuk profile user
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
