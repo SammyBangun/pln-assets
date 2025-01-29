@@ -21,28 +21,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Home');
     })->name('dashboard');
-    
+
     // Route khusus admin dengan middleware role:admin
-    Route::middleware([CheckRole::class.':admin'])->prefix('admin')->group(function () {
+    Route::middleware([CheckRole::class . ':admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('Admin/Dashboard');
         })->name('admin.dashboard');
     });
 
+    // Route untuk form laporan
+    Route::get('/form', function () {
+        return Inertia::render('FormLaporan');
+    })->name('form');
+
+    // Route untuk riwayat laporan
+    Route::get('/riwayat', function () {
+        return Inertia::render('RiwayatLaporan');
+    })->name('riwayat');
+
+    Route::get('/assets', function () {
+        return Inertia::render('Assets');
+    })->name('assets');
+
     // Route untuk profile user
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-// Route untuk form laporan
-Route::get('/form', function () {
-    return Inertia::render('FormLaporan');
-});
-
-// Route untuk riwayat laporan
-Route::get('/riwayat', function () {
-    return Inertia::render('RiwayatLaporan');
 });
 
 require __DIR__ . '/auth.php';

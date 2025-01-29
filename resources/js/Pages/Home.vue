@@ -16,7 +16,6 @@
 <script>
 import Navbar from '../Components/Navbar.vue';
 import Footer from '../Components/Footer.vue';
-// import { Link } from '@inertiajs/inertia-vue3';
 import { Link } from '@inertiajs/vue3';
 
 export default {
