@@ -40,22 +40,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('RiwayatLaporan');
     })->name('riwayat');
 
-    Route::get('/assets', function () {
-        return Inertia::render('Assets');
-    })->name('assets');
-
-    // Route untuk form laporan
-    Route::get('/form', function () {
-        return Inertia::render('FormLaporan');
-    });
-
-    // Route untuk riwayat laporan
-    Route::get('/riwayat', function () {
-        return Inertia::render('RiwayatLaporan');
-    });
-
     // Route untuk manajemen asset
     Route::resource('assets', AssetController::class);
+
     // Route untuk profile user
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

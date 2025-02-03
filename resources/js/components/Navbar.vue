@@ -37,7 +37,7 @@ const toggleDropdown = () => {
                         </NavLink>
                         <!-- ini perubahannya di dalam assets -->
                         <template v-if="$page.props.auth.user.role === 'admin'">
-                            <NavLink href="/assets" :active="route().current('assets')">
+                            <NavLink href="/assets" :active="route().current()?.startsWith('assets')">
                                 Assets
                             </NavLink>
                         </template>
@@ -94,7 +94,7 @@ const toggleDropdown = () => {
                     Riwayat Laporan
                 </ResponsiveNavLink>
                 <template v-if="$page.props.auth.user.role === 'admin'">
-                    <ResponsiveNavLink href="/assets" :active="route().current('assets')">
+                    <ResponsiveNavLink href="/assets" :active="route().current()?.startsWith('assets')">
                         Assets
                     </ResponsiveNavLink>
                 </template>
