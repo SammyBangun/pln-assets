@@ -1,59 +1,72 @@
 <script setup>
 import { ref, watch } from 'vue';
-import Navbar from '../Components/Navbar.vue';
-import Footer from '../Components/Footer.vue';
+import Navbar from '@/Components/Navbar.vue';
+import Footer from '@/Components/Footer.vue';
+import { useForm } from '@inertiajs/vue3';
 
-const selectedCategory = ref('');
 const showOtherInput = ref(false);
 const otherCategory = ref('');
 
-watch(selectedCategory, (newValue) => {
+const form = useForm({
+    laporan_kerusakan: '',
+    deskripsi: ''
+});
+
+watch(() => form.laporan_kerusakan, (newValue) => {
     showOtherInput.value = newValue === 'other';
     if (!showOtherInput.value) {
         otherCategory.value = '';
     }
 });
 
-const createReport = () => {
-    alert('Membuat laporan baru!');
+defineProps({
+    reports: Array
+});
+
+const submit = () => {
+    if (showOtherInput.value) {
+        form.laporan_kerusakan = otherCategory.value
+    }
+    form.post(route("riwayat.store"));
 };
 </script>
 
 <template>
     <Navbar />
-    <div class="">
+    <div class="min-h-screen">
         <div class="flex flex-col mx-3 mt-6 lg:flex-row">
             <div class="w-full lg:w-1/3 mx-auto my-8">
-                <form class="w-full bg-white shadow-md p-6">
+                <form class="w-full bg-white shadow-md p-6" @submit.prevent="submit">
                     <div class="flex flex-wrap -mx-3 mb-6">
                         <div class="w-full md:w-full px-3 mb-6">
                             <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
                                 for="category_name">
                                 Laporan Kerusakan
                             </label>
-                            <select v-model="selectedCategory" @change="toggleOtherInput"
+                            <select v-model="form.laporan_kerusakan" name="category_name" @change="toggleOtherInput"
                                 class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]">
                                 <option value="">Pilih Laporan Kerusakan</option>
-                                <option value="hardware">Gangguan Hardware</option>
-                                <option value="software">Gangguan Software</option>
-                                <option value="virus">Gangguan Virus</option>
-                                <option value="sistem_operasi">Gangguan Sistem Operasi</option>
-                                <option value="lan">Gangguan Jaringan LAN</option>
-                                <option value="wifi">Gangguan Jaringan WIFI</option>
-                                <option value="internet">Gangguan Jaringan Internet</option>
-                                <option value="intranet">Gangguan Jaringan Intranet</option>
+                                <option value="Gangguan Hardware">Gangguan Hardware</option>
+                                <option value="Gangguan Software">Gangguan Software</option>
+                                <option value="Gangguan Virus">Gangguan Virus</option>
+                                <option value="Gangguan Sistem Operasi">Gangguan Sistem Operasi</option>
+                                <option value="Gangguan Jaringan LAN">Gangguan Jaringan LAN</option>
+                                <option value="Gangguan Jaringan WIFI">Gangguan Jaringan WIFI</option>
+                                <option value="Gangguan Jaringan Internet">Gangguan Jaringan Internet</option>
+                                <option value="Gangguan Jaringan Intranet">Gangguan Jaringan Intranet</option>
                                 <option value="other">Lainnya...</option>
                             </select>
                             <input v-if="showOtherInput" v-model="otherCategory" type="text"
                                 placeholder="Masukkan jenis gangguan"
                                 class="appearance-none w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d] mt-3" />
                         </div>
+
                         <div class="w-full px-3 mb-6">
                             <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
                                 htmlFor="category_name">Deskripsi</label>
                             <textarea textarea rows="4"
                                 class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
-                                type="text" name="description" required> </textarea>
+                                type="text" name="description" v-model="form.deskripsi" required> </textarea>
                         </div>
 
                         <div class="w-full px-3 mb-8">
@@ -82,6 +95,15 @@ const createReport = () => {
                         </div>
                     </div>
                 </form>
+
+                <ul>
+                    <li v-for="report in reports" :key="report.id">
+                        <p><strong>{{ report.laporan_kerusakan }}</strong></p>
+                        <p>{{ report.deskripsi }}</p>
+                        <p><i>Oleh: {{ report.user?.name }}</i></p>
+                    </li>
+                </ul>
+
             </div>
         </div>
 

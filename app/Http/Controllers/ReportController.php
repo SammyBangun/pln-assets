@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ReportController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(): Response
     {
         return Inertia::render('Reports/Index', [
@@ -30,7 +33,7 @@ class ReportController extends Controller
             'deskripsi' => $request->deskripsi,
         ]);
 
-        return redirect()->route('reports.index');
+        return redirect()->route('riwayat.index');
     }
 
     public function update(Request $request, Report $report)
@@ -42,7 +45,7 @@ class ReportController extends Controller
             'deskripsi' => 'required|string',
         ]));
 
-        return redirect()->route('reports.index');
+        return redirect()->route('riwayat.index');
     }
 
     public function destroy(Report $report)
@@ -50,6 +53,6 @@ class ReportController extends Controller
         $this->authorize('delete', $report);
 
         $report->delete();
-        return redirect()->route('reports.index');
+        return redirect()->route('riwayat.index');
     }
 }

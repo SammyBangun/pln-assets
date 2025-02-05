@@ -1,10 +1,10 @@
 <?php
 
+use Inertia\Inertia;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\ReportController;
 
@@ -19,12 +19,11 @@ Route::get('/', function () {
 
 
 //laporan
-
 Route::middleware(['auth'])->group(function () {
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
-    Route::put('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
-    Route::delete('/reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
+    Route::get('/riwayat', [ReportController::class, 'index'])->name('riwayat.index');
+    Route::post('/riwayat', [ReportController::class, 'store'])->name('riwayat.store');
+    Route::put('/riwayat/{riwayat}', [ReportController::class, 'update'])->name('riwayat.update');
+    Route::delete('/riwayat/{riwayat}', [ReportController::class, 'destroy'])->name('riwayat.destroy');
 });
 
 // Group untuk route yang membutuhkan autentikasi dan verifikasi email
@@ -45,11 +44,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/form', function () {
         return Inertia::render('FormLaporan');
     })->name('form');
-
-    // Route untuk riwayat laporan
-    Route::get('/riwayat', function () {
-        return Inertia::render('RiwayatLaporan');
-    })->name('riwayat');
 
     // Route untuk manajemen asset
     Route::resource('assets', AssetController::class);

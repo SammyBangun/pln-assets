@@ -32,7 +32,7 @@ const toggleDropdown = () => {
                         <NavLink href="/dashboard" :active="route().current('dashboard')">
                             Form Laporan
                         </NavLink>
-                        <NavLink href="/riwayat" :active="route().current('riwayat')">
+                        <NavLink href="/riwayat" :active="route().current()?.startsWith('riwayat')">
                             Riwayat Laporan
                         </NavLink>
                         <!-- ini perubahannya di dalam assets -->
@@ -90,7 +90,7 @@ const toggleDropdown = () => {
                 <ResponsiveNavLink href="/dashboard" :active="route().current('dashboard')">
                     Form Laporan
                 </ResponsiveNavLink>
-                <ResponsiveNavLink href="/riwayat" :active="route().current('riwayat')">
+                <ResponsiveNavLink href="/riwayat" :active="route().current()?.startsWith('riwayat')">
                     Riwayat Laporan
                 </ResponsiveNavLink>
                 <template v-if="$page.props.auth.user.role === 'admin'">
