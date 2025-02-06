@@ -16,6 +16,7 @@ return new class extends Migration
         $table->string('name', 50)->nullable();
         $table->string('type', 50)->nullable();
         $table->string('series', 50)->nullable();
+        $table->string('gambar')->nullable();
         $table->date('tgl_beli')->nullable();
         $table->date('last_service')->nullable();
         $table->timestamps(); // Optional: created_at & updated_at

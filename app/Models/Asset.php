@@ -17,6 +17,7 @@ class Asset extends Model
         'name',
         'type',
         'series',
+        'gambar',
         'tgl_beli',
         'last_service',
     ];
