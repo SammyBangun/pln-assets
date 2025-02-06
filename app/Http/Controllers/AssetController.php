@@ -31,6 +31,7 @@ class AssetController extends Controller
             'name' => 'required|string|max:50',
             'type' => 'required|string|max:50',
             'series' => 'required|string|max:50',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'tgl_beli' => 'required|date',
             'last_service' => 'nullable|date',
         ]);
@@ -69,6 +70,7 @@ class AssetController extends Controller
             'name' => 'sometimes|string|max:50',
             'type' => 'sometimes|string|max:50',
             'series' => 'sometimes|string|max:50',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'tgl_beli' => 'sometimes|date',
             'last_service' => 'nullable|date',
         ]);
