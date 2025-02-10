@@ -22,6 +22,7 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat', [ReportController::class, 'index'])->name('riwayat.index');
     Route::post('/riwayat', [ReportController::class, 'store'])->name('riwayat.store');
+    Route::get('/riwayat/{id}', [ReportController::class, 'show'])->name('riwayat.show');
     Route::put('/riwayat/{riwayat}', [ReportController::class, 'update'])->name('riwayat.update');
     Route::delete('/riwayat/{riwayat}', [ReportController::class, 'destroy'])->name('riwayat.destroy');
 });

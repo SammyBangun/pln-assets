@@ -49,7 +49,8 @@ const deleteReport = (id) => {
                         <th class="py-3 px-4 text-left">Pelapor</th>
                         <th class="py-3 px-4 text-left">Laporan Kerusakan</th>
                         <th class="py-3 px-4 text-left">Deskripsi</th>
-                        <!-- <th class="py-3 px-4 text-center">Aksi</th> -->
+                        <th class="py-3 px-4 text-left">Gambar</th>
+                        <th class="py-3 px-4 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,6 +59,18 @@ const deleteReport = (id) => {
                         <td class="py-3 px-4">{{ report.user?.name }}</td>
                         <td class="py-3 px-4">{{ report.laporan_kerusakan }}</td>
                         <td class="py-3 px-4">{{ report.deskripsi }}</td>
+                        <td class="py-3 px-4">
+                            <img v-if="report.gambar" :src="report.gambar" alt="Gambar Laporan"
+                                class="w-20 h-20 object-cover rounded-md">
+                            <span v-else class="text-gray-500">Tidak ada gambar</span>
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <button @click="$inertia.get(`/riwayat/${report.id}`)"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md mr-2">
+                                Detail
+                            </button>
+                        </td>
+
                         <!-- <td class="py-3 px-4 text-center">
                             <button @click="$inertia.get(`/riwayat/${report.id}`)"
                                 class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md mr-2">

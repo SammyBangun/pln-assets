@@ -6,10 +6,12 @@ import { useForm } from '@inertiajs/vue3';
 
 const showOtherInput = ref(false);
 const otherCategory = ref('');
+const gambarPreview = ref(null);
 
 const form = useForm({
     laporan_kerusakan: '',
-    deskripsi: ''
+    deskripsi: '',
+    gambar: null // Tambahkan properti gambar
 });
 
 watch(() => form.laporan_kerusakan, (newValue) => {
@@ -23,11 +25,32 @@ defineProps({
     reports: Array
 });
 
+const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    form.gambar = file;
+
+    if (file) {
+        gambarPreview.value = URL.createObjectURL(file); // Buat preview gambar
+    }
+};
+
+
 const submit = () => {
     if (showOtherInput.value) {
-        form.laporan_kerusakan = otherCategory.value
+        form.laporan_kerusakan = otherCategory.value;
     }
-    form.post(route("riwayat.store"));
+
+    // Gunakan FormData untuk mengirim file
+    const formData = new FormData();
+    formData.append('laporan_kerusakan', form.laporan_kerusakan);
+    formData.append('deskripsi', form.deskripsi);
+    if (form.gambar) {
+        formData.append('gambar', form.gambar);
+    }
+
+    form.post(route("riwayat.store"), {
+        forceFormData: true // Pastikan dikirim sebagai FormData
+    });
 };
 </script>
 
@@ -43,7 +66,7 @@ const submit = () => {
                                 for="category_name">
                                 Laporan Kerusakan
                             </label>
-                            <select v-model="form.laporan_kerusakan" name="category_name" @change="toggleOtherInput"
+                            <select v-model="form.laporan_kerusakan" name="category_name"
                                 class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]">
                                 <option value="">Pilih Laporan Kerusakan</option>
                                 <option value="Gangguan Hardware">Gangguan Hardware</option>
@@ -63,16 +86,16 @@ const submit = () => {
 
                         <div class="w-full px-3 mb-6">
                             <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
-                                htmlFor="category_name">Deskripsi</label>
-                            <textarea textarea rows="4"
+                                for="deskripsi">Deskripsi</label>
+                            <textarea rows="4"
                                 class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
-                                type="text" name="description" v-model="form.deskripsi" required> </textarea>
+                                name="deskripsi" v-model="form.deskripsi" required></textarea>
                         </div>
 
                         <div class="w-full px-3 mb-8">
                             <label
                                 class="mx-auto cursor-pointer flex w-full max-w-lg flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-400 bg-white p-6 text-center"
-                                htmlFor="dropzone-file">
+                                for="dropzone-file">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-800" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                     <path strokeLinecap="round" strokeLinejoin="round"
@@ -80,18 +103,27 @@ const submit = () => {
                                 </svg>
 
                                 <h2 class="mt-4 text-xl font-medium text-gray-700 tracking-wide">Gambar Laporan</h2>
+                                <p class="mt-2 text-gray-500 tracking-wide">Unggah atau seret & letakkan file Anda (SVG,
+                                    PNG, JPG, GIF).</p>
 
-                                <p class="mt-2 text-gray-500 tracking-wide">Unggah atau seret & letakkan file Anda SVG,
-                                    PNG, JPG atau GIF. </p>
-
-                                <input id="dropzone-file" type="file" class="hidden" name="category_image"
-                                    accept="image/png, image/jpeg, image/webp" />
+                                <input id="dropzone-file" type="file" class="hidden" name="gambar"
+                                    accept="image/png, image/jpeg, image/webp" @change="handleFileUpload" />
                             </label>
+
+                            <!-- Tampilkan preview gambar -->
+                            <div v-if="gambarPreview" class="mt-4">
+                                <p class="text-gray-700">Preview Gambar:</p>
+                                <img :src="gambarPreview" alt="Preview Gambar"
+                                    class="max-w-full h-auto rounded-lg shadow-md">
+                            </div>
                         </div>
+
 
                         <div class="w-full md:w-full px-3 mb-6">
                             <button
-                                class="appearance-none block w-full bg-blue-700 text-gray-100 font-bold border border-gray-200 rounded-lg py-3 px-3 leading-tight hover:bg-blue-600 focus:outline-none focus:bg-white focus:border-gray-500">Kirim</button>
+                                class="appearance-none block w-full bg-blue-700 text-gray-100 font-bold border border-gray-200 rounded-lg py-3 px-3 leading-tight hover:bg-blue-600 focus:outline-none focus:bg-white focus:border-gray-500">
+                                Kirim
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -101,12 +133,13 @@ const submit = () => {
                         <p><strong>{{ report.laporan_kerusakan }}</strong></p>
                         <p>{{ report.deskripsi }}</p>
                         <p><i>Oleh: {{ report.user?.name }}</i></p>
+                        <img v-if="report.gambar" :src="report.gambar" alt="Gambar Laporan"
+                            class="mt-2 max-w-full h-auto" />
                     </li>
                 </ul>
 
             </div>
         </div>
-
     </div>
     <Footer />
 </template>
