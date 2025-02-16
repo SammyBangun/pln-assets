@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -71,4 +72,13 @@ class ReportController extends Controller
         $report->delete();
         return redirect()->route('riwayat.index');
     }
+
+    public function exportPdf($id)
+{
+    $report = Report::with('user')->findOrFail($id);
+
+    $pdf = Pdf::loadView('pdf.report', ['report' => $report]);
+
+    return $pdf->download('laporan_kerusakan_' . $id . '.pdf');
+}
 }
