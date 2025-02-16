@@ -18,6 +18,10 @@ Route::get('/', function () {
 });
 
 
+//pdf
+Route::get('/laporan/{id}/export', [ReportController::class, 'exportPdf'])->name('laporan.export');
+
+
 //laporan
 Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat', [ReportController::class, 'index'])->name('riwayat.index');
