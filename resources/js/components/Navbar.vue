@@ -36,11 +36,53 @@ const toggleDropdown = () => {
                             Riwayat Laporan
                         </NavLink>
                         <!-- ini perubahannya di dalam assets -->
-                        <template v-if="$page.props.auth.user.role === 'admin'">
-                            <NavLink href="/assets" :active="route().current()?.startsWith('assets')">
-                                Assets
-                            </NavLink>
-                        </template>
+                        <Dropdown align="right" width="48">
+                            <template #trigger>
+                                <button
+                                    class="flex items-center rounded-md px-3 py-2 my-4 text-sm font-medium leading-4 text-gray-700 hover:bg-gray-200">
+                                    Assets
+                                    <svg class="ms-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                        viewBox="0 0 20 20">
+                                        <path
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                    </svg>
+                                </button>
+                            </template>
+
+                            <template #content>
+                                <div class="grid grid-cols-3 w-[48rem] bg-white shadow-lg rounded-lg p-4">
+                                    <div>
+                                        <DropdownLink href="/assets/proyektor">Proyektor</DropdownLink>
+                                        <DropdownLink href="/assets/keyboard">Keyboard</DropdownLink>
+                                        <DropdownLink href="/assets/kamera">Kamera</DropdownLink>
+                                        <DropdownLink href="/assets/printer">Printer</DropdownLink>
+                                        <DropdownLink href="/assets/pc">PC</DropdownLink>
+                                    </div>
+                                    <div>
+                                        <DropdownLink href="/assets/proyektor">Switch/Hub</DropdownLink>
+                                        <DropdownLink href="/assets/keyboard">Monitor</DropdownLink>
+                                        <DropdownLink href="/assets/kamera">Mouse</DropdownLink>
+                                        <DropdownLink href="/assets/printer">Audio</DropdownLink>
+                                        <DropdownLink href="/assets/pc">DLL</DropdownLink>
+                                    </div>
+                                    <div>
+                                        <DropdownLink href="/assets/proyektor">Access Point</DropdownLink>
+                                        <DropdownLink href="/assets/keyboard">Laptop</DropdownLink>
+                                        <DropdownLink href="/assets/kamera">Router</DropdownLink>
+                                        <DropdownLink href="/assets/printer">TV</DropdownLink>
+                                        <DropdownLink href="/assets/pc">➡️</DropdownLink>
+                                    </div>
+                                    <div class="mt-5">
+                                        <h1 class="text-lg font-bold">Asset Terbaru</h1>
+                                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Porro molestiae
+                                            inventore exercitationem enim. Porro architecto vitae tenetur rem assumenda
+                                            in saepe quod nihil numquam delectus ducimus vero, omnis molestiae ut.</p>
+                                    </div>
+                                </div>
+                            </template>
+
+                        </Dropdown>
+
                     </div>
                 </div>
 

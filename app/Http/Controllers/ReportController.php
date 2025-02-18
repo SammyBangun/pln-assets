@@ -74,11 +74,11 @@ class ReportController extends Controller
     }
 
     public function exportPdf($id)
-{
-    $report = Report::with('user')->findOrFail($id);
+    {
+        $report = Report::with('user')->findOrFail($id);
 
-    $pdf = Pdf::loadView('pdf.report', ['report' => $report]);
+        $pdf = Pdf::loadView('pdf.report', ['report' => $report]);
 
-    return $pdf->download('laporan_kerusakan_' . $id . '.pdf');
-}
+        return $pdf->download('laporan_kerusakan_' . $id . '.pdf');
+    }
 }
