@@ -52,6 +52,7 @@ Route::get('/laporan/{id}/export', [ReportController::class, 'exportPdf'])->name
 Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat', [ReportController::class, 'index'])->name('riwayat.index');
     Route::post('/riwayat', [ReportController::class, 'store'])->name('riwayat.store');
+    Route::get('/riwayat/{id}/edit', [ReportController::class, 'edit'])->name('riwayat.edit');
     Route::get('/riwayat/{id}', [ReportController::class, 'show'])->name('riwayat.show');
     Route::put('/riwayat/{id}', [ReportController::class, 'update'])->name('riwayat.update');
     Route::delete('/riwayat/{id}', [ReportController::class, 'destroy'])->name('riwayat.destroy');

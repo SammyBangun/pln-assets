@@ -13,7 +13,7 @@ class ReportPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true; // Allow users to view the list of reports
     }
 
     /**
@@ -21,7 +21,7 @@ class ReportPolicy
      */
     public function view(User $user, Report $report): bool
     {
-        return false;
+        return true; // Allow users to view individual reports
     }
 
     /**
@@ -29,7 +29,7 @@ class ReportPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true; // Allow users to create reports
     }
 
     /**
@@ -40,6 +40,9 @@ class ReportPolicy
         return $user->id === $report->user_pelapor || $user->role === 'admin';
     }
 
+    /**
+     * Determine whether the user can delete the model.
+     */
     public function delete(User $user, Report $report): bool
     {
         return $user->id === $report->user_pelapor || $user->role === 'admin';
@@ -50,7 +53,7 @@ class ReportPolicy
      */
     public function restore(User $user, Report $report): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -58,6 +61,6 @@ class ReportPolicy
      */
     public function forceDelete(User $user, Report $report): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 }
