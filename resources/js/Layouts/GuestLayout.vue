@@ -1,4 +1,5 @@
 <script>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -15,65 +16,66 @@ export default {
         ResponsiveNavLink,
         Link
     },
-    data() {
-        return {
-            current: 0,
-            timer: null,
-            transitionName: "fade",
-            show: false,
-            slides: [
-                {
-                    image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                },
-                {
-                    image: "https://plus.unsplash.com/premium_photo-1661715592317-e0268ac4e158?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                },
-                {
-                    image: "https://plus.unsplash.com/premium_photo-1661515203486-ab9c1770f486?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                }
-            ]
+    setup() {
+        const current = ref(0);
+        const timer = ref(null);
+        const transitionName = ref("fade");
+        const show = ref(false);
+        const slides = ref([
+            {
+                image: "https://plus.unsplash.com/premium_photo-1679672989775-9a7707427439?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            },
+            {
+                image: "https://images.unsplash.com/photo-1588339251392-e1405faa28bd?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            },
+            {
+                image: "https://plus.unsplash.com/premium_photo-1679672988622-df7b3ce938aa?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            }
+        ]);
+
+        const next = () => {
+            transitionName.value = "slide-next";
+            const len = slides.value.length;
+            current.value = (current.value + 1) % len;
         };
-    },
-    methods: {
-        next() {
-            this.transitionName = "slide-next";
-            const len = this.slides.length;
-            this.current = (this.current + 1) % len;
-        },
-        prev() {
-            this.transitionName = "slide-prev";
-            const len = this.slides.length;
-            this.current = (this.current - 1 + len) % len;
-        },
-        startRotation() {
-            this.timer = setInterval(this.next, 4000);
-        },
-        stopRotation() {
-            clearInterval(this.timer);
-            this.timer = null;
-        }
-    },
-    mounted() {
-        this.show = true;
-        this.startRotation();
-    },
-    beforeUnmount() {
-        this.stopRotation();
+
+        const prev = () => {
+            transitionName.value = "slide-prev";
+            const len = slides.value.length;
+            current.value = (current.value - 1 + len) % len;
+        };
+
+        const startRotation = () => {
+            timer.value = setInterval(next, 4000);
+        };
+
+        onMounted(() => {
+            show.value = true;
+            startRotation();
+        });
+
+        return {
+            current,
+            timer,
+            transitionName,
+            show,
+            slides,
+            next,
+            prev,
+            startRotation,
+        };
     }
 };
 </script>
 
-
 <template>
     <div class="min-h-screen flex items-center justify-center bg-gray-200">
         <div class="w-screen h-screen flex">
-            <!-- Bagian Slider -->
             <div class="relative w-full h-full">
                 <div class="slider">
-                    <transition-group tag="div" v-bind:name="transitionName">
-                        <div v-if="show" v-bind:key="current" class="slider__item"
-                            v-bind:style="{ 'background-image': 'url(' + slides[current].image + ')' }"
-                            v-on:mouseover="stopRotation" v-on:mouseout="startRotation">
+                    <transition-group tag="div" :name="transitionName">
+                        <div v-if="show" :key="current" class="slider__item"
+                            :style="{ 'background-image': 'url(' + slides[current].image + ')' }">
                             <a :href="slides[current].url" target="_blank" class="slider__item">
                                 <h2><a :href="slides[current].url" target="_blank">{{ slides[current].title }}</a></h2>
                             </a>
@@ -82,13 +84,11 @@ export default {
                 </div>
             </div>
 
-            <!-- Form Login -->
             <div
                 class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded-lg shadow-2xl drop-shadow-2xl">
                 <div class="mb-6">
                     <ApplicationLogo class="h-20 w-20 fill-current text-gray-500" />
                 </div>
-
                 <div class="w-full">
                     <slot />
                 </div>
@@ -96,9 +96,6 @@ export default {
         </div>
     </div>
 </template>
-
-
-
 
 <style scoped>
 .fade-enter-active {

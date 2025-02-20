@@ -52,7 +52,6 @@ class ReportController extends Controller
         ]);
     }
 
-
     public function update(Request $request, Report $report)
     {
         $this->authorize('update', $report);

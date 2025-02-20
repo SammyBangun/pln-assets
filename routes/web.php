@@ -9,7 +9,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\ReportController;
 use App\Models\User;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
@@ -30,7 +30,7 @@ Route::get('/admin/users', function () {
     }
 
     // Arahkan ke halaman login jika bukan admin
-    return redirect()->route('login'); 
+    return redirect()->route('login');
 });
 
 // Rute untuk memperbarui role pengguna (admin only)
@@ -41,21 +41,20 @@ Route::put('/users/{user}/role', function (Request $request, User $user) {
     }
 
     // Arahkan ke halaman login jika bukan admin
-    return redirect()->route('login'); 
+    return redirect()->route('login');
 });
 
 
 //pdf
 Route::get('/laporan/{id}/export', [ReportController::class, 'exportPdf'])->name('laporan.export');
 
-
 //laporan
 Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat', [ReportController::class, 'index'])->name('riwayat.index');
     Route::post('/riwayat', [ReportController::class, 'store'])->name('riwayat.store');
     Route::get('/riwayat/{id}', [ReportController::class, 'show'])->name('riwayat.show');
-    Route::put('/riwayat/{riwayat}', [ReportController::class, 'update'])->name('riwayat.update');
-    Route::delete('/riwayat/{riwayat}', [ReportController::class, 'destroy'])->name('riwayat.destroy');
+    Route::put('/riwayat/{id}', [ReportController::class, 'update'])->name('riwayat.update');
+    Route::delete('/riwayat/{id}', [ReportController::class, 'destroy'])->name('riwayat.destroy');
 });
 
 // Group untuk route yang membutuhkan autentikasi dan verifikasi email
