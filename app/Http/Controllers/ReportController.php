@@ -52,18 +52,27 @@ class ReportController extends Controller
         ]);
     }
 
-    public function update(Request $request, Report $report)
-    {
-        $this->authorize('update', $report);
+    public function update(Request $request, $id)
+{
+    $report = Report::findOrFail($id);
+    $this->authorize('update', $report);
 
-        $report->update($request->validate([
-            'laporan_kerusakan' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-        ]));
+    $validated = $request->validate([
+        'laporan_kerusakan' => 'required|string|max:255',
+        'deskripsi' => 'required|string',
+    ]);
 
-        return redirect()->route('riwayat.index');
+    try {
+        $report->update([
+            'laporan_kerusakan' => $validated['laporan_kerusakan'],
+            'deskripsi' => $validated['deskripsi'],
+        ]);
+
+        return to_route('riwayat.index');
+    } catch (\Exception $e) {
+        return back()->withErrors(['error' => 'Failed to update report: ' . $e->getMessage()]);
     }
-
+}
     public function destroy(Report $report)
     {
         $this->authorize('delete', $report);
@@ -80,4 +89,13 @@ class ReportController extends Controller
 
         return $pdf->download('laporan_kerusakan_' . $id . '.pdf');
     }
+    public function edit($id): Response
+{
+    $report = Report::findOrFail($id);
+    $this->authorize('update', $report);
+    
+    return Inertia::render('Reports/Edit', [
+        'report' => $report
+    ]);
+}
 }
