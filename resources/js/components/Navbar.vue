@@ -80,13 +80,23 @@ const toggleDropdown = () => {
                                     </div>
                                 </div>
                             </template>
-
                         </Dropdown>
+
+
 
                     </div>
                 </div>
 
+
+
                 <div class="hidden sm:ms-6 sm:flex sm:items-center">
+                    <template v-if="$page.props.auth.user.role === 'admin'">
+                        <div class=" mr-8">
+                            <NavLink href="/admin/users">
+                                User Management
+                            </NavLink>
+                        </div>
+                    </template>
                     <!-- Settings Dropdown -->
                     <Dropdown align="right" width="48">
                         <template #trigger>
