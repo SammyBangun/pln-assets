@@ -3,6 +3,7 @@ import { ref, watch } from 'vue';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
 import { useForm } from '@inertiajs/vue3';
+import { Notify } from 'notiflix';
 
 const showOtherInput = ref(false);
 const otherCategory = ref('');
@@ -11,7 +12,7 @@ const gambarPreview = ref(null);
 const form = useForm({
     laporan_kerusakan: '',
     deskripsi: '',
-    gambar: null // Tambahkan properti gambar
+    gambar: null
 });
 
 watch(() => form.laporan_kerusakan, (newValue) => {
@@ -30,7 +31,7 @@ const handleFileUpload = (event) => {
     form.gambar = file;
 
     if (file) {
-        gambarPreview.value = URL.createObjectURL(file); // Buat preview gambar
+        gambarPreview.value = URL.createObjectURL(file);
     }
 };
 
@@ -49,8 +50,10 @@ const submit = () => {
     }
 
     form.post(route("riwayat.store"), {
-        forceFormData: true // Pastikan dikirim sebagai FormData
+        forceFormData: true
     });
+
+    Notify.success('Laporan berhasil tersimpan');
 };
 </script>
 

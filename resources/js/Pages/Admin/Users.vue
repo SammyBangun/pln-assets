@@ -2,6 +2,13 @@
 import { router } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
+import { Notify } from 'notiflix';
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
+
+const formatDate = (date) => {
+  return format(new Date(date), "dd MMMM yyyy", { locale: id });
+};
 
 defineProps({
   users: Array
@@ -13,7 +20,7 @@ const updateRole = async (user) => {
   }, {
     preserveScroll: true,
     onSuccess: () => {
-      alert('Role berhasil diupdate')
+      Notify.success('Role berhasil diupdate')
     }
   })
 }
@@ -23,6 +30,9 @@ const updateRole = async (user) => {
   <Navbar />
   <div class="py-6">
     <div class="max-w-7xl mx-auto px-4">
+      <div class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 mt-3 w-fit">
+        <Link :href="route('admin.dashboard')">Kembali</Link>
+      </div>
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
           <table class="min-w-full divide-y divide-gray-200">
@@ -49,14 +59,11 @@ const updateRole = async (user) => {
                   </select>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  {{ new Date(user.created_at).toLocaleDateString() }}
+                  {{ formatDate(user.created_at) }}
                 </td>
               </tr>
             </tbody>
           </table>
-          <div class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 mt-3 w-fit">
-            <Link :href="route('admin.dashboard')">Kembali</Link>
-          </div>
         </div>
       </div>
     </div>

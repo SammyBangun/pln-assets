@@ -49,14 +49,21 @@ const deleteReport = (id) => {
         'Ya',
         'Tidak',
         () => {
-            form.delete(`/riwayat/${id}`);
-            Notiflix.Notify.success('Laporan berhasil dihapus');
+            form.delete(`/riwayat/${id}`, {
+                onSuccess: () => {
+                    Notiflix.Notify.success('Laporan berhasil dihapus');
+                },
+                onError: () => {
+                    Notiflix.Notify.failure('Terjadi kesalahan saat menghapus laporan');
+                }
+            });
         },
         () => {
-            Notiflix.Notify.warning('Laporan gagal dihapus');
+            Notiflix.Notify.warning('Laporan tidak jadi dihapus');
         }
     );
 };
+
 </script>
 
 <template>
