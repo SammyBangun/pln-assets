@@ -21,7 +21,7 @@ const toggleDropdown = () => {
             <div class="flex h-16 justify-between">
                 <div class="flex">
                     <!-- Logo -->
-                    <div class="flex shrink-0 items-center">
+                    <div class="flex shrink-0 items-center w-48">
                         <Link href="/dashboard">
                         <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800" />
                         </Link>

@@ -36,16 +36,24 @@ const submit = () => {
         </div>
 
         <form @submit.prevent="submit">
-            <div>
+            <div class="w-6/12 mx-auto mb-12">
+                <input type="hidden" name="_token" :value="form._token">
+
                 <InputLabel for="email" value="Email" />
 
-                <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus
+                <TextInput id="email" type="email" class="mt-1 block " v-model="form.email" required autofocus
                     autocomplete="username" />
 
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
+            <div class="mt-4 flex items-center justify-between">
+                <div>
+                    <Link :href="route('login')"
+                        class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mr-3">
+                    Kembali
+                    </Link>
+                </div>
                 <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Tautan Reset Kata Sandi Email
                 </PrimaryButton>
