@@ -1,3 +1,33 @@
+<script setup>
+import { Link, useForm } from '@inertiajs/vue3';
+import Navbar from '@/Components/Navbar.vue';
+import Footer from '@/Components/Footer.vue';
+import { Notify } from 'notiflix';
+
+const props = defineProps({
+    report: {
+        type: Object,
+        required: true
+    }
+});
+
+const form = useForm({
+    laporan_kerusakan: props.report.laporan_kerusakan,
+    deskripsi: props.report.deskripsi
+});
+
+function submit() {
+    form.put(route('riwayat.update', props.report.id), {
+        onSuccess: () => {
+            Notify.success('Laporan berhasil diperbarui');
+        },
+        onError: (errors) => {
+            Notify.failure('Terjadi kesalahan saat memperbarui laporan');
+        }
+    });
+}
+</script>
+
 <template>
     <Navbar />
     <div class="container mx-auto my-8 min-h-screen">
@@ -49,9 +79,7 @@
                         </button>
                     </div>
                 </div>
-
             </form>
-
             <div v-if="form.errors.error" class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                 {{ form.errors.error }}
             </div>
@@ -59,42 +87,3 @@
     </div>
     <Footer />
 </template>
-
-<script>
-import { Link, useForm } from '@inertiajs/vue3';
-import Navbar from '@/Components/Navbar.vue';
-import Footer from '@/Components/Footer.vue';
-
-export default {
-    components: {
-        Link, Navbar, Footer
-    },
-
-    props: {
-        report: {
-            type: Object,
-            required: true
-        }
-    },
-
-    setup(props) {
-        const form = useForm({
-            laporan_kerusakan: props.report.laporan_kerusakan,
-            deskripsi: props.report.deskripsi
-        });
-
-        function submit() {
-            form.put(route('riwayat.update', props.report.id), {
-                onSuccess: () => {
-                    console.log('Form submitted successfully');
-                },
-                onError: (errors) => {
-                    console.error('Form submission failed:', errors);
-                }
-            });
-        }
-
-        return { form, submit };
-    }
-}
-</script>

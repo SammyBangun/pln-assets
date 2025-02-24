@@ -3,12 +3,7 @@ import { router } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
 import { Notify } from 'notiflix';
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
-
-const formatDate = (date) => {
-  return format(new Date(date), "dd MMMM yyyy", { locale: id });
-};
+import formatDate from '@/functions/formatDate';
 
 defineProps({
   users: Array

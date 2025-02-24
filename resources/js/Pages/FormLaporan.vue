@@ -35,7 +35,6 @@ const handleFileUpload = (event) => {
     }
 };
 
-
 const submit = () => {
     if (showOtherInput.value) {
         form.laporan_kerusakan = otherCategory.value;

@@ -10,6 +10,7 @@ use App\Http\Controllers\ReportController;
 use App\Models\User;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
@@ -19,8 +20,6 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-
-use Illuminate\Support\Facades\Auth;
 
 // Rute untuk menampilkan pengguna (admin only)
 Route::get('/admin/users', function () {

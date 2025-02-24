@@ -3,9 +3,8 @@ import { ref, computed } from 'vue';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
 import Notiflix from "notiflix";
+import formatDate from '@/functions/formatDate';
 import { useForm } from '@inertiajs/vue3';
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
 
 Notiflix.Confirm.init({
     width: "400px",
@@ -20,10 +19,6 @@ Notiflix.Confirm.init({
     messageFontSize: "16px",
     cssAnimationStyle: "zoom",
 });
-
-const formatDate = (date) => {
-    return format(new Date(date), "dd MMMM yyyy", { locale: id });
-};
 
 const props = defineProps({
     reports: Array

@@ -3,17 +3,16 @@
         <div class="container mx-auto text-center">
             <p class="font-bold text-lg">PT. PLN NUSANTARA POWER </p>
             <div class="mt-4 space-y-2">
-                <p>Youtube:
-                    <a href="https://youtube.com/@plnnusantarapowerupbelawan?si=nGc81MAD0SWU0LSd"
-                        class="text-blue-400 hover:underline">
-                        PLN NP UP BELAWAN
-                    </a>
+                <p>
+                    Dibuat oleh :
                 </p>
-                <p>Instagram:
-                    <a href="https://www.instagram.com/plnnp_upbelawan/" class="text-blue-400 hover:underline"
-                        target="_blank">
-                        Plnnp Belawan
-                    </a>
+                <p>
+                    <a class="text-blue-400 hover:underline" href="https://github.com/SammyBangun">Kahlil Rifqi Samoedra
+                        Bangun</a> <span class="text-white">(Frontend)</span>
+                    <br>
+                    <a class="text-blue-400 hover:underline" href="https://github.com/Rifky-Maulana">Rifky Maulana
+                        Pasaribu</a> <span class="text-white">
+                        (Backend)</span>
                 </p>
                 <p>Address: Jl. Pulau Sicanang No.1, Belawan Pulau Sicanang, Medan Kota Belawan, Kota Medan, Sumatera
                     Utara</p>
