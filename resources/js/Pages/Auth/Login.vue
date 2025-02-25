@@ -39,7 +39,7 @@ const submit = () => {
         </div>
 
         <form @submit.prevent="submit">
-            <div>
+            <div class="w-8/12 mx-auto">
                 <InputLabel for="email" value="Email" />
 
                 <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus
@@ -48,7 +48,7 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 w-8/12 mx-auto mb-6">
                 <InputLabel for="password" value="Password" />
 
                 <TextInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required
@@ -57,16 +57,16 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
-            <div class="mt-4 block">
+            <div class="mt-4 block w-8/12 mx-auto">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
                     <span class="ms-2 text-sm text-gray-600">Ingatkan Saya</span>
                 </label>
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
+            <div class="mt-4 flex items-center justify-between">
                 <Link v-if="canResetPassword" :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mr-10">
+                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mr-24">
                 Lupa Password?
                 </Link>
 

@@ -26,8 +26,8 @@ const submit = () => {
         <Head title="Register" />
 
         <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
+            <div class="w-8/12 mx-auto">
+                <InputLabel for="name" value="Nama" />
 
                 <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus
                     autocomplete="name" />
@@ -35,7 +35,7 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 w-8/12 mx-auto">
                 <InputLabel for="email" value="Email" />
 
                 <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required
@@ -44,7 +44,7 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 w-8/12 mx-auto">
                 <InputLabel for="password" value="Password" />
 
                 <TextInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required
@@ -53,8 +53,8 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
+            <div class="mt-4 w-8/12 mx-auto mb-8">
+                <InputLabel for="password_confirmation" value="Konfirmasi Password" />
 
                 <TextInput id="password_confirmation" type="password" class="mt-1 block w-full"
                     v-model="form.password_confirmation" required autocomplete="new-password" />

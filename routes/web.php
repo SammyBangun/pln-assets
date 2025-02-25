@@ -7,18 +7,14 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
-    ->middleware('guest')
-    ->name('password.email');
-
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
+        'canResetPassword' => Route::has('password.request'),
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
