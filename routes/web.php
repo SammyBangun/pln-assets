@@ -44,7 +44,6 @@ Route::put('/users/{user}/role', function (Request $request, User $user) {
     return redirect()->route('login');
 });
 
-
 //pdf
 Route::get('/laporan/{id}/export', [ReportController::class, 'exportPdf'])->name('laporan.export');
 
@@ -89,3 +88,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/assets.php';

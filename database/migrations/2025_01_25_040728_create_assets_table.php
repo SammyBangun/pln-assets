@@ -10,19 +10,19 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::create('assets', function (Blueprint $table) {
-        $table->id('id_asset'); // AUTO_INCREMENT primary key
-        $table->string('name', 50)->nullable();
-        $table->string('type', 50)->nullable();
-        $table->string('series', 50)->nullable();
-        $table->string('gambar')->nullable();
-        $table->date('tgl_beli')->nullable();
-        $table->date('last_service')->nullable();
-        $table->timestamps(); // Optional: created_at & updated_at
-    });
-}
-
+    {
+        Schema::create('assets', function (Blueprint $table) {
+            $table->string('serial_number', 50)->primary();
+            $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
+            $table->string('name', 50)->nullable();
+            $table->string('type', 50)->nullable();
+            $table->string('series', 50)->nullable();
+            $table->string('gambar')->nullable();
+            $table->date('tgl_beli')->nullable();
+            $table->date('last_service')->nullable();
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

@@ -11,10 +11,14 @@ class Asset extends Model
 
     protected $table = 'assets';
 
-    protected $primaryKey = 'id_asset';
+    protected $primaryKey = 'serial_number';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
+        'serial_number',
         'name',
+        'id_user',
         'type',
         'series',
         'gambar',

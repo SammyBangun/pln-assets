@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import fetchLatestAssets from '@/functions/fetchItem';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -8,10 +9,15 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
 const showingNavigationDropdown = ref(false);
+const latestAssets = ref([]);
 
 const toggleDropdown = () => {
     showingNavigationDropdown.value = !showingNavigationDropdown.value;
 };
+
+onMounted(async () => {
+    latestAssets.value = await fetchLatestAssets();
+});
 </script>
 
 <template>
@@ -50,40 +56,60 @@ const toggleDropdown = () => {
                             </template>
 
                             <template #content>
-                                <div class="grid grid-cols-3 w-[48rem] bg-white shadow-lg rounded-lg p-4">
+                                <div class="grid grid-cols-3 w-[43rem] bg-white shadow-lg rounded-lg p-4">
                                     <div>
-                                        <DropdownLink href="/assets/proyektor">Proyektor</DropdownLink>
-                                        <DropdownLink href="/assets/keyboard">Keyboard</DropdownLink>
-                                        <DropdownLink href="/assets/kamera">Kamera</DropdownLink>
-                                        <DropdownLink href="/assets/printer">Printer</DropdownLink>
-                                        <DropdownLink href="/assets/pc">PC</DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Proyektor' })">Proyektor
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Keyboard' })">Keyboard
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Kamera' })">Kamera
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Printer' })">Printer
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'PC' })">PC</DropdownLink>
                                     </div>
                                     <div>
-                                        <DropdownLink href="/assets/proyektor">Switch/Hub</DropdownLink>
-                                        <DropdownLink href="/assets/keyboard">Monitor</DropdownLink>
-                                        <DropdownLink href="/assets/kamera">Mouse</DropdownLink>
-                                        <DropdownLink href="/assets/printer">Audio</DropdownLink>
-                                        <DropdownLink href="/assets/pc">DLL</DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Monitor' })">Monitor
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Switch' })">Switch
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Mouse' })">Mouse</DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Audio' })">Audio</DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Hub' })">Hub</DropdownLink>
                                     </div>
                                     <div>
-                                        <DropdownLink href="/assets/proyektor">Access Point</DropdownLink>
-                                        <DropdownLink href="/assets/keyboard">Laptop</DropdownLink>
-                                        <DropdownLink href="/assets/kamera">Router</DropdownLink>
-                                        <DropdownLink href="/assets/printer">TV</DropdownLink>
-                                        <DropdownLink href="/assets/pc">➡️</DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Access_Point' })">Access Point
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Laptop' })">Laptop
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'Router' })">Router
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'TV' })">TV</DropdownLink>
+                                        <DropdownLink :href="route('Item.Show', { type: 'DLL' })">DLL</DropdownLink>
                                     </div>
-                                    <div class="mt-5">
-                                        <h1 class="text-lg font-bold">Asset Terbaru</h1>
-                                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Porro molestiae
-                                            inventore exercitationem enim. Porro architecto vitae tenetur rem assumenda
-                                            in saepe quod nihil numquam delectus ducimus vero, omnis molestiae ut.</p>
+                                    <div class="mt-3 w-[40rem] mx-auto">
+                                        <h1 class="text-xl font-bold mb-3">Aset Terbaru</h1>
+
+                                        <!-- Tampilkan loading jika data belum diambil -->
+                                        <p v-if="latestAssets.length === 0" class="text-center text-gray-500">Memuat
+                                            data...</p>
+
+                                        <!-- Jika data ada, tampilkan asset terbaru -->
+                                        <div v-else class="grid sm:grid-cols-1 md:grid-cols-2 gap-4 justify-center">
+                                            <div v-for="asset in latestAssets" :key="asset.id_asset"
+                                                class="flex items-center mx-auto bg-white rounded-lg shadow-md p-4">
+                                                <img :src="asset.gambar" alt="Asset Image"
+                                                    class="w-24 h-24 object-cover rounded-md border border-gray-200">
+                                                <div class="flex flex-col ml-4">
+                                                    <p class="font-semibold text-gray-800 text-lg">{{ asset.name }}</p>
+                                                    <p class="text-sm text-gray-500">{{ asset.series }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </template>
                         </Dropdown>
-
-
-
                     </div>
                 </div>
 

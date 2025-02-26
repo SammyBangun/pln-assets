@@ -23,7 +23,7 @@ const updateRole = async (user) => {
 
 <template>
   <Navbar />
-  <div class="py-6">
+  <div class="py-6 min-h-screen">
     <div class="max-w-7xl mx-auto px-4">
       <div class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 mt-3 w-fit">
         <Link :href="route('admin.dashboard')">Kembali</Link>
