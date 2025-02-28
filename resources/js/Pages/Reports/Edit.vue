@@ -19,10 +19,16 @@ const form = useForm({
 function submit() {
     form.put(route('riwayat.update', props.report.id), {
         onSuccess: () => {
-            Notify.success('Laporan berhasil diperbarui');
+            Notify.success('Laporan berhasil diperbarui', {
+                position: 'center-top',
+                distance: '70px',
+            });
         },
         onError: (errors) => {
-            Notify.failure('Terjadi kesalahan saat memperbarui laporan');
+            Notify.failure('Terjadi kesalahan saat memperbarui laporan', {
+                position: 'center-top',
+                distance: '70px',
+            });
         }
     });
 }

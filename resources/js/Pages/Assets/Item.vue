@@ -17,11 +17,11 @@ const props = defineProps({
             <table v-if="items.length > 0" class="w-full border border-gray-200 rounded-lg shadow-md">
                 <thead>
                     <tr class="bg-gray-800 text-white">
-                        <th class="px-4 py-2">ID</th>
+                        <th class="px-4 py-2">SN</th>
                         <th class="px-4 py-2">Name</th>
-                        <th class="px-4 py-2">Series</th>
-                        <th class="px-4 py-2">Purchase Date</th>
-                        <th class="px-4 py-2">Last Service</th>
+                        <th class="px-4 py-2">Seri</th>
+                        <th class="px-4 py-2">Tanggal Beli</th>
+                        <th class="px-4 py-2">Terakhir Servis</th>
                     </tr>
                 </thead>
                 <tbody>

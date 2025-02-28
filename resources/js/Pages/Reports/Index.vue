@@ -46,15 +46,24 @@ const deleteReport = (id) => {
         () => {
             form.delete(`/riwayat/${id}`, {
                 onSuccess: () => {
-                    Notiflix.Notify.success('Laporan berhasil dihapus');
+                    Notiflix.Notify.success('Laporan berhasil dihapus', {
+                        position: 'center-top',
+                        distance: '70px',
+                    });
                 },
                 onError: () => {
-                    Notiflix.Notify.failure('Terjadi kesalahan saat menghapus laporan');
+                    Notiflix.Notify.failure('Terjadi kesalahan saat menghapus laporan', {
+                        position: 'center-top',
+                        distance: '70px',
+                    });
                 }
             });
         },
         () => {
-            Notiflix.Notify.warning('Laporan tidak jadi dihapus');
+            Notiflix.Notify.warning('Laporan tidak jadi dihapus', {
+                position: 'center-top',
+                distance: '70px',
+            });
         }
     );
 };

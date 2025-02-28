@@ -52,7 +52,10 @@ const submit = () => {
         forceFormData: true
     });
 
-    Notify.success('Laporan berhasil tersimpan');
+    Notify.success('Laporan berhasil tersimpan', {
+        position: 'center-top',
+        distance: '70px',
+    });
 };
 </script>
 
