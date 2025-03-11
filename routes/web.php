@@ -4,13 +4,14 @@ use Inertia\Inertia;
 use App\Models\User;
 use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AssetController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Controllers\AssetsController;
+
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
@@ -57,6 +58,14 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/riwayat/{id}', [ReportController::class, 'destroy'])->name('riwayat.destroy');
 });
 
+
+Route::middleware('auth')->group(function () {
+    Route::get('/assets/create', [AssetsController::class, 'create'])->name('assets.create');
+    Route::post('/assets/store', [AssetsController::class, 'store'])->name('assets.store');
+});
+
+
+
 // Group untuk route yang membutuhkan autentikasi dan verifikasi email
 Route::middleware(['auth', 'verified'])->group(function () {
     // Route untuk user biasa
@@ -79,7 +88,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('form');
 
     // Route untuk manajemen asset
-    Route::resource('assets', AssetController::class);
 
     // Route untuk profile user
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
