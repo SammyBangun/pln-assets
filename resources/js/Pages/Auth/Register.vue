@@ -7,6 +7,7 @@ import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
+    id: '',
     name: '',
     email: '',
     password: '',
@@ -26,7 +27,17 @@ const submit = () => {
         <Head title="Register" />
 
         <form @submit.prevent="submit">
+
             <div class="w-8/12 mx-auto">
+                <InputLabel for="id" value="NIK" />
+
+                <TextInput id="id" type="text" class="mt-1 block w-full" v-model="form.id" required autofocus
+                    autocomplete="id" />
+
+                <InputError class="mt-2" :message="form.errors.id" />
+            </div>
+
+            <div class="mt-4 w-8/12 mx-auto">
                 <InputLabel for="name" value="Nama" />
 
                 <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus
