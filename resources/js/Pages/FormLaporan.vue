@@ -1,7 +1,8 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
+import { fetchAssets, assets } from '@/functions/fetchAssets';
 import { useForm } from '@inertiajs/vue3';
 import { Notify } from 'notiflix';
 
@@ -9,7 +10,9 @@ const showOtherInput = ref(false);
 const otherCategory = ref('');
 const gambarPreview = ref(null);
 
+
 const form = useForm({
+    aset: '',
     laporan_kerusakan: '',
     deskripsi: '',
     gambar: null
@@ -35,6 +38,8 @@ const handleFileUpload = (event) => {
     }
 };
 
+onMounted(fetchAssets);
+
 const submit = () => {
     if (showOtherInput.value) {
         form.laporan_kerusakan = otherCategory.value;
@@ -42,20 +47,43 @@ const submit = () => {
 
     // Gunakan FormData untuk mengirim file
     const formData = new FormData();
+    formData.append('aset', form.aset);
     formData.append('laporan_kerusakan', form.laporan_kerusakan);
     formData.append('deskripsi', form.deskripsi);
     if (form.gambar) {
         formData.append('gambar', form.gambar);
     }
 
+    console.log('Data yang dikirim:', [...formData]);
     form.post(route("riwayat.store"), {
-        forceFormData: true
+        forceFormData: true,
+        preserveScroll: true,
+        onSuccess: () => {
+            Notify.success('Laporan berhasil tersimpan', {
+                position: 'center-top',
+                distance: '70px',
+            });
+            form.reset();
+            gambarPreview.value = null;
+        },
+        onError: (errors) => {
+            // Menampilkan pesan error pertama yang ada
+            let errorMessage = errors[Object.keys(errors)[0]] ?? 'Terjadi kesalahan saat menyimpan data.';
+            Notify.failure(errorMessage, {
+                position: 'center-top',
+                distance: '70px',
+            });
+        },
+        onFail: (error) => {
+            // Menangani error yang tidak diketahui (misalnya, masalah server)
+            Notify.error('Gagal menyimpan laporan. Silakan coba lagi nanti.', {
+                position: 'center-top',
+                distance: '70px',
+            });
+            console.error("Error:", error);
+        }
     });
 
-    Notify.success('Laporan berhasil tersimpan', {
-        position: 'center-top',
-        distance: '70px',
-    });
 };
 </script>
 
@@ -66,6 +94,25 @@ const submit = () => {
             <div class="w-full lg:w-1/3 mx-auto my-8">
                 <form class="w-full bg-white shadow-md p-6" @submit.prevent="submit">
                     <div class="flex flex-wrap -mx-3 mb-6">
+
+                        <div class="w-full md:w-full px-3 mb-6">
+                            <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
+                                for="aset">
+                                Serial Number Aset
+                            </label>
+
+                            <!-- Jika data tersedia, tampilkan select -->
+                            <select v-if="assets.length > 0" v-model="form.aset" name="aset"
+                                class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]">
+                                <option v-for="asset in assets" :key="asset.serial_number" :value="asset.serial_number">
+                                    {{ asset.serial_number }} - {{ asset.name }}
+                                </option>
+                            </select>
+
+                            <!-- Jika data kosong, tampilkan pesan -->
+                            <p v-else class="text-gray-500 text-sm italic">Memuat...</p>
+                        </div>
+
                         <div class="w-full md:w-full px-3 mb-6">
                             <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
                                 for="category_name">
@@ -73,7 +120,6 @@ const submit = () => {
                             </label>
                             <select v-model="form.laporan_kerusakan" name="category_name"
                                 class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]">
-                                <option value="">Pilih Laporan Kerusakan</option>
                                 <option value="Gangguan Hardware">Gangguan Hardware</option>
                                 <option value="Gangguan Software">Gangguan Software</option>
                                 <option value="Gangguan Virus">Gangguan Virus</option>

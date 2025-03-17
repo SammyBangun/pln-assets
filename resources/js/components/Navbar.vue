@@ -56,66 +56,79 @@ onMounted(async () => {
                             </template>
 
                             <template #content>
-                                <div class="grid grid-cols-3 w-[42rem] bg-white shadow-lg rounded-lg p-4">
-                                    <div>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Proyektor' })">Proyektor
-                                        </DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Keyboard' })">Keyboard
-                                        </DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Kamera' })">Kamera
-                                        </DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Printer' })">Printer
-                                        </DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'PC' })">PC</DropdownLink>
+                                <div class="w-[42rem] bg-white shadow-lg rounded-lg p-4">
+                                    <div class="grid grid-cols-3">
+                                        <div>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Proyektor' })">Proyektor
+                                            </DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Keyboard' })">Keyboard
+                                            </DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Kamera' })">Kamera
+                                            </DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Printer' })">Printer
+                                            </DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'PC' })">PC</DropdownLink>
+                                        </div>
+                                        <div>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Monitor' })">Monitor
+                                            </DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Switch' })">Switch
+                                            </DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Mouse' })">Mouse
+                                            </DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Audio' })">Audio
+                                            </DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Hub' })">Hub</DropdownLink>
+                                        </div>
+                                        <div>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Access_Point' })">Access
+                                                Point</DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Laptop' })">Laptop
+                                            </DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'Router' })">Router
+                                            </DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'TV' })">TV</DropdownLink>
+                                            <DropdownLink :href="route('Item.Show', { type: 'DLL' })">DLL</DropdownLink>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Monitor' })">Monitor
-                                        </DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Switch' })">Switch
-                                        </DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Mouse' })">Mouse</DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Audio' })">Audio</DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Hub' })">Hub</DropdownLink>
-                                    </div>
-                                    <div>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Access_Point' })">Access Point
-                                        </DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Laptop' })">Laptop
-                                        </DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'Router' })">Router
-                                        </DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'TV' })">TV</DropdownLink>
-                                        <DropdownLink :href="route('Item.Show', { type: 'DLL' })">DLL</DropdownLink>
-                                    </div>
-                                    <div class="mt-3 w-[40rem] mx-auto">
+
+                                    <!-- Tambah Aset dipindahkan ke luar grid -->
+                                    <template v-if="$page.props.auth.user.role === 'admin'">
+                                        <div class="flex justify-center w-[8rem] mx-auto mt-6">
+                                            <DropdownLink :href="route('assets.create')"
+                                                class="bg-yellow-400 hover:bg-yellow-500 text-gray-500 font-bold py-2 px-4 rounded inline-flex items-center justify-center">
+                                                Tambah Aset
+                                            </DropdownLink>
+                                        </div>
+                                    </template>
+
+
+                                    <!-- Aset Terbaru -->
+                                    <div class="mt-6 w-[40rem] mx-auto">
                                         <h1 class="text-xl font-bold mb-3">Aset Terbaru</h1>
 
-                                        <!-- Tampilkan loading jika data belum diambil -->
                                         <p v-if="latestAssets.length === 0" class="text-center text-gray-500">Memuat
                                             data...</p>
 
-                                        <!-- Jika data ada, tampilkan asset terbaru -->
                                         <div v-else class="grid sm:grid-cols-1 md:grid-cols-2 gap-4 justify-center">
-                                            <div v-for="asset in latestAssets" :key="asset.id_asset"
-                                                class="flex items-center mx-auto bg-white rounded-lg shadow-md p-4">
+                                            <Link v-for="asset in latestAssets" :key="asset.id_asset"
+                                                :href="route('Item.Latest', { serial_number: asset.serial_number })"
+                                                class="flex items-center mx-auto bg-white rounded-lg shadow-md p-4 cursor-pointer hover:bg-gray-100 transition duration-200">
 
-                                                <!-- Gunakan Inertia Link agar gambar bisa diklik -->
-                                                <Link
-                                                    :href="route('Item.Latest', { serial_number: asset.serial_number })">
-                                                <img :src="asset.gambar" alt="Asset Image"
-                                                    class="w-24 h-24 object-cover rounded-md border border-gray-200 hover:opacity-75 transition duration-200">
-                                                </Link>
+                                            <img :src="`/storage/${asset.gambar}`" alt="Asset Image"
+                                                class="w-24 h-24 object-cover rounded-md border border-gray-200">
 
-                                                <div class="flex flex-col ml-4">
-                                                    <p class="font-semibold text-gray-800 text-lg">{{ asset.name }}</p>
-                                                    <p class="text-sm text-gray-500">{{ asset.series }}</p>
-                                                </div>
+                                            <div class="flex flex-col ml-4">
+                                                <p class="font-semibold text-gray-800 text-lg">{{ asset.name }}</p>
+                                                <p class="text-sm text-gray-500">{{ asset.series }}</p>
                                             </div>
+                                            </Link>
                                         </div>
 
                                     </div>
                                 </div>
                             </template>
+
                         </Dropdown>
                     </div>
                 </div>
@@ -131,7 +144,7 @@ onMounted(async () => {
                         </div>
                     </template>
                     <!-- Settings Dropdown -->
-                    <Dropdown align="right" width="48">
+                    <Dropdown align="right" width="32">
                         <template #trigger>
                             <button
                                 class="flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 hover:text-gray-700 focus:outline-none">
@@ -145,10 +158,12 @@ onMounted(async () => {
                         </template>
 
                         <template #content>
-                            <DropdownLink href="/profile">Profile</DropdownLink>
-                            <DropdownLink href="/logout" method="post" as="button">
-                                Log Out
-                            </DropdownLink>
+                            <div class="mt-4">
+                                <DropdownLink href="/profile">Profile</DropdownLink>
+                                <DropdownLink href="/logout" method="post" as="button">
+                                    Log Out
+                                </DropdownLink>
+                            </div>
                         </template>
                     </Dropdown>
                 </div>
@@ -224,6 +239,16 @@ onMounted(async () => {
                                 <DropdownLink :href="route('Item.Show', { type: 'TV' })">TV</DropdownLink>
                                 <DropdownLink :href="route('Item.Show', { type: 'DLL' })">DLL</DropdownLink>
                             </div>
+
+                            <template v-if="$page.props.auth.user.role === 'admin'">
+                                <div class="flex justify-center w-[8rem] mx-auto mt-6">
+                                    <DropdownLink :href="route('assets.create')"
+                                        class="bg-yellow-400 hover:bg-yellow-500 text-gray-500 font-bold py-2 px-4 rounded inline-flex items-center justify-center">
+                                        Tambah Aset
+                                    </DropdownLink>
+                                </div>
+                            </template>
+
                             <div class="mt-3 w-[40rem] mx-auto">
                                 <h1 class="text-xl font-bold mb-3">Aset Terbaru</h1>
 

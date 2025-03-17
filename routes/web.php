@@ -58,14 +58,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/riwayat/{id}', [ReportController::class, 'destroy'])->name('riwayat.destroy');
 });
 
-
-Route::middleware('auth')->group(function () {
-    Route::get('/assets/create', [AssetsController::class, 'create'])->name('assets.create');
-    Route::post('/assets/store', [AssetsController::class, 'store'])->name('assets.store');
-});
-
-
-
 // Group untuk route yang membutuhkan autentikasi dan verifikasi email
 Route::middleware(['auth', 'verified'])->group(function () {
     // Route untuk user biasa

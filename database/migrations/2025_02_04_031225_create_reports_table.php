@@ -10,6 +10,8 @@ return new class extends Migration {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_pelapor')->constrained('users')->onDelete('cascade');
+            $table->string('aset');
+            $table->foreign('aset')->references('serial_number')->on('assets')->onDelete('cascade'); // Foreign key dari tabel assets
             $table->string('laporan_kerusakan');
             $table->text('deskripsi');
             $table->string('gambar');

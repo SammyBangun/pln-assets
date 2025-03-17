@@ -25,4 +25,9 @@ class Asset extends Model
         'tgl_beli',
         'last_service',
     ];
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'aset', 'serial_number');
+    }
 }

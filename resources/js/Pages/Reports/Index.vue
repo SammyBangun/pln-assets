@@ -86,6 +86,7 @@ const deleteReport = (id) => {
                     <tr>
                         <th class="py-3 px-4 text-left">No</th>
                         <th class="py-3 px-4 text-left">Pelapor</th>
+                        <th class="py-3 px-4 text-left">Serial Number</th>
                         <th class="py-3 px-4 text-left">Laporan Kerusakan</th>
                         <th class="py-3 px-4 text-left">Deskripsi</th>
                         <th class="py-3 px-4 text-left">Tanggal</th>
@@ -97,6 +98,7 @@ const deleteReport = (id) => {
                     <tr v-for="(report, index) in latestReports" :key="report.id" class="border-b hover:bg-gray-100">
                         <td class="py-3 px-4">{{ index + 1 }}</td>
                         <td class="py-3 px-4">{{ report.user?.name }}</td>
+                        <td class="py-3 px-4">{{ report.aset }}</td>
                         <td class="py-3 px-4">{{ report.laporan_kerusakan }}</td>
                         <td class="py-3 px-4">{{ report.deskripsi }}</td>
                         <td class="py-3 px-4">{{ formatDate(report.created_at) }}</td>

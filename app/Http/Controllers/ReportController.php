@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Report;
+use App\Models\Asset;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -24,6 +25,7 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'aset' => 'required|string',
             'laporan_kerusakan' => 'required|string',
             'deskripsi' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
@@ -36,6 +38,7 @@ class ReportController extends Controller
 
         Report::create([
             'user_pelapor' => Auth::id(),
+            'aset' => $request->aset,
             'laporan_kerusakan' => $request->laporan_kerusakan,
             'deskripsi' => $request->deskripsi,
             'gambar' => $path ? '/storage/' . $path : null
@@ -46,7 +49,7 @@ class ReportController extends Controller
 
     public function show($id)
     {
-        $report = Report::with('user')->findOrFail($id);
+        $report = Report::with('user', 'asset')->findOrFail($id);
         return Inertia::render('Reports/Detail', [
             'report' => $report
         ]);
@@ -90,6 +93,7 @@ class ReportController extends Controller
 
         return $pdf->download('laporan_kerusakan_' . $id . '.pdf');
     }
+
     public function edit($id): Response
     {
         $report = Report::findOrFail($id);
@@ -98,5 +102,16 @@ class ReportController extends Controller
         return Inertia::render('Reports/Edit', [
             'report' => $report
         ]);
+    }
+
+    public function getAssetBySerial($serialNumber)
+    {
+        $asset = Asset::where('serial_number', $serialNumber)->first();
+
+        if (!$asset) {
+            return response()->json(['message' => 'Aset tidak ditemukan'], 404);
+        }
+
+        return response()->json($asset);
     }
 }

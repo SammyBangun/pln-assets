@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps } from 'vue';
+import { ref, defineProps, onMounted } from 'vue';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
 import formatDate from '@/functions/formatDate';
@@ -10,6 +10,7 @@ const props = defineProps({
 
 const showModal = ref(false);
 const selectedImage = ref('');
+const assetName = ref(props.report.asset ? props.report.asset.name : 'Tidak ditemukan');
 
 const openImage = (image) => {
     selectedImage.value = image;
@@ -28,6 +29,8 @@ const closeModal = () => {
 
         <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
             <p class="text-lg"><strong>Pelapor:</strong> {{ report.user?.name }}</p>
+            <p class="text-lg"><strong>Serial Number:</strong> {{ report.aset }}</p>
+            <p class="text-lg"><strong>Aset:</strong> {{ assetName }}</p>
             <p class="text-lg"><strong>Laporan Kerusakan:</strong> {{ report.laporan_kerusakan }}</p>
             <p class="text-lg"><strong>Deskripsi:</strong> {{ report.deskripsi }}</p>
             <p class="text-lg"><strong>Tanggal:</strong> {{ formatDate(report.created_at) }}</p>
