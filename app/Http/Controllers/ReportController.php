@@ -88,10 +88,11 @@ class ReportController extends Controller
     public function exportPdf($id)
     {
         $report = Report::with('user')->findOrFail($id);
+        $no_tiket = 'WG-' . strtoupper(uniqid());
 
-        $pdf = Pdf::loadView('pdf.report', ['report' => $report]);
+        $pdf = Pdf::loadView('pdf.report', ['report' => $report, 'no_tiket' => $no_tiket])->setPaper('A4', 'portrait');;
 
-        return $pdf->download('laporan_kerusakan_' . $id . '.pdf');
+        return $pdf->stream('laporan_kerusakan_' . $id . '.pdf');
     }
 
     public function edit($id): Response
