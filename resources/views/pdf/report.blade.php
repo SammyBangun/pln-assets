@@ -50,11 +50,15 @@
 
         <table class="w-full border-collapse border border-gray-400 my-8">
             <tr>
-                <td class="border border-gray-400 p-4 text-center bg-gray-300 text-gray-700 font-semibold">
+                <td class="border border-gray-400 py-4 px-0 text-center bg-gray-300 text-gray-700 font-semibold">
                     Foto Dari User
+                    <br>
+                    <img src="{{ public_path('storage/laporan/' . basename($report->gambar)) }}" width="200">
                 </td>
-                <td class="border border-gray-400 p-4 text-center bg-gray-300 text-gray-700 font-semibold">
+                <td class="border border-gray-400 py-4 px-0 text-center bg-gray-300 text-gray-700 font-semibold">
                     Foto Dari Admin
+                    <br>
+                    <img src="{{ public_path('storage/laporan/' . basename($report->gambar)) }}" width="200">
                 </td>
             </tr>
         </table>
@@ -66,15 +70,15 @@
             <p class="text-gray-800 ml-3">Check Koneksi Layanan Jaringan Internet</p>
         </div>
 
-        <br><br><br><br><br><br><br><br>
-
         <table class="w-full border-collapse border border-gray-400 my-8">
             <tr>
                 <td class="border border-gray-400 p-4 text-center bg-gray-300 text-gray-700 font-semibold">
                     Tanda Tangan User
+                    <br>
                 </td>
                 <td class="border border-gray-400 p-4 text-center bg-gray-300 text-gray-700 font-semibold">
                     Tanda Tangan Admin
+                    <br>
                 </td>
             </tr>
         </table>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Middleware\AdminOnly;
 use App\Models\Asset;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -35,7 +36,9 @@ class AssetsController extends Controller
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
-        return Inertia::render('Assets/Create');
+        $users = User::select('id', 'name')->get();
+
+        return Inertia::render('Assets/Create', ['users' => $users]);
     }
 
     public function store(Request $request)
@@ -73,4 +76,8 @@ class AssetsController extends Controller
         $assets = Asset::select('serial_number', 'name')->get();
         return response()->json($assets);
     }
+
+    // public function detail(){
+
+    // }
 }

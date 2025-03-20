@@ -54,7 +54,6 @@ const submit = () => {
         formData.append('gambar', form.gambar);
     }
 
-    console.log('Data yang dikirim:', [...formData]);
     form.post(route("riwayat.store"), {
         forceFormData: true,
         preserveScroll: true,
@@ -67,7 +66,6 @@ const submit = () => {
             gambarPreview.value = null;
         },
         onError: (errors) => {
-            // Menampilkan pesan error pertama yang ada
             let errorMessage = errors[Object.keys(errors)[0]] ?? 'Terjadi kesalahan saat menyimpan data.';
             Notify.failure(errorMessage, {
                 position: 'center-top',
@@ -75,7 +73,6 @@ const submit = () => {
             });
         },
         onFail: (error) => {
-            // Menangani error yang tidak diketahui (misalnya, masalah server)
             Notify.error('Gagal menyimpan laporan. Silakan coba lagi nanti.', {
                 position: 'center-top',
                 distance: '70px',

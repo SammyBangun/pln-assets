@@ -3,6 +3,11 @@ import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
+import { Notify } from 'notiflix';
+
+defineProps({
+  users: Array
+});
 
 const gambarPreview = ref(null);
 
@@ -37,11 +42,30 @@ const submit = () => {
   if (form.gambar) {
     formData.append("gambar", form.gambar);
   }
-
-  console.log("Data yang dikirim:", formData);
-
   form.post(route("assets.store"), {
     forceFormData: true,
+    onSuccess: () => {
+      Notify.success('Aset berhasil tersimpan', {
+        position: 'center-top',
+        distance: '70px',
+      });
+      form.reset();
+      gambarPreview.value = null;
+    },
+    onError: (errors) => {
+      let errorMessage = errors[Object.keys(errors)[0]] ?? 'Terjadi kesalahan saat menyimpan data.';
+      Notify.failure(errorMessage, {
+        position: 'center-top',
+        distance: '70px',
+      });
+    },
+    onFail: (error) => {
+      Notify.error('Gagal menyimpan aset. Silakan coba lagi nanti.', {
+        position: 'center-top',
+        distance: '70px',
+      });
+      console.error("Error:", error);
+    }
   });
 };
 
@@ -61,20 +85,41 @@ const submit = () => {
         </div>
 
         <div>
-          <label class="block text-sm font-medium">ID User</label>
-          <input v-model="form.id_user" type="number" class="input" required />
+          <label class="block text-sm font-medium">Nama User</label>
+          <select v-model="form.id_user" class="input">
+            <option v-for="user in users" :key="user.id" :value="user.id">
+              {{ user.name }}
+            </option>
+          </select>
         </div>
+
       </div>
 
       <div class="grid grid-cols-3 gap-3">
         <div>
-          <label class="block text-sm font-medium">Nama</label>
-          <input v-model="form.name" type="text" class="input" />
+          <label class="block text-sm font-medium">Tipe</label>
+          <select v-model="form.type" class="input">
+            <option value="Proyektor">Proyektor</option>
+            <option value="Monitor">Monitor</option>
+            <option value="Access Point">Access Point</option>
+            <option value="Keyboard">Keyboard</option>
+            <option value="Switch">Switch</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Kamera">Kamera</option>
+            <option value="Mouse">Mouse</option>
+            <option value="Router">Router</option>
+            <option value="Printer">Printer</option>
+            <option value="Audio">Audio</option>
+            <option value="TV">TV</option>
+            <option value="PC">PC</option>
+            <option value="Hub">Hub</option>
+            <option value="DLL">DLL</option>
+          </select>
         </div>
 
         <div>
-          <label class="block text-sm font-medium">Tipe</label>
-          <input v-model="form.type" type="text" class="input" />
+          <label class="block text-sm font-medium">Nama</label>
+          <input v-model="form.name" type="text" class="input" />
         </div>
 
         <div class="mb-5">
@@ -102,9 +147,10 @@ const submit = () => {
         </label>
 
         <!-- Tampilkan preview gambar -->
-        <div v-if="gambarPreview" class="mt-4">
+        <div v-if="gambarPreview" class="mt-4 mx-auto">
           <p class="text-gray-700">Preview Gambar:</p>
-          <img :src="gambarPreview" alt="Preview Gambar" class="max-w-full h-auto rounded-lg shadow-md">
+          <img :src="gambarPreview" alt="Preview Gambar"
+            class="max-w-full h-auto mx-auto text-center rounded-lg shadow-md">
         </div>
       </div>
 

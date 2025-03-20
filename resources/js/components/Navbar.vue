@@ -81,7 +81,7 @@ onMounted(async () => {
                                             <DropdownLink :href="route('Item.Show', { type: 'Hub' })">Hub</DropdownLink>
                                         </div>
                                         <div>
-                                            <DropdownLink :href="route('Item.Show', { type: 'Access_Point' })">Access
+                                            <DropdownLink :href="route('Item.Show', { type: 'Access Point' })">Access
                                                 Point</DropdownLink>
                                             <DropdownLink :href="route('Item.Show', { type: 'Laptop' })">Laptop
                                             </DropdownLink>
@@ -230,7 +230,7 @@ onMounted(async () => {
                                 <DropdownLink :href="route('Item.Show', { type: 'Hub' })">Hub</DropdownLink>
                             </div>
                             <div>
-                                <DropdownLink :href="route('Item.Show', { type: 'Access_Point' })">Access Point
+                                <DropdownLink :href="route('Item.Show', { type: 'Access Point' })">Access Point
                                 </DropdownLink>
                                 <DropdownLink :href="route('Item.Show', { type: 'Laptop' })">Laptop
                                 </DropdownLink>

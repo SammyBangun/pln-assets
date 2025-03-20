@@ -12,6 +12,8 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/item/{type}', [AssetsController::class, 'show'])->name('Item.Show');
 
+Route::get('/item/{type}/detail', [AssetsController::class, 'detail'])->name('Item.Detail');
+
 Route::get('/item/latest/{serial_number}', [AssetsController::class, 'latest'])->name('Item.Latest');
 
 Route::get('/latest-assets', function () {

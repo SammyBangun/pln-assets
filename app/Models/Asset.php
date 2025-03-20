@@ -30,4 +30,9 @@ class Asset extends Model
     {
         return $this->hasMany(Report::class, 'aset', 'serial_number');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
 }
