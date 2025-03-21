@@ -112,7 +112,7 @@ onMounted(async () => {
 
                                         <div v-else class="grid sm:grid-cols-1 md:grid-cols-2 gap-4 justify-center">
                                             <Link v-for="asset in latestAssets" :key="asset.id_asset"
-                                                :href="route('Item.Latest', { serial_number: asset.serial_number })"
+                                                :href="`/item/${asset.type}/${asset.serial_number}`"
                                                 class="flex items-center mx-auto bg-white rounded-lg shadow-md p-4 cursor-pointer hover:bg-gray-100 transition duration-200">
 
                                             <img :src="`/storage/${asset.gambar}`" alt="Asset Image"

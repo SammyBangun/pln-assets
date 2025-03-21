@@ -12,7 +12,9 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/item/{type}', [AssetsController::class, 'show'])->name('Item.Show');
 
-Route::get('/item/{type}/detail', [AssetsController::class, 'detail'])->name('Item.Detail');
+Route::get('/item/{type}/{serial_number}', [AssetsController::class, 'detail'])->name('Item.Detail');
+
+Route::delete('/item/{serial_number}', [AssetsController::class, 'destroy'])->name('Item.Destroy');
 
 Route::get('/item/latest/{serial_number}', [AssetsController::class, 'latest'])->name('Item.Latest');
 

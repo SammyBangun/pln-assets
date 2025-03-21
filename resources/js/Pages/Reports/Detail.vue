@@ -54,7 +54,7 @@ const printPdf = (id) => {
                 <strong>Gambar:</strong>
                 <div v-if="report.gambar" class="mt-2">
                     <img :src="report.gambar" alt="Gambar Laporan" @click="openImage(report.gambar)"
-                        class="cursor-pointer max-w-sm max-h-80 rounded-md shadow-md mx-auto hover:opacity-80 transition">
+                        class="cursor-pointer max-w-sm max-h-80 rounded-md shadow-md mx-auto">
                 </div>
                 <span v-else class="text-gray-500">Tidak ada gambar</span>
             </div>

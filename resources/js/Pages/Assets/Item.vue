@@ -2,11 +2,60 @@
 import { defineProps } from 'vue';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
+import Notiflix from 'notiflix';
+import { useForm } from '@inertiajs/vue3';
+
+const form = useForm({});
 
 const props = defineProps({
     items: Array,
     type: String
 });
+
+Notiflix.Confirm.init({
+    width: "400px",
+    borderRadius: "10px",
+    titleColor: "#D32F2F",
+    okButtonBackground: "#D32F2F",
+    okButtonColor: "#FFF",
+    cancelButtonBackground: "#757575",
+    cancelButtonColor: "#FFF",
+    backgroundColor: "#FFF",
+    titleFontSize: "18px",
+    messageFontSize: "16px",
+    cssAnimationStyle: "zoom",
+});
+
+const deleteReport = (serial_number) => {
+    Notiflix.Confirm.show(
+        'Hapus Aset',
+        'Apakah Anda yakin ingin menghapus item ini?',
+        'Ya',
+        'Tidak',
+        () => {
+            form.delete(`/item/${serial_number}`, {
+                onSuccess: () => {
+                    Notiflix.Notify.success('Aset berhasil dihapus', {
+                        position: 'center-top',
+                        distance: '70px',
+                    });
+                },
+                onError: () => {
+                    Notiflix.Notify.failure('Terjadi kesalahan saat menghapus laporan', {
+                        position: 'center-top',
+                        distance: '70px',
+                    });
+                }
+            });
+        },
+        () => {
+            Notiflix.Notify.warning('Aset tidak jadi dihapus', {
+                position: 'center-top',
+                distance: '70px',
+            });
+        }
+    );
+};
 </script>
 
 <template>
@@ -24,7 +73,7 @@ const props = defineProps({
                         <th class="px-4 py-2">Gambar</th>
                         <th class="px-4 py-2">Tanggal Beli</th>
                         <th class="px-4 py-2">Terakhir Servis</th>
-                        <!-- <th class="px-4 py-2">Aksi</th> -->
+                        <th class="px-4 py-2">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,20 +90,22 @@ const props = defineProps({
                         </td>
                         <td class="px-4 py-2 text-center align-middle">{{ item.tgl_beli }}</td>
                         <td class="px-4 py-2 text-center align-middle">{{ item.last_service }}</td>
-                        <!-- <td class="py-3 px-4 flex justify-center">
-                            <button @click="$inertia.get(`/riwayat/${report.id}`)"
+                        <td class="py-3 px-4 flex justify-center">
+                            <button @click="$inertia.get(`/item/${item.type}/${item.serial_number}`)"
                                 class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md mr-2">
                                 Detail
                             </button>
-                            <button @click="$inertia.get(`/riwayat/${report.id}/edit`)"
-                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
-                                Edit
-                            </button>
-                            <button @click="deleteReport(report.id)"
-                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">
-                                Delete
-                            </button>
-                        </td> -->
+                            <template v-if="$page.props.auth.user.role === 'admin'">
+                                <button @click="$inertia.get(`/riwayat/${report.id}/edit`)"
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
+                                    Edit
+                                </button>
+                                <button @click="deleteReport(item.serial_number)"
+                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">
+                                    Delete
+                                </button>
+                            </template>
+                        </td>
                     </tr>
                 </tbody>
             </table>
