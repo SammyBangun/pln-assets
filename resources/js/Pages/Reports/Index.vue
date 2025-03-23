@@ -72,7 +72,7 @@ const deleteReport = (id) => {
 
 <template>
     <Navbar />
-    <div class="container mx-auto my-8 min-h-screen">
+    <div class="container-fluid mx-3 my-8 min-h-screen">
         <h1 class="text-2xl font-bold text-center mb-6">Riwayat Laporan</h1>
 
         <div class="mb-4 w-3/12 mx-auto">
@@ -107,19 +107,23 @@ const deleteReport = (id) => {
                                 class="w-20 h-20 object-cover rounded-md">
                             <span v-else class="text-gray-500">Tidak ada gambar</span>
                         </td>
-                        <td class="py-3 px-4 flex justify-center">
+                        <td class="py-3 px-4 flex justify-center my-6">
                             <button @click="$inertia.get(`/riwayat/${report.id}`)"
                                 class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md mr-2">
                                 Detail
                             </button>
-                            <button @click="$inertia.get(`/riwayat/${report.id}/edit`)"
-                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
-                                Edit
-                            </button>
-                            <button @click="deleteReport(report.id)"
-                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">
-                                Delete
-                            </button>
+                            <template v-if="$page.props.auth.user &&
+                                ($page.props.auth.user.role === 'admin' ||
+                                    report.user_pelapor === $page.props.auth.user.id)">
+                                <button @click="$inertia.get(`/riwayat/${report.id}/edit`)"
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
+                                    Edit
+                                </button>
+                                <button @click="deleteReport(report.id)"
+                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">
+                                    Delete
+                                </button>
+                            </template>
                         </td>
                     </tr>
                 </tbody>

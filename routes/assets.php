@@ -14,6 +14,10 @@ Route::get('/item/{type}', [AssetsController::class, 'show'])->name('Item.Show')
 
 Route::get('/item/{type}/{serial_number}', [AssetsController::class, 'detail'])->name('Item.Detail');
 
+Route::get('/item/{type}/{serial_number}/edit', [AssetsController::class, 'edit'])->name('Item.Edit');
+
+Route::post('/item/{serial_number}/update', [AssetsController::class, 'update'])->name('Item.Update');
+
 Route::delete('/item/{serial_number}', [AssetsController::class, 'destroy'])->name('Item.Destroy');
 
 Route::get('/item/latest/{serial_number}', [AssetsController::class, 'latest'])->name('Item.Latest');

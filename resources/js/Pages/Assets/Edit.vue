@@ -1,59 +1,239 @@
-<template>
-  <Navbar />
-  <div class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="w-full max-w-lg p-6 bg-white rounded-lg shadow-md">
-      <h1 class="text-2xl font-bold text-gray-700 mb-6 text-center">Edit Aset</h1>
-      <form @submit.prevent="submit" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Nama</label>
-          <input v-model="form.name" required>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Tipe</label>
-          <input v-model="form.type" required>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Serial</label>
-          <input v-model="form.series" required>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Tanggal Beli</label>
-          <input type="date" v-model="form.tgl_beli" required>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600">Terakhir Service</label>
-          <input type="date" v-model="form.last_service">
-        </div>
-        <div class="flex justify-between mt-6">
-          <Link :href="route('assets.index')">Kembali</Link>
-          <button type="submit">Update</button>
-        </div>
-      </form>
-    </div>
-  </div>
-  <div class="mt-48"></div>
-  <Footer />
-</template>
+<script setup>
+import { Link, useForm } from "@inertiajs/vue3";
+import Navbar from "@/Components/Navbar.vue";
+import Footer from "@/Components/Footer.vue";
+import { Notify } from "notiflix";
+import { computed } from "vue";
 
-<script>
-import { Link } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue';
-import Footer from '@/Components/Footer.vue';
+const props = defineProps({
+  item: {
+    type: Object,
+    required: true,
+    validator: (value) => {
+      return [
+        "id_user",
+        "name",
+        "type",
+        "series",
+        "tgl_beli",
+        "last_service",
+        "gambar",
+        "serial_number",
+      ].every((key) => key in value);
+    },
+  },
+});
 
-export default {
-  components: { Link, Navbar, Footer },
-  props: {
-    asset: Object
-  },
-  data() {
-    return {
-      form: { ...this.asset }
-    }
-  },
-  methods: {
-    submit() {
-      this.$inertia.put(route('assets.update', this.asset.id), this.form)
-    }
+const form = useForm({
+  id_user: props.item.id_user,
+  name: props.item.name,
+  type: props.item.type,
+  series: props.item.series,
+  tgl_beli: props.item.tgl_beli,
+  last_service: props.item.last_service,
+  gambar: null, // Awalnya null
+});
+
+// Variabel untuk menyimpan gambar lama
+const gambarLama = props.item.gambar;
+
+function submit() {
+  const formData = new FormData();
+  formData.append("_method", "PUT");
+  formData.append("id_user", form.id_user);
+  formData.append("name", form.name);
+  formData.append("type", form.type);
+  formData.append("series", form.series);
+  formData.append("tgl_beli", form.tgl_beli);
+  formData.append("last_service", form.last_service);
+
+  if (form.gambar instanceof File) {
+    formData.append("gambar", form.gambar);
+  } else if (gambarLama) {
+    formData.append("gambar", gambarLama); // Kirim path gambar lama jika tidak diubah
+  }
+
+  form.post(route("Item.Update", { serial_number: props.item.serial_number }), {
+    preserveScroll: true,
+    forceFormData: true,
+    onSuccess: () => {
+      Notify.success("Laporan berhasil diperbarui", {
+        position: "center-top",
+        distance: "70px",
+      });
+    },
+    onError: (errors) => {
+      Notify.failure(
+        errors[Object.keys(errors)[0]] ??
+        "Terjadi kesalahan saat memperbarui laporan",
+        {
+          position: "center-top",
+          distance: "70px",
+        }
+      );
+    },
+  });
+}
+
+// Menentukan preview gambar
+const gambarPreview = computed(() => {
+  if (form.gambar instanceof File) {
+    return URL.createObjectURL(form.gambar);
+  }
+  return gambarLama ? `/storage/${gambarLama}` : null;
+});
+
+function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (file && ["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+    form.gambar = file;
+  } else {
+    Notify.failure("Format file tidak valid! Harap unggah PNG, JPEG, atau WebP.");
   }
 }
 </script>
+
+
+
+<template>
+  <Navbar />
+  <div class="container mx-auto my-8 min-h-screen">
+    <div class="min-h-screen mx-auto py-8 px-4 sm:px-6 lg:px-8 max-w-3xl bg-white shadow-lg rounded-lg p-6">
+      <h1 class="text-2xl font-bold text-center mb-6">Edit Aset</h1>
+      <form @submit.prevent="submit" class="space-y-6" enctype="multipart/form-data">
+        <div>
+          <label for="id_user" class="block text-sm font-medium text-gray-700">
+            Nama User
+          </label>
+          <div class="mt-1">
+            <input type="text" id="id_user" v-model="form.id_user"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+              required />
+          </div>
+          <div v-if="form.errors.id_user" class="text-red-500 text-sm mt-1">
+            {{ form.errors.id_user }}
+          </div>
+        </div>
+
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700">
+            Nama Aset
+          </label>
+          <div class="mt-1">
+            <input type="text" id="name" v-model="form.name"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+              required />
+          </div>
+          <div v-if="form.errors.name" class="text-red-500 text-sm mt-1">
+            {{ form.errors.name }}
+          </div>
+        </div>
+
+        <div>
+          <label for="type" class="block text-sm font-medium text-gray-700">
+            Tipe
+          </label>
+          <div class="mt-1">
+            <input type="text" id="type" v-model="form.type"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+              required />
+          </div>
+          <div v-if="form.errors.type" class="text-red-500 text-sm mt-1">
+            {{ form.errors.type }}
+          </div>
+        </div>
+
+        <div>
+          <label for="series" class="block text-sm font-medium text-gray-700">
+            Series
+          </label>
+          <div class="mt-1">
+            <input type="text" id="series" v-model="form.series"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+              required />
+          </div>
+          <div v-if="form.errors.series" class="text-red-500 text-sm mt-1">
+            {{ form.errors.series }}
+          </div>
+        </div>
+
+        <div>
+          <label for="tgl_beli" class="block text-sm font-medium text-gray-700">
+            Tanggal Beli
+          </label>
+          <div class="mt-1">
+            <input type="date" id="tgl_beli" v-model="form.tgl_beli"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+              required />
+          </div>
+          <div v-if="form.errors.tgl_beli" class="text-red-500 text-sm mt-1">
+            {{ form.errors.tgl_beli }}
+          </div>
+        </div>
+
+        <div>
+          <label for="last_service" class="block text-sm font-medium text-gray-700">
+            Terakhir Servis
+          </label>
+          <div class="mt-1">
+            <input type="date" id="last_service" v-model="form.last_service"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+              required />
+          </div>
+          <div v-if="form.errors.last_service" class="text-red-500 text-sm mt-1">
+            {{ form.errors.last_service }}
+          </div>
+        </div>
+
+        <div>
+          <label
+            class="mx-auto cursor-pointer flex w-full max-w-lg flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-400 bg-white p-6 text-center"
+            for="dropzone-file">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-800" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+
+            <h2 class="mt-4 text-xl font-medium text-gray-700 tracking-wide">Gambar Aset</h2>
+            <p class="mt-2 text-gray-500 tracking-wide">Unggah atau seret & letakkan file Anda (SVG,
+              PNG, JPG, GIF).</p>
+
+            <input id="dropzone-file" type="file" class="hidden" name="gambar"
+              accept="image/png, image/jpeg, image/webp" @change="handleFileUpload" />
+          </label>
+          <div v-if="form.errors.gambar" class="text-red-500 text-sm mt-1">
+            {{ form.errors.gambar }}
+          </div>
+          <div v-if="gambarPreview" class="mt-4 mx-auto">
+            <p class="text-gray-700">Preview Gambar:</p>
+            <img :src="gambarPreview" alt="Preview Gambar"
+              class="max-w-full h-auto mx-auto text-center rounded-lg shadow-md">
+          </div>
+        </div>
+
+        <div class="flex justify-between">
+          <Link :href="route('Item.Show', { type: form.type })"
+            class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
+          Kembali
+          </Link>
+          <div class="flex space-x-3">
+            <Link :href="route('Item.Show', { type: form.type })"
+              class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+            Batalkan
+            </Link>
+            <button type="submit"
+              class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              :disabled="form.processing">
+              Simpan Perubahan
+            </button>
+          </div>
+        </div>
+      </form>
+      <div v-if="form.errors.error" class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        {{ form.errors.error }}
+      </div>
+    </div>
+  </div>
+  <Footer />
+</template>

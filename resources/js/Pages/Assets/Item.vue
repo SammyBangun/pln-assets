@@ -96,7 +96,7 @@ const deleteReport = (serial_number) => {
                                 Detail
                             </button>
                             <template v-if="$page.props.auth.user.role === 'admin'">
-                                <button @click="$inertia.get(`/riwayat/${report.id}/edit`)"
+                                <button @click="$inertia.get(`/item/${item.type}/${item.serial_number}/edit`)"
                                     class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
                                     Edit
                                 </button>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Middleware\AdminOnly;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Response;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Asset;
 use App\Models\User;
@@ -35,7 +37,7 @@ class AssetsController extends Controller
 
     public function create()
     {
-        if (auth()->user()->role !== 'admin') {
+        if (Auth::check() && Auth::user()->role !== 'admin') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
@@ -46,7 +48,7 @@ class AssetsController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->role !== 'admin') {
+        if (Auth::check() && Auth::user()->role !== 'admin') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
@@ -92,10 +94,61 @@ class AssetsController extends Controller
     public function destroy(Asset $asset, $serial_number)
     {
         // $this->authorize('delete', $asset);
+        if (Auth::check() && Auth::user()->role !== 'admin') {
+            abort(403, 'Akses ditolak. Anda bukan admin.');
+        }
 
         $asset = Asset::findOrFail($serial_number);
         $type = $asset->type;
         $asset->delete();
         return redirect()->route('Item.Show', ['type' => $type]);
+    }
+
+    public function edit($type, $serial_number): Response
+    {
+        if (Auth::check() && Auth::user()->role !== 'admin') {
+            abort(403, 'Akses ditolak. Anda bukan admin.');
+        }
+
+        $item = Asset::findOrFail($serial_number);
+        // $this->authorize('update', $item);
+
+        return Inertia::render('Assets/Edit', [
+            'item' => $item
+        ]);
+    }
+
+    public function update(Request $request, $serial_number)
+    {
+        if (Auth::check() && Auth::user()->role !== 'admin') {
+            abort(403, 'Akses ditolak. Anda bukan admin.');
+        }
+
+        $item = Asset::where('serial_number', $serial_number)->firstOrFail();
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'series' => 'required|string|max:255',
+            'tgl_beli' => 'required|date',
+            'last_service' => 'nullable|date',
+            'gambar' => 'nullable|image|mimes:jpeg,png,webp|max:2048',
+        ]);
+
+        // Jika ada file baru diunggah, simpan file baru dan hapus yang lama
+        if ($request->hasFile('gambar')) {
+            if ($item->gambar) {
+                Storage::delete('public/' . $item->gambar);
+            }
+            $path = $request->file('gambar')->store('uploads', 'public');
+            $validatedData['gambar'] = $path;
+        } else {
+            // Jika tidak ada gambar baru, tetap gunakan gambar lama
+            $validatedData['gambar'] = $item->gambar;
+        }
+
+        $item->update($validatedData);
+
+        return redirect()->back()->with('success', 'Item berhasil diperbarui.');
     }
 }

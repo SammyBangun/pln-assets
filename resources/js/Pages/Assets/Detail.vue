@@ -37,6 +37,8 @@ defineProps({
 
         <!-- Detail Aset -->
         <div class="w-full">
+          <p class="text-gray-700 text-lg"><span class="font-semibold">Serial Number:</span> {{ item.serial_number }}
+          </p>
           <p class="text-gray-700 text-lg"><span class="font-semibold">Nama:</span> {{ item.name }}</p>
           <p class="text-gray-700 text-lg"><span class="font-semibold">Tipe:</span> {{ item.type }}</p>
           <p class="text-gray-700 text-lg"><span class="font-semibold">Serial:</span> {{ item.series }}</p>
