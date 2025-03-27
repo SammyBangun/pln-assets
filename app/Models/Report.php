@@ -10,7 +10,7 @@ class Report extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['aset', 'user_pelapor', 'laporan_kerusakan', 'deskripsi', 'gambar'];
+    protected $fillable = ['aset', 'user_pelapor', 'laporan_kerusakan', 'deskripsi', 'gambar', 'tindak_lanjut', 'deskripsi_lanjut', 'realisasi', 'gambar_konfirmasi', 'status'];
 
     public function user(): BelongsTo
     {

@@ -33,6 +33,9 @@ Route::get('/admin/users', function () {
     return redirect()->route('login');
 });
 
+Route::get('/admin/konfirmasi/{id}', [ReportController::class, 'konfirmasi'])->name('konfirmasi');
+Route::post('/admin/konfirmasi/{id}', [ReportController::class, 'kirim'])->name('kirim');
+
 // Rute untuk memperbarui role pengguna (admin only)
 Route::put('/users/{user}/role', function (Request $request, User $user) {
     // Mengecek apakah pengguna yang login adalah admin

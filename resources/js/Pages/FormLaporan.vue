@@ -25,10 +25,6 @@ watch(() => form.laporan_kerusakan, (newValue) => {
     }
 });
 
-defineProps({
-    reports: Array
-});
-
 const handleFileUpload = (event) => {
     const file = event.target.files[0];
     form.gambar = file;
@@ -176,7 +172,7 @@ const submit = () => {
                     </div>
                 </form>
 
-                <ul>
+                <!-- <ul>
                     <li v-for="report in reports" :key="report.id">
                         <p><strong>{{ report.laporan_kerusakan }}</strong></p>
                         <p>{{ report.deskripsi }}</p>
@@ -184,7 +180,7 @@ const submit = () => {
                         <img v-if="report.gambar" :src="report.gambar" alt="Gambar Laporan"
                             class="mt-2 max-w-full h-auto" />
                     </li>
-                </ul>
+                </ul> -->
 
             </div>
         </div>

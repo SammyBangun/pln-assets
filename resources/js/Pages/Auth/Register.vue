@@ -28,8 +28,8 @@ const submit = () => {
 
         <form @submit.prevent="submit">
 
-            <div class="w-8/12 mx-auto">
-                <InputLabel for="id" value="NIK" />
+            <div class="mt-4 w-8/12 mx-auto">
+                <InputLabel for="id" value="NIP" />
 
                 <TextInput id="id" type="text" class="mt-1 block w-full" v-model="form.id" required autofocus
                     autocomplete="id" />
@@ -40,7 +40,7 @@ const submit = () => {
             <div class="mt-4 w-8/12 mx-auto">
                 <InputLabel for="name" value="Nama" />
 
-                <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus
+                <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required
                     autocomplete="name" />
 
                 <InputError class="mt-2" :message="form.errors.name" />

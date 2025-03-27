@@ -46,7 +46,7 @@ onMounted(async () => {
                             <template #trigger>
                                 <button
                                     class="flex items-center rounded-md px-3 py-2 my-4 text-sm font-medium leading-4 text-gray-700 hover:bg-gray-200">
-                                    Assets
+                                    IT Assets
                                     <svg class="ms-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                         viewBox="0 0 20 20">
                                         <path

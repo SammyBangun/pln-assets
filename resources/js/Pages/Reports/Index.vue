@@ -92,6 +92,9 @@ const deleteReport = (id) => {
                         <th class="py-3 px-4 text-left">Tanggal</th>
                         <th class="py-3 px-4 text-left">Gambar</th>
                         <th class="py-3 px-4 text-center">Aksi</th>
+                        <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
+                            <th class="py-3 px-4 text-center">Aksi Admin</th>
+                        </template>
                     </tr>
                 </thead>
                 <tbody>
@@ -125,6 +128,14 @@ const deleteReport = (id) => {
                                 </button>
                             </template>
                         </td>
+                        <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
+                            <td class="py-3 px-4">
+                                <button @click="$inertia.get(`/admin/konfirmasi/${report.id}`)"
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
+                                    Konfirmasi Admin
+                                </button>
+                            </td>
+                        </template>
                     </tr>
                 </tbody>
             </table>

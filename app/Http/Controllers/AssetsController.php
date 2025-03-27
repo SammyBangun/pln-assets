@@ -140,7 +140,7 @@ class AssetsController extends Controller
             if ($item->gambar) {
                 Storage::delete('public/' . $item->gambar);
             }
-            $path = $request->file('gambar')->store('uploads', 'public');
+            $path = $request->file('gambar')->store('assets', 'public');
             $validatedData['gambar'] = $path;
         } else {
             // Jika tidak ada gambar baru, tetap gunakan gambar lama

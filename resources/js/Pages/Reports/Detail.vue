@@ -40,7 +40,9 @@ const printPdf = (id) => {
                     <p class="text-lg"><strong>Serial Number:</strong> {{ report.aset }}</p>
                     <p class="text-lg"><strong>Aset:</strong> {{ assetName }}</p>
                     <p class="text-lg"><strong>Laporan Kerusakan:</strong> {{ report.laporan_kerusakan }}</p>
-                    <p class="text-lg"><strong>Deskripsi:</strong> <br>{{ report.deskripsi }}</p>
+                    <div class="my-3 border border-gray-500 p-4 rounded-md">
+                        <p class="text-lg"><strong>Deskripsi:</strong> <br>{{ report.deskripsi }}</p>
+                    </div>
                     <p class="text-lg"><strong>Tanggal:</strong> {{ formatDate(report.created_at) }}</p>
                 </div>
 
@@ -50,13 +52,48 @@ const printPdf = (id) => {
                 </div>
             </div>
 
-            <div class="mt-4">
-                <strong>Gambar:</strong>
+            <div class="mt-2">
+                <p class="text-lg"><strong>Gambar:</strong></p>
                 <div v-if="report.gambar" class="mt-2">
                     <img :src="report.gambar" alt="Gambar Laporan" @click="openImage(report.gambar)"
                         class="cursor-pointer max-w-sm max-h-80 rounded-md shadow-md mx-auto">
                 </div>
                 <span v-else class="text-gray-500">Tidak ada gambar</span>
+            </div>
+
+            <div class="border border-gray-500 p-6 my-8 rounded-lg">
+                <div class="mb-4 flex justify-between">
+                    <p class="text-xl"><strong>Konfirmasi Admin</strong></p>
+                    <p class="text-lg"><strong>Status :</strong> {{ report.status }}</p>
+                </div>
+                <div>
+                    <p class="text-lg ">
+                        <strong>Tindak Lanjut : </strong>
+                        {{ report.tindak_lanjut || `Belum dikonfirmasi
+                        admin` }}
+                    </p>
+                    <p class="text-lg ">
+                        <strong>Deskrpsi Tindak Lanjut : </strong>
+                        {{ report.deskripsi_lanjut || `Belum dikonfirmasi
+                        admin` }}
+                    </p>
+                    <p class="text-lg ">
+                        <strong>Realisasi Hasil Pekerjaan : </strong>
+                        {{ report.realisasi || `Belum dikonfirmasi
+                        admin` }}
+                    </p>
+                </div>
+
+                <div class="mt-2">
+                    <p class="text-lg"><strong>Gambar Konfirmasi :</strong></p>
+                    <div v-if="report.gambar_konfirmasi" class="mt-2">
+                        <img :src="report.gambar_konfirmasi" alt="Gambar Laporan"
+                            @click="openImage(report.gambar_konfirmasi)"
+                            class="cursor-pointer max-w-sm max-h-80 rounded-md shadow-md mx-auto">
+                    </div>
+                    <span v-else class="text-gray-500">Tidak ada gambar</span>
+                </div>
+
             </div>
 
             <div class="mt-6">
