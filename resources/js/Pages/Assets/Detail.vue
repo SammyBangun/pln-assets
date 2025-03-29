@@ -31,7 +31,8 @@ defineProps({
       <div class="flex flex-col items-center">
         <!-- Gambar -->
         <div class="w-64 h-64 mb-4 overflow-hidden rounded-lg" v-if="item.gambar">
-          <img :src="`/storage/` + item.gambar" alt="gambar item" @click="openImage(`/storage/` + item.gambar)"
+          <img :src="`/storage/assets/${item.gambar}`" alt="gambar item"
+            @click="openImage(`/storage/assets/${item.gambar}`)"
             class="w-full h-full object-cover rounded-lg shadow-md cursor-pointer">
         </div>
 

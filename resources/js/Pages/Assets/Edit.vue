@@ -4,6 +4,7 @@ import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import { Notify } from "notiflix";
 import { computed } from "vue";
+import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
   item: {
@@ -11,6 +12,7 @@ const props = defineProps({
     required: true,
     validator: (value) => {
       return [
+        "serial_number",
         "id_user",
         "name",
         "type",
@@ -22,9 +24,11 @@ const props = defineProps({
       ].every((key) => key in value);
     },
   },
+  users: Array
 });
 
 const form = useForm({
+  serial_number: props.item.serial_number,
   id_user: props.item.id_user,
   name: props.item.name,
   type: props.item.type,
@@ -40,6 +44,8 @@ const gambarLama = props.item.gambar;
 function submit() {
   const formData = new FormData();
   formData.append("_method", "PUT");
+  formData.append("old_serial_number", props.item.serial_number); // Simpan serial_number lama
+  formData.append("serial_number", form.serial_number); // Serial baru yang diedit
   formData.append("id_user", form.id_user);
   formData.append("name", form.name);
   formData.append("type", form.type);
@@ -61,6 +67,7 @@ function submit() {
         position: "center-top",
         distance: "70px",
       });
+      router.get(route("Item.Show", { type: props.item.type }));
     },
     onError: (errors) => {
       Notify.failure(
@@ -80,7 +87,7 @@ const gambarPreview = computed(() => {
   if (form.gambar instanceof File) {
     return URL.createObjectURL(form.gambar);
   }
-  return gambarLama ? `/storage/${gambarLama}` : null;
+  return gambarLama ? `/storage/assets/${gambarLama}` : null;
 });
 
 function handleFileUpload(event) {
@@ -93,95 +100,94 @@ function handleFileUpload(event) {
 }
 </script>
 
-
-
 <template>
   <Navbar />
   <div class="container mx-auto my-8 min-h-screen">
     <div class="min-h-screen mx-auto py-8 px-4 sm:px-6 lg:px-8 max-w-3xl bg-white shadow-lg rounded-lg p-6">
       <h1 class="text-2xl font-bold text-center mb-6">Edit Aset</h1>
       <form @submit.prevent="submit" class="space-y-6" enctype="multipart/form-data">
-        <div>
-          <label for="id_user" class="block text-sm font-medium text-gray-700">
-            Nama User
-          </label>
-          <div class="mt-1">
-            <input type="text" id="id_user" v-model="form.id_user"
-              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-              required />
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="serial_number" class="block text-sm font-medium">
+              Serial Number
+            </label>
+            <div class="mt-1">
+              <input type="text" id="serial_number" v-model="form.serial_number" class="input" required>
+            </div>
+            <div v-if="form.errors.serial_number" class="text-red-500 text-sm mt-1">
+              {{ form.errors.serial_number }}
+            </div>
           </div>
-          <div v-if="form.errors.id_user" class="text-red-500 text-sm mt-1">
-            {{ form.errors.id_user }}
+
+          <div>
+            <label for="id_user" class="block text-sm font-medium text-gray-700">
+              Nama User
+            </label>
+            <div class="mt-1">
+              <select v-model="form.id_user" class="input">
+                <option v-for="user in users" :key="user.id" :value="user.id">
+                  {{ user.name }}
+                </option>
+              </select>
+            </div>
+            <div v-if="form.errors.id_user" class="text-red-500 text-sm mt-1">
+              {{ form.errors.id_user }}
+            </div>
           </div>
         </div>
 
-        <div>
-          <label for="name" class="block text-sm font-medium text-gray-700">
-            Nama Aset
-          </label>
-          <div class="mt-1">
-            <input type="text" id="name" v-model="form.name"
-              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-              required />
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">
+              Nama Aset
+            </label>
+            <div class="mt-1">
+              <input type="text" id="name" v-model="form.name" class="input" required />
+            </div>
+            <div v-if="form.errors.name" class="text-red-500 text-sm mt-1">
+              {{ form.errors.name }}
+            </div>
           </div>
-          <div v-if="form.errors.name" class="text-red-500 text-sm mt-1">
-            {{ form.errors.name }}
-          </div>
-        </div>
 
-        <div>
-          <label for="type" class="block text-sm font-medium text-gray-700">
-            Tipe
-          </label>
-          <div class="mt-1">
-            <input type="text" id="type" v-model="form.type"
-              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-              required />
+          <div>
+            <label for="type" class="block text-sm font-medium text-gray-700">
+              Tipe
+            </label>
+            <div class="mt-1">
+              <select v-model="form.type" class="input">
+                <option value="Proyektor">Proyektor</option>
+                <option value="Monitor">Monitor</option>
+                <option value="Access Point">Access Point</option>
+                <option value="Keyboard">Keyboard</option>
+                <option value="Switch">Switch</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Kamera">Kamera</option>
+                <option value="Mouse">Mouse</option>
+                <option value="Router">Router</option>
+                <option value="Printer">Printer</option>
+                <option value="Audio">Audio</option>
+                <option value="TV">TV</option>
+                <option value="PC">PC</option>
+                <option value="Hub">Hub</option>
+                <option value="DLL">DLL</option>
+              </select>
+            </div>
+            <div v-if="form.errors.type" class="text-red-500 text-sm mt-1">
+              {{ form.errors.type }}
+            </div>
           </div>
-          <div v-if="form.errors.type" class="text-red-500 text-sm mt-1">
-            {{ form.errors.type }}
-          </div>
-        </div>
 
-        <div>
-          <label for="series" class="block text-sm font-medium text-gray-700">
-            Series
-          </label>
-          <div class="mt-1">
-            <input type="text" id="series" v-model="form.series"
-              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-              required />
-          </div>
-          <div v-if="form.errors.series" class="text-red-500 text-sm mt-1">
-            {{ form.errors.series }}
-          </div>
-        </div>
-
-        <div>
-          <label for="tgl_beli" class="block text-sm font-medium text-gray-700">
-            Tanggal Beli
-          </label>
-          <div class="mt-1">
-            <input type="date" id="tgl_beli" v-model="form.tgl_beli"
-              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-              required />
-          </div>
-          <div v-if="form.errors.tgl_beli" class="text-red-500 text-sm mt-1">
-            {{ form.errors.tgl_beli }}
-          </div>
-        </div>
-
-        <div>
-          <label for="last_service" class="block text-sm font-medium text-gray-700">
-            Terakhir Servis
-          </label>
-          <div class="mt-1">
-            <input type="date" id="last_service" v-model="form.last_service"
-              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-              required />
-          </div>
-          <div v-if="form.errors.last_service" class="text-red-500 text-sm mt-1">
-            {{ form.errors.last_service }}
+          <div class="mb-6">
+            <label for="series" class="block text-sm font-medium text-gray-700">
+              Series
+            </label>
+            <div class="mt-1">
+              <input type="text" id="series" v-model="form.series" class="input" required />
+            </div>
+            <div v-if="form.errors.series" class="text-red-500 text-sm mt-1">
+              {{ form.errors.series }}
+            </div>
           </div>
         </div>
 
@@ -212,6 +218,32 @@ function handleFileUpload(event) {
           </div>
         </div>
 
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="tgl_beli" class="block text-sm font-medium text-gray-700">
+              Tanggal Beli
+            </label>
+            <div class="mt-1">
+              <input type="date" id="tgl_beli" v-model="form.tgl_beli" class="input" required />
+            </div>
+            <div v-if="form.errors.tgl_beli" class="text-red-500 text-sm mt-1">
+              {{ form.errors.tgl_beli }}
+            </div>
+          </div>
+
+          <div>
+            <label for="last_service" class="block text-sm font-medium text-gray-700">
+              Terakhir Servis
+            </label>
+            <div class="mt-1">
+              <input type="date" id="last_service" v-model="form.last_service" class="input" required />
+            </div>
+            <div v-if="form.errors.last_service" class="text-red-500 text-sm mt-1">
+              {{ form.errors.last_service }}
+            </div>
+          </div>
+        </div>
+
         <div class="flex justify-between">
           <Link :href="route('Item.Show', { type: form.type })"
             class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
@@ -237,3 +269,12 @@ function handleFileUpload(event) {
   </div>
   <Footer />
 </template>
+
+<style scoped>
+.input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+</style>

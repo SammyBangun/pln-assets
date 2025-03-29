@@ -11,6 +11,7 @@ use App\Models\Asset;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 
 class AssetsController extends Controller
@@ -67,7 +68,7 @@ class AssetsController extends Controller
         // Cek apakah ada file gambar yang diunggah
         if ($request->hasFile('gambar')) {
             $gambarPath = $request->file('gambar')->store('assets', 'public'); // Simpan di storage/app/public/assets
-            $validated['gambar'] = $gambarPath;
+            $validated['gambar'] = basename($gambarPath); // Simpan hanya nama file ke database
         }
 
         // Simpan ke database
@@ -111,10 +112,12 @@ class AssetsController extends Controller
         }
 
         $item = Asset::findOrFail($serial_number);
+        $users = User::select('id', 'name')->get();
         // $this->authorize('update', $item);
 
         return Inertia::render('Assets/Edit', [
-            'item' => $item
+            'item' => $item,
+            'users' => $users
         ]);
     }
 
@@ -124,9 +127,8 @@ class AssetsController extends Controller
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
-        $item = Asset::where('serial_number', $serial_number)->firstOrFail();
-
         $validatedData = $request->validate([
+            'serial_number' => 'required|string|max:255|unique:assets,serial_number,' . $serial_number . ',serial_number',
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
             'series' => 'required|string|max:255',
@@ -135,20 +137,44 @@ class AssetsController extends Controller
             'gambar' => 'nullable|image|mimes:jpeg,png,webp|max:2048',
         ]);
 
-        // Jika ada file baru diunggah, simpan file baru dan hapus yang lama
-        if ($request->hasFile('gambar')) {
-            if ($item->gambar) {
-                Storage::delete('public/' . $item->gambar);
-            }
-            $path = $request->file('gambar')->store('assets', 'public');
-            $validatedData['gambar'] = $path;
-        } else {
-            // Jika tidak ada gambar baru, tetap gunakan gambar lama
-            $validatedData['gambar'] = $item->gambar;
+        // Cek apakah serial_number berubah
+        if ($serial_number !== $validatedData['serial_number']) {
+            DB::table('assets')
+                ->where('serial_number', $serial_number)
+                ->update(['serial_number' => $validatedData['serial_number']]);
         }
 
-        $item->update($validatedData);
+        // Update data lainnya dengan Eloquent
+        $item = Asset::where('serial_number', $validatedData['serial_number'])->first();
+        if (!$item) {
+            return redirect()->back()->with('error', 'Item tidak ditemukan setelah update serial_number.');
+        }
 
-        return redirect()->back()->with('success', 'Item berhasil diperbarui.');
+        // Jika ada gambar baru, simpan dan ganti yang lama
+        if ($request->hasFile('gambar')) {
+            if ($item->gambar) {
+                Storage::delete('public/assets/' . $item->gambar);
+            }
+
+            $gambarPath = $request->file('gambar')->store('assets', 'public');
+            $gambarName = basename($gambarPath); // Simpan hanya nama file
+
+            $item->update(['gambar' => $gambarName]);
+        }
+
+
+        // Update data lain
+        $item->update([
+            'name' => $validatedData['name'],
+            'type' => $validatedData['type'],
+            'series' => $validatedData['series'],
+            'tgl_beli' => $validatedData['tgl_beli'],
+            'last_service' => $validatedData['last_service'],
+        ]);
+
+        return redirect()->route('Item.Edit', [
+            'type' => $item->type,
+            'serial_number' => $validatedData['serial_number']
+        ])->with('success', 'Data berhasil diperbarui.');
     }
 }

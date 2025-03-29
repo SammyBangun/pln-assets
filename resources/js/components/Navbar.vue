@@ -115,7 +115,7 @@ onMounted(async () => {
                                                 :href="`/item/${asset.type}/${asset.serial_number}`"
                                                 class="flex items-center mx-auto bg-white rounded-lg shadow-md p-4 cursor-pointer hover:bg-gray-100 transition duration-200">
 
-                                            <img :src="`/storage/${asset.gambar}`" alt="Asset Image"
+                                            <img :src="`/storage/assets/${asset.gambar}`" alt="Asset Image"
                                                 class="w-24 h-24 object-cover rounded-md border border-gray-200">
 
                                             <div class="flex flex-col ml-4">
@@ -263,7 +263,7 @@ onMounted(async () => {
 
                                         <!-- Gunakan Inertia Link agar gambar bisa diklik -->
                                         <Link :href="route('Item.Latest', { serial_number: asset.serial_number })">
-                                        <img :src="asset.gambar" alt="Asset Image"
+                                        <img :src="`/storage/assets/${asset.gambar}`" alt="Asset Image"
                                             class="w-24 h-24 object-cover rounded-md border border-gray-200 hover:opacity-75 transition duration-200">
                                         </Link>
 

@@ -123,7 +123,7 @@ class ReportController extends Controller
         //     'report' => Report::with('user')->get()
         // ]);
 
-        $report = Report::findOrFail($id);
+        $report = Report::with(['user', 'asset'])->findOrFail($id);
         // $this->authorize('update', $item);
 
         return Inertia::render('Admin/AdminConfirmation', [

@@ -12,6 +12,7 @@ const props = defineProps({
 });
 
 const form = useForm({
+    aset: props.report.aset,
     laporan_kerusakan: props.report.laporan_kerusakan,
     deskripsi: props.report.deskripsi
 });

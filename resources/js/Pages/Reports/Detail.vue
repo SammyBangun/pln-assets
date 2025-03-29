@@ -46,10 +46,15 @@ const printPdf = (id) => {
                     <p class="text-lg"><strong>Tanggal:</strong> {{ formatDate(report.created_at) }}</p>
                 </div>
 
-                <div class="text-right">
-                    <button @click="printPdf(report.id)"
-                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Print PDF</button>
-                </div>
+                <template
+                    v-if="report.status === 'Selesai' && ($page.props.auth.user.role === 'admin' || $page.props.auth.user.id === report.user_pelapor)">
+                    <div class="text-right">
+                        <button @click="printPdf(report.id)"
+                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+                            Print PDF
+                        </button>
+                    </div>
+                </template>
             </div>
 
             <div class="mt-2">

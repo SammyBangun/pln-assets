@@ -84,7 +84,7 @@ const deleteReport = (serial_number) => {
                         <td class="px-4 py-2 text-center align-middle">{{ item.name }}</td>
                         <td class="px-4 py-2 text-center align-middle">{{ item.series }}</td>
                         <td class="px-4 py-2 text-center align-middle">
-                            <img v-if="item.gambar" :src="`/storage/` + item.gambar" alt="Gambar Laporan"
+                            <img v-if="item.gambar" :src="`/storage/assets/${item.gambar}`" alt="Gambar Laporan"
                                 class="w-20 h-20 object-cover rounded-md mx-auto">
                             <span v-else class="text-gray-500">Tidak ada gambar</span>
                         </td>
