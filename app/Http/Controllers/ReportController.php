@@ -62,20 +62,25 @@ class ReportController extends Controller
         $this->authorize('update', $report);
 
         $validated = $request->validate([
+            'aset' => 'required|string',
             'laporan_kerusakan' => 'required|string|max:255',
             'deskripsi' => 'required|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
-        try {
-            $report->update([
-                'laporan_kerusakan' => $validated['laporan_kerusakan'],
-                'deskripsi' => $validated['deskripsi'],
-            ]);
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $filename = time() . '-' . $file->getClientOriginalName();
+            $path = $file->storeAs('laporan', $filename, 'public');
 
-            return to_route('riwayat.index');
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to update report: ' . $e->getMessage()]);
+            $validated['gambar'] = '/storage/' . $path;
+        } else {
+            $validated['gambar'] = $report->gambar;
         }
+
+        $report->update($validated);
+
+        return redirect()->route('riwayat.index')->with('success', 'Item berhasil diperbarui.');
     }
     public function destroy(Report $report, $id)
     {

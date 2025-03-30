@@ -42,11 +42,23 @@ const form = useForm({
     hardware: props.report.hardware || "",
     jaringan: props.report.jaringan || "",
     problem: props.report.problem || "",
+    catatan: "", // Tambahkan property catatan
 });
 
 const gambarLama = props.report.gambar_konfirmasi;
 const assetName = ref(props.report.asset ? props.report.asset.name : 'Tidak ditemukan');
 
+const realisasiComputed = computed(() => {
+    return form.realisasi === "Selesai dengan catatan"
+        ? `${form.realisasi}: ${form.catatan}`
+        : form.realisasi;
+});
+
+// watch(() => form.realisasi, (newValue) => {
+//     if (newValue === "Selesai dengan catatan") {
+//         form.realisasi = `${newValue}: ${form.catatan}`;
+//     }
+// });
 
 // Watch untuk memantau perubahan select "tindak_lanjut"
 watch(() => form.tindak_lanjut, (newValue) => {
@@ -118,14 +130,18 @@ function submit() {
 
 
     formData.append("deskripsi_lanjut", form.deskripsi_lanjut);
-    formData.append("realisasi", form.realisasi);
+    form.realisasi = form.realisasi === "Selesai dengan catatan"
+        ? `${form.realisasi}: ${form.catatan}`
+        : form.realisasi;
+    formData.append("realisasi", realisasiComputed.value); // Gunakan nilai yang sudah digabungkan
 
     // Log nilai-nilai form
-    console.log("Tindak Lanjut:", form.tindak_lanjut);
-    console.log("Deskripsi Lanjut:", form.deskripsi_lanjut);
-    console.log("Realisasi:", form.realisasi);
-    console.log("Status:", form.status);
-    console.log("Gambar:", form.gambar_konfirmasi);
+    // console.log("Tindak Lanjut:", form.tindak_lanjut);
+    // console.log("Deskripsi Lanjut:", form.deskripsi_lanjut);
+    // console.log("Realisasi:", realisasiComputed.value); // Debugging
+    // console.log("Realisasi:", form.realisasi);
+    // console.log("Status:", form.status);
+    // console.log("Gambar:", form.gambar_konfirmasi);
 
     formData.append("status", form.status);
 
@@ -138,7 +154,8 @@ function submit() {
     form.post(route("kirim", { id: props.report.id }), {
         preserveScroll: true,
         forceFormData: true,
-        onSuccess: () => {
+        onSuccess: (response) => {
+            console.log("Response dari backend:", response); // Cek apakah backend mengembalikan data yang benar
             Notify.success("Laporan berhasil diperbarui", {
                 position: "center-top",
                 distance: "70px",

@@ -56,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/riwayat', [ReportController::class, 'store'])->name('riwayat.store');
     Route::get('/riwayat/{id}', [ReportController::class, 'show'])->name('riwayat.show');
     Route::get('/riwayat/{id}/edit', [ReportController::class, 'edit'])->name('riwayat.edit');
-    Route::put('/riwayat/{id}', [ReportController::class, 'update'])->name('riwayat.update');
+    Route::post('/riwayat/{id}', [ReportController::class, 'update'])->name('riwayat.update');
     Route::delete('/riwayat/{id}', [ReportController::class, 'destroy'])->name('riwayat.destroy');
 });
 

@@ -20,7 +20,6 @@ const props = defineProps({
         "tgl_beli",
         "last_service",
         "gambar",
-        "serial_number",
       ].every((key) => key in value);
     },
   },
