@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, onMounted } from 'vue';
+import { ref, defineProps } from 'vue';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
 import formatDate from '@/functions/formatDate';
@@ -30,80 +30,72 @@ const printPdf = (id) => {
 
 <template>
     <Navbar />
-    <div class="container mx-auto my-8 min-h-screen">
-        <h1 class="text-2xl font-bold text-center mb-6">Detail Laporan</h1>
+    <div class="container mx-auto my-12 min-h-screen px-4">
+        <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Detail Laporan</h1>
 
-        <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
-            <div class="grid grid-cols-2 gap-4">
+        <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <p class="text-lg"><strong>Pelapor:</strong> {{ report.user?.name }}</p>
-                    <p class="text-lg"><strong>Serial Number:</strong> {{ report.aset }}</p>
-                    <p class="text-lg"><strong>Aset:</strong> {{ assetName }}</p>
-                    <p class="text-lg"><strong>Laporan Kerusakan:</strong> {{ report.laporan_kerusakan }}</p>
-                    <div class="my-3 border border-gray-500 p-4 rounded-md">
-                        <p class="text-lg"><strong>Deskripsi:</strong> <br>{{ report.deskripsi }}</p>
+                    <p class="text-lg text-gray-600"><strong>Tanggal:</strong> {{ formatDate(report.created_at) }}</p>
+                    <p class="text-lg font-semibold text-gray-700"><strong>Pelapor:</strong> {{ report.user?.name }}</p>
+                    <p class="text-lg text-gray-600"><strong>Serial Number:</strong> {{ report.aset }}</p>
+                    <p class="text-lg text-gray-600"><strong>Aset:</strong> {{ assetName }}</p>
+                    <p class="text-lg text-gray-600"><strong>Laporan Kerusakan:</strong> {{ report.laporan_kerusakan }}
+                    </p>
+                    <div class="my-4 border border-gray-300 p-4 rounded-md bg-gray-50">
+                        <p class="text-lg text-gray-700"><strong>Deskripsi:</strong> <br>{{ report.deskripsi }}</p>
                     </div>
-                    <p class="text-lg"><strong>Tanggal:</strong> {{ formatDate(report.created_at) }}</p>
                 </div>
-
-                <template
-                    v-if="report.status === 'Selesai' && ($page.props.auth.user.role === 'admin' || $page.props.auth.user.id === report.user_pelapor)">
-                    <div class="text-right">
-                        <button @click="printPdf(report.id)"
-                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
-                            Print PDF
-                        </button>
-                    </div>
-                </template>
+                <div v-if="report.status === 'Selesai' && ($page.props.auth.user.role === 'admin' || $page.props.auth.user.id === report.user_pelapor)"
+                    class="flex justify-end h-12">
+                    <button @click="printPdf(report.id)"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-lg transition-all">
+                        Print PDF
+                    </button>
+                </div>
             </div>
 
-            <div class="mt-2">
-                <p class="text-lg"><strong>Gambar:</strong></p>
-                <div v-if="report.gambar" class="mt-2">
+            <div class="my-6">
+                <p class="text-lg font-semibold text-gray-700">Gambar:</p>
+                <div v-if="report.gambar" class="mt-3 flex justify-center">
                     <img :src="report.gambar" alt="Gambar Laporan" @click="openImage(report.gambar)"
-                        class="cursor-pointer max-w-sm max-h-80 rounded-md shadow-md mx-auto">
+                        class="cursor-pointer max-w-xs md:max-w-sm rounded-lg shadow-md">
                 </div>
                 <span v-else class="text-gray-500">Tidak ada gambar</span>
             </div>
 
-            <div class="border border-gray-500 p-6 my-8 rounded-lg">
-                <div class="mb-4 flex justify-between">
-                    <p class="text-xl"><strong>Konfirmasi Admin</strong></p>
-                    <p class="text-lg"><strong>Status :</strong> {{ report.status }}</p>
+            <div class="border border-gray-300 p-6 my-8 rounded-lg bg-gray-50">
+                <div class="mb-5 flex justify-between items-center">
+                    <p class="text-xl font-semibold text-gray-800">Konfirmasi Admin</p>
+                    <p class="text-lg font-semibold text-gray-700 flex items-center">
+                        <strong>Status:</strong>&nbsp;{{ report.status }}
+                        <span v-if="report.status === 'Selesai'" class="ml-2 text-green-500">✅</span>
+                        <span v-if="report.status === 'Diproses'" class="ml-2 text-yellow-500">⏳</span>
+                        <span v-if="report.status === 'Diterima'" class="ml-2 text-blue-500">➡️</span>
+                    </p>
                 </div>
                 <div>
-                    <p class="text-lg ">
-                        <strong>Tindak Lanjut : </strong>
-                        {{ report.tindak_lanjut || `Belum dikonfirmasi
-                        admin` }}
-                    </p>
-                    <p class="text-lg ">
-                        <strong>Deskrpsi Tindak Lanjut : </strong>
-                        {{ report.deskripsi_lanjut || `Belum dikonfirmasi
-                        admin` }}
-                    </p>
-                    <p class="text-lg ">
-                        <strong>Realisasi Hasil Pekerjaan : </strong>
-                        {{ report.realisasi || `Belum dikonfirmasi
-                        admin` }}
-                    </p>
+                    <p class="text-lg text-gray-700"><strong>Tindak Lanjut:</strong> {{ report.tindak_lanjut || `Belum
+                        dikonfirmasi admin` }}</p>
+                    <p class="text-lg text-gray-700"><strong>Deskripsi Tindak Lanjut:</strong> {{
+                        report.deskripsi_lanjut || 'Belum dikonfirmasi admin' }}</p>
+                    <p class="text-lg text-gray-700"><strong>Realisasi Hasil Pekerjaan:</strong> {{ report.realisasi ||
+                        'Belum dikonfirmasi admin' }}</p>
                 </div>
-
-                <div class="mt-2">
-                    <p class="text-lg"><strong>Gambar Konfirmasi :</strong></p>
-                    <div v-if="report.gambar_konfirmasi" class="mt-2">
-                        <img :src="report.gambar_konfirmasi" alt="Gambar Laporan"
+                <div class="mt-4">
+                    <p class="text-lg font-semibold text-gray-700">Gambar Konfirmasi:</p>
+                    <div v-if="report.gambar_konfirmasi" class="mt-3 flex justify-center">
+                        <img :src="report.gambar_konfirmasi" alt="Gambar Konfirmasi"
                             @click="openImage(report.gambar_konfirmasi)"
-                            class="cursor-pointer max-w-sm max-h-80 rounded-md shadow-md mx-auto">
+                            class="cursor-pointer max-w-xs md:max-w-sm rounded-lg shadow-md">
                     </div>
                     <span v-else class="text-gray-500">Tidak ada gambar</span>
                 </div>
-
             </div>
 
-            <div class="mt-6">
+            <div class="mt-6 flex justify-center">
                 <button @click="$inertia.get('/riwayat')"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-all">
                     Kembali ke Riwayat
                 </button>
             </div>

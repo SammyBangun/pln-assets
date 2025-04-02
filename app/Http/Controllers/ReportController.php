@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -94,6 +93,8 @@ class ReportController extends Controller
     public function exportPdf($id)
     {
         $report = Report::with('user')->findOrFail($id);
+        // $this->authorize('exportPdf', $report);
+
         $no_tiket = 'WG-' . strtoupper(uniqid());
 
         $pdf = Pdf::loadView('pdf.report', ['report' => $report, 'no_tiket' => $no_tiket])->setPaper('A4', 'portrait');;
@@ -124,12 +125,11 @@ class ReportController extends Controller
 
     public function konfirmasi($id): Response
     {
-        // return Inertia::render('Admin/AdminConfirmation', [
-        //     'report' => Report::with('user')->get()
-        // ]);
+        if (Auth::check() && Auth::user()->role !== 'admin') {
+            abort(403, 'Akses ditolak. Anda bukan admin.');
+        }
 
         $report = Report::with(['user', 'asset'])->findOrFail($id);
-        // $this->authorize('update', $item);
 
         return Inertia::render('Admin/AdminConfirmation', [
             'report' => $report
@@ -138,40 +138,6 @@ class ReportController extends Controller
 
     public function kirim(Request $request, $id)
     {
-        // $report = Report::findOrFail($id);
-        // $this->authorize('update', $report);
-
-        // $validated = $request->validate([
-        //     'tindak_lanjut' => 'required|string|max:255',
-        //     'deskripsi_lanjut' => 'required|string',
-        //     'realisasi' => 'required|string',
-        //     'gambar_konfirmasi' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        //     'status' => 'required|string'
-        // ]);
-
-        // try {
-        //     // Cek jika ada gambar yang diunggah
-        //     if ($request->hasFile('gambar_konfirmasi')) {
-        //         $gambarPath = $request->file('gambar_konfirmasi')->store('konfirmasi', 'public');
-        //     } else {
-        //         $gambarPath = $report->gambar_konfirmasi; // Gunakan gambar lama jika tidak ada unggahan baru
-        //     }
-        //     // Hanya mengisi jika kolom masih kosong (null atau string kosong)
-        //     $report->update([
-        //         'tindak_lanjut' => $report->tindak_lanjut ?? $validated['tindak_lanjut'],
-        //         'deskripsi_lanjut' => $report->deskripsi_lanjut ?? $validated['deskripsi_lanjut'],
-        //         'realisasi' => $report->realisasi ?? $validated['realisasi'],
-        //         'gambar_konfirmasi' => $gambarPath,
-        //         'status' => $report->status ?? $validated['status'],
-        //     ]);
-
-        //     return to_route('riwayat.index')->with('success', 'Laporan berhasil dikonfirmasi.');
-        // } catch (\Exception $e) {
-        //     return back()->withErrors(['error' => 'Failed to update report: ' . $e->getMessage()]);
-        // }    
-
-        // dd($request->all());
-
         if (Auth::check() && Auth::user()->role !== 'admin') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
@@ -186,24 +152,17 @@ class ReportController extends Controller
             'status' => 'required|string'
         ]);
 
-        // Jika ada file baru diunggah, simpan file baru dan hapus yang lama
         if ($request->hasFile('gambar_konfirmasi')) {
             $file = $request->file('gambar_konfirmasi');
             $filename = time() . '-' . $file->getClientOriginalName();
             $path = $file->storeAs('konfirmasi', $filename, 'public');
 
-            // Cek apakah path sudah benar sebelum masuk ke database
-            // dd($path); // Tambahkan ini dulu untuk debug
             $validatedData['gambar_konfirmasi'] = '/storage/' . $path;
         } else {
-            // Jika tidak ada gambar baru, tetap gunakan gambar lama
             $validatedData['gambar_konfirmasi'] = $report->gambar_konfirmasi;
         }
 
-
-        // dd($report->gambar_konfirmasi);
         $report->update($validatedData);
-
 
         return redirect()->back()->with('success', 'Item berhasil diperbarui.');
     }

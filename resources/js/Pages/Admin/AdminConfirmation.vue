@@ -7,12 +7,14 @@ import { Notify } from 'notiflix';
 import formatDate from '@/functions/formatDate';
 
 
+const showModal = ref(false);
 const showOtherInput = ref(false);
 const otherCategory = ref('');
 const otherHardware = ref('');
 const otherSoftware = ref('');
 const otherJaringan = ref('');
 const otherProblem = ref('');
+const selectedImage = ref('');
 
 
 const props = defineProps({
@@ -36,35 +38,27 @@ const form = useForm({
     deskripsi_lanjut: props.report.deskripsi_lanjut,
     realisasi: props.report.realisasi,
     status: props.report.status,
-    // gambar_konfirmasi: props.report.gambar_konfirmasi,
     gambar_konfirmasi: null,
     software: props.report.software || "",
     hardware: props.report.hardware || "",
     jaringan: props.report.jaringan || "",
     problem: props.report.problem || "",
-    catatan: "", // Tambahkan property catatan
+    catatan: "",
 });
 
 const gambarLama = props.report.gambar_konfirmasi;
 const assetName = ref(props.report.asset ? props.report.asset.name : 'Tidak ditemukan');
 
 const realisasiComputed = computed(() => {
-    return form.realisasi === "Selesai dengan catatan"
-        ? `${form.realisasi}: ${form.catatan}`
-        : form.realisasi;
+    if (form.realisasi === "Selesai dengan catatan" || form.realisasi === "Tidak dapat dilaksanakan") {
+        return `${form.realisasi}: ${form.catatan || "Tidak ada catatan"}`;
+    }
+    return form.realisasi;
 });
 
-// watch(() => form.realisasi, (newValue) => {
-//     if (newValue === "Selesai dengan catatan") {
-//         form.realisasi = `${newValue}: ${form.catatan}`;
-//     }
-// });
-
-// Watch untuk memantau perubahan select "tindak_lanjut"
 watch(() => form.tindak_lanjut, (newValue) => {
     showOtherInput.value = newValue === "other";
 
-    // Reset otherCategory jika bukan "other"
     if (!showOtherInput.value) {
         otherCategory.value = "";
     }
@@ -118,30 +112,31 @@ function handleFileUpload(event) {
     }
 }
 
+const openImage = (image) => {
+    selectedImage.value = image;
+    showModal.value = true;
+}
+
+const closeModal = () => {
+    showModal.value = false;
+}
+
 function submit() {
+
     const formData = new FormData();
+
     formData.append("_method", "PUT");
 
-    // Jika "other" dipilih, kirimkan nilai dari input tambahan
     if (form.tindak_lanjut === "other") {
         form.tindak_lanjut = otherCategory.value || "other";
     }
     formData.append("tindak_lanjut", form.tindak_lanjut);
 
-
     formData.append("deskripsi_lanjut", form.deskripsi_lanjut);
-    form.realisasi = form.realisasi === "Selesai dengan catatan"
+    form.realisasi = form.realisasi === "Selesai dengan catatan" || form.realisasi === "Tidak dapat dilaksanakan"
         ? `${form.realisasi}: ${form.catatan}`
         : form.realisasi;
-    formData.append("realisasi", realisasiComputed.value); // Gunakan nilai yang sudah digabungkan
-
-    // Log nilai-nilai form
-    // console.log("Tindak Lanjut:", form.tindak_lanjut);
-    // console.log("Deskripsi Lanjut:", form.deskripsi_lanjut);
-    // console.log("Realisasi:", realisasiComputed.value); // Debugging
-    // console.log("Realisasi:", form.realisasi);
-    // console.log("Status:", form.status);
-    // console.log("Gambar:", form.gambar_konfirmasi);
+    formData.append("realisasi", realisasiComputed.value);
 
     formData.append("status", form.status);
 
@@ -155,7 +150,6 @@ function submit() {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: (response) => {
-            console.log("Response dari backend:", response); // Cek apakah backend mengembalikan data yang benar
             Notify.success("Laporan berhasil diperbarui", {
                 position: "center-top",
                 distance: "70px",
@@ -175,14 +169,19 @@ function submit() {
 }
 </script>
 
-
 <template>
     <Navbar />
 
-    <div class="container-fluid grid grid-cols-2 mx-12 my-8">
+    <div class="container grid mx-auto md:grid-cols-2 my-8 sm:grid-cols-1">
 
         <div class="w-9/12 mx-auto my-8 min-h-screen">
-            <p class="text-xl text-center mt-8"><strong>Detail Laporan</strong></p>
+            <div class="mt-6">
+                <button @click="$inertia.get('/riwayat')"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md">
+                    Kembali ke Riwayat
+                </button>
+            </div>
+            <p class="text-xl text-center mt-8"><strong>Laporan</strong></p>
 
 
             <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
@@ -192,8 +191,8 @@ function submit() {
                     <p class="text-lg"><strong>Serial Number:</strong> {{ report.aset }}</p>
                     <p class="text-lg"><strong>Aset:</strong> {{ assetName }}</p>
                     <p class="text-lg"><strong>Laporan Kerusakan:</strong> {{ report.laporan_kerusakan }}</p>
-                    <div class="my-3 border border-gray-500 p-4 rounded-md text-center">
-                        <p class="text-lg"><strong>Deskripsi:</strong> <br>{{ report.deskripsi }}</p>
+                    <div class="my-4 border border-gray-300 p-4 rounded-md bg-gray-50 text-center">
+                        <p class="text-lg text-gray-700"><strong>Deskripsi:</strong> <br>{{ report.deskripsi }}</p>
                     </div>
                 </div>
 
@@ -201,12 +200,12 @@ function submit() {
                     <p class="text-lg"><strong>Gambar:</strong></p>
                     <div v-if="report.gambar" class="mt-2">
                         <img :src="report.gambar" alt="Gambar Laporan" @click="openImage(report.gambar)"
-                            class="cursor-pointer max-w-sm max-h-80 rounded-md shadow-md mx-auto">
+                            class="cursor-pointer object-cover max-w-50 max-h-80 rounded-md shadow-md mx-auto">
                     </div>
                     <span v-else class="text-gray-500">Tidak ada gambar</span>
                 </div>
 
-                <div class="border border-gray-500 p-6 my-8 rounded-lg">
+                <div class="border border-gray-300 p-6 my-8 rounded-lg bg-gray-50">
                     <div class="mb-4 flex justify-between">
                         <p class="text-xl"><strong>Konfirmasi Admin</strong></p>
                         <p class="text-lg"><strong>Status :</strong> {{ report.status }}</p>
@@ -234,23 +233,15 @@ function submit() {
                         <div v-if="report.gambar_konfirmasi" class="mt-2">
                             <img :src="report.gambar_konfirmasi" alt="Gambar Laporan"
                                 @click="openImage(report.gambar_konfirmasi)"
-                                class="cursor-pointer max-w-sm max-h-80 rounded-md shadow-md mx-auto">
+                                class="cursor-pointer object-cover max-w-50 max-h-80 rounded-md shadow-md mx-auto">
                         </div>
                         <span v-else class="text-gray-500">Tidak ada gambar</span>
                     </div>
-
-                </div>
-
-                <div class="mt-6">
-                    <button @click="$inertia.get('/riwayat')"
-                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
-                        Kembali ke Riwayat
-                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+        <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
             @click.self="closeModal">
             <div class="relative">
                 <img :src="selectedImage" alt="Gambar Diperbesar"
@@ -260,11 +251,14 @@ function submit() {
                     &times;
                 </button>
             </div>
-        </div> -->
+        </div>
 
-        <div class="w-full min-h-screen mx-auto">
+        <div class="min-w-fit min-h-screen mx-auto">
             <div class="mx-8 my-5 p-6 shadow-md rounded-md">
-                <h1 class="text-2xl font-bold text-center mb-8">Konfirmasi Admin</h1>
+                <div class="mb-8">
+                    <h1 class="text-2xl font-bold text-center">Konfirmasi Admin</h1>
+                    <p class="text-md text-center">Tetapkan konfirmasi admin!</p>
+                </div>
 
                 <form @submit.prevent="submit" enctype="multipart/form-data">
 
@@ -386,7 +380,7 @@ function submit() {
                             class="w-full bg-white text-gray-900 border border-gray-400 rounded-lg py-3 px-3 mt-1 focus:outline-none focus:border-[#98c01d]" />
                     </div>
 
-                    <div class="grid grid-cols-2 gap-8 mx-12">
+                    <div class="grid md:grid-cols-2 sm:grid-cols-1 gap-8 mx-12">
                         <!-- Realisasi Hasil Pekerjaan -->
                         <div class="mb-5 p-5 border rounded-lg shadow-md bg-white">
                             <label class="block text-lg font-semibold mb-3">Realisasi Hasil Pekerjaan</label>
@@ -410,10 +404,11 @@ function submit() {
                                     <span>Tidak dapat dilaksanakan</span>
                                 </label>
                             </div>
-                            <div v-if="form.realisasi === 'Selesai dengan catatan'" class="mt-4">
+                            <div v-if="form.realisasi === 'Selesai dengan catatan' || form.realisasi === 'Tidak dapat dilaksanakan'"
+                                class="mt-4">
                                 <label class="block text-sm font-medium">Catatan:</label>
                                 <textarea v-model="form.catatan" class="w-full p-2 border rounded-lg"
-                                    placeholder="Masukkan catatan..."></textarea>
+                                    placeholder="Masukkan catatan..." required></textarea>
                             </div>
                         </div>
 
@@ -473,5 +468,6 @@ function submit() {
             </div>
         </div>
     </div>
+
     <Footer />
 </template>

@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import { Link } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import Footer from '@/Components/Footer.vue'
+import formatDate from '@/functions/formatDate';
 
 const showModal = ref(false);
 const selectedImage = ref('');
@@ -43,10 +43,11 @@ defineProps({
           <p class="text-gray-700 text-lg"><span class="font-semibold">Nama:</span> {{ item.name }}</p>
           <p class="text-gray-700 text-lg"><span class="font-semibold">Tipe:</span> {{ item.type }}</p>
           <p class="text-gray-700 text-lg"><span class="font-semibold">Serial:</span> {{ item.series }}</p>
-          <p class="text-gray-700 text-lg"><span class="font-semibold">Tanggal Beli:</span> {{ item.tgl_beli }}</p>
+          <p class="text-gray-700 text-lg"><span class="font-semibold">Tanggal Beli:</span> {{ formatDate(item.tgl_beli)
+            }}</p>
           <p class="text-gray-700 text-lg">
             <span class="font-semibold">Terakhir Service:</span>
-            {{ item.last_service || 'Belum pernah service' }}
+            {{ formatDate(item.last_service) || 'Belum pernah service' }}
           </p>
         </div>
 
@@ -56,10 +57,6 @@ defineProps({
             class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
             Kembali ke List
           </button>
-          <!-- <button @click="$inertia.get('/riwayat')"
-            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
-            Kembali ke Riwayat
-          </button> -->
         </div>
       </div>
     </div>

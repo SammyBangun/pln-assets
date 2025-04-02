@@ -15,7 +15,12 @@ const updateRole = async (user) => {
   }, {
     preserveScroll: true,
     onSuccess: () => {
-      Notify.success('Role berhasil diupdate')
+      Notify.success('Role berhasil diupdate',
+        {
+          position: "center-top",
+          distance: "70px",
+        }
+      )
     }
   })
 }

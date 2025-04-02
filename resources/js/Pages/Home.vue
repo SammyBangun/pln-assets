@@ -1,3 +1,10 @@
+<script setup>
+import Navbar from '../Components/Navbar.vue';
+import Footer from '../Components/Footer.vue';
+import { Link } from '@inertiajs/vue3';
+
+</script>
+
 <template>
     <Navbar />
     <div class="bg-cover bg-center min-h-screen flex flex-col items-center justify-center text-center">
@@ -6,20 +13,9 @@
             <p class="text-gray-600 mb-6">Tekan tombol di bawah untuk membuat laporan</p>
             <!-- Menggunakan Inertia Link untuk navigasi -->
             <Link href="/form" class="bg-yellow-400 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-            +Buat Laporan
+            + Buat Laporan
             </Link>
         </div>
     </div>
     <Footer />
 </template>
-
-<script>
-import Navbar from '../Components/Navbar.vue';
-import Footer from '../Components/Footer.vue';
-import { Link } from '@inertiajs/vue3';
-
-export default {
-    name: 'Home',
-    components: { Navbar, Footer, Link }
-};
-</script>
