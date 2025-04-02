@@ -1,5 +1,5 @@
 <script setup>
-import Navbar from '@/Components/Navbar.vue';
+import Navbar from '@/components/Navbar.vue';
 import { Head } from '@inertiajs/vue3';
 </script>
 
