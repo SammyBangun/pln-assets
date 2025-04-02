@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
-import Navbar from '@/Components/Navbar.vue';
-import Footer from '@/Components/Footer.vue';
+import Navbar from '@/components/Navbar.vue';
+import Footer from '@/components/Footer.vue';
 import { fetchAssets, assets } from '@/functions/fetchAssets';
 import { useForm } from '@inertiajs/vue3';
 import { Notify } from 'notiflix';

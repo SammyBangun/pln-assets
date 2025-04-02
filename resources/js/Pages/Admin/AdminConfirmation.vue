@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
-import Navbar from '@/Components/Navbar.vue';
-import Footer from '@/Components/Footer.vue';
+import Navbar from '@/components/Navbar.vue';
+import Footer from '@/components/Footer.vue';
 import { useForm } from '@inertiajs/vue3';
 import { Notify } from 'notiflix';
 import formatDate from '@/functions/formatDate';

@@ -38,8 +38,8 @@
 
 <script>
 import { Link } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue';
-import Footer from '@/Components/Footer.vue';
+import Navbar from '@/components/Navbar.vue';
+import Footer from '@/components/Footer.vue';
 
 export default {
   components: { Link, Navbar, Footer },

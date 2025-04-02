@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
+import Navbar from '@/components/Navbar.vue'
+import Footer from '@/components/Footer.vue'
 import formatDate from '@/functions/formatDate';
 
 const showModal = ref(false);
@@ -44,7 +44,7 @@ defineProps({
           <p class="text-gray-700 text-lg"><span class="font-semibold">Tipe:</span> {{ item.type }}</p>
           <p class="text-gray-700 text-lg"><span class="font-semibold">Serial:</span> {{ item.series }}</p>
           <p class="text-gray-700 text-lg"><span class="font-semibold">Tanggal Beli:</span> {{ formatDate(item.tgl_beli)
-            }}</p>
+          }}</p>
           <p class="text-gray-700 text-lg">
             <span class="font-semibold">Terakhir Service:</span>
             {{ formatDate(item.last_service) || 'Belum pernah service' }}
