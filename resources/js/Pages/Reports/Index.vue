@@ -80,7 +80,7 @@ const deleteReport = (id) => {
                 class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-300">
         </div>
 
-        <div class="overflow-x-auto mb-32">
+        <div class="overflow-x-auto mb-32 rounded-lg">
             <table class="min-w-full bg-white border border-gray-200 shadow-lg rounded-lg">
                 <thead class="bg-gray-800 text-white">
                     <tr>
@@ -103,30 +103,33 @@ const deleteReport = (id) => {
                         <td class="py-3 px-4">{{ report.user?.name }}</td>
                         <td class="py-3 px-4">{{ report.aset }}</td>
                         <td class="py-3 px-4">{{ report.laporan_kerusakan }}</td>
-                        <td class="py-3 px-4">{{ report.deskripsi }}</td>
+                        <td class="py-3 px-4">{{ report.deskripsi?.slice(0, 60) }}{{ report.deskripsi?.length > 60 ?
+                            '...' : '' }}</td>
                         <td class="py-3 px-4">{{ formatDate(report.created_at) }}</td>
                         <td class="py-3 px-4">
                             <img v-if="report.gambar" :src="report.gambar" alt="Gambar Laporan"
                                 class="w-20 h-20 object-cover rounded-md">
                             <span v-else class="text-gray-500">Tidak ada gambar</span>
                         </td>
-                        <td class="py-3 px-4 flex justify-center my-6">
-                            <button @click="$inertia.get(`/riwayat/${report.id}`)"
-                                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md mr-2">
-                                Detail
-                            </button>
-                            <template v-if="$page.props.auth.user &&
-                                ($page.props.auth.user.role === 'admin' ||
-                                    report.user_pelapor === $page.props.auth.user.id)">
-                                <button @click="$inertia.get(`/riwayat/${report.id}/edit`)"
-                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
-                                    Edit
+                        <td class="py-3 px-4 text-center">
+                            <div class="flex justify-center gap-2">
+                                <button @click="$inertia.get(`/riwayat/${report.id}`)"
+                                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md">
+                                    🔎
                                 </button>
-                                <button @click="deleteReport(report.id)"
-                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">
-                                    Delete
-                                </button>
-                            </template>
+                                <template v-if="$page.props.auth.user &&
+                                    ($page.props.auth.user.role === 'admin' ||
+                                        report.user_pelapor === $page.props.auth.user.id)">
+                                    <button @click="$inertia.get(`/riwayat/${report.id}/edit`)"
+                                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md">
+                                        ✏️
+                                    </button>
+                                    <button @click="deleteReport(report.id)"
+                                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">
+                                        🗑️
+                                    </button>
+                                </template>
+                            </div>
                         </td>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
                             <td class="py-3 px-4">

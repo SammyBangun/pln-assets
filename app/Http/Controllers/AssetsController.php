@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\DB;
 class AssetsController extends Controller
 {
     use AuthorizesRequests;
+
+    public function index()
+    {
+        return Inertia::render('Assets/Index');
+    }
+
     public function show($type)
     {
         $items = Asset::where('type', $type)->get();

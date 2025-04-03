@@ -73,8 +73,8 @@ const submit = () => {
 
 <template>
   <Navbar />
-  <div class="container mx-auto p-6 w-6/12 border border-gray-200 m-4 rounded">
-    <h2 class="text-xl font-bold mb-4">Tambah Asset</h2>
+  <div class="container mx-auto p-6 md:w-6/12 sm:w-8/12 border border-gray-200 m-4 rounded">
+    <h2 class="text-xl font-bold mb-4">Tambah Aset</h2>
 
     <form @submit.prevent="submit" enctype="multipart/form-data" class="space-y-4">
 

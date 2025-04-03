@@ -29,11 +29,11 @@ const updateRole = async (user) => {
 <template>
   <Navbar />
   <div class="py-6 min-h-screen">
-    <div class="max-w-7xl mx-auto px-4">
+    <div class="max-w-7xl mx-auto px-4 rounded-md shadow-md">
       <div class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 mt-3 w-fit">
         <Link :href="route('admin.dashboard')">Kembali</Link>
       </div>
-      <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+      <div class="bg-white overflow-hidden shadow-sm rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">

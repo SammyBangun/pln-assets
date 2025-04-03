@@ -10,6 +10,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/assets/store', [AssetsController::class, 'store'])->name('assets.store');
 });
 
+Route::get('/assets', [AssetsController::class, 'index'])->name('assets.index');
+
 Route::get('/item/{type}', [AssetsController::class, 'show'])->name('Item.Show');
 
 Route::get('/item/{type}/{serial_number}', [AssetsController::class, 'detail'])->name('Item.Detail');
