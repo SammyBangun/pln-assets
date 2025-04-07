@@ -90,6 +90,7 @@ const deleteReport = (id) => {
                         <th class="py-3 px-4 text-left">Laporan Kerusakan</th>
                         <th class="py-3 px-4 text-left">Deskripsi</th>
                         <th class="py-3 px-4 text-left">Tanggal</th>
+                        <th class="py-3 px-4 text-left">Status</th>
                         <th class="py-3 px-4 text-left">Gambar</th>
                         <th class="py-3 px-4 text-center">Aksi</th>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
@@ -106,6 +107,14 @@ const deleteReport = (id) => {
                         <td class="py-3 px-4">{{ report.deskripsi?.slice(0, 60) }}{{ report.deskripsi?.length > 60 ?
                             '...' : '' }}</td>
                         <td class="py-3 px-4">{{ formatDate(report.created_at) }}</td>
+                        <td class="py-3 px-4">
+                            <span v-if="report.status === 'Diproses'"
+                                class="text-yellow-500 font-semibold">Diproses</span>
+                            <span v-else-if="report.status === 'Selesai'"
+                                class="text-green-500 font-semibold">Selesai</span>
+                            <span v-else-if="report.status === 'Diterima'"
+                                class="text-blue-500 font-semibold">Diterima</span>
+                        </td>
                         <td class="py-3 px-4">
                             <img v-if="report.gambar" :src="report.gambar" alt="Gambar Laporan"
                                 class="w-20 h-20 object-cover rounded-md">

@@ -31,8 +31,8 @@ const printPdf = (id) => {
     <Navbar />
 
     <div class="container mx-auto my-12 min-h-screen px-4">
-        <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Detail Laporan</h1>
-        <div class="my-6">
+        <div class="flex justify-between items-center my-6">
+            <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Detail Laporan</h1>
             <button @click="$inertia.get('/riwayat')"
                 class="bg-yellow-500 hover:bg-yellow-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-all">
                 Kembali ke Riwayat

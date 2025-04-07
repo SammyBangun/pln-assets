@@ -133,8 +133,6 @@ onMounted(async () => {
                     </div>
                 </div>
 
-
-
                 <div class="hidden sm:ms-6 sm:flex sm:items-center">
                     <template v-if="$page.props.auth.user.role === 'admin'">
                         <div class=" mr-8">
