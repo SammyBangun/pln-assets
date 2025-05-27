@@ -47,9 +47,6 @@ Route::put('/users/{user}/role', function (Request $request, User $user) {
     return redirect()->route('login');
 });
 
-//pdf
-Route::get('/laporan/{id}/export', [ReportController::class, 'exportPdf'])->name('laporan.export');
-
 //laporan
 Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat', [ReportController::class, 'index'])->name('riwayat.index');
@@ -58,6 +55,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat/{id}/edit', [ReportController::class, 'edit'])->name('riwayat.edit');
     Route::post('/riwayat/{id}', [ReportController::class, 'update'])->name('riwayat.update');
     Route::delete('/riwayat/{id}', [ReportController::class, 'destroy'])->name('riwayat.destroy');
+
+    //pdf
+    Route::get('/laporan/{id}/export', [ReportController::class, 'exportPdf'])->name('laporan.export');
 });
 
 // Group untuk route yang membutuhkan autentikasi dan verifikasi email

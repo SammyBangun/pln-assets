@@ -73,7 +73,7 @@ const deleteReport = (id) => {
 <template>
     <Navbar />
     <div class="container-fluid mx-3 my-8 min-h-screen">
-        <h1 class="text-2xl font-bold text-center mb-6">Riwayat Laporan</h1>
+        <h1 class="text-2xl font-bold text-center mb-6">Riwayat</h1>
 
         <div class="mb-4 w-3/12 mx-auto">
             <input v-model="searchQuery" type="text" placeholder="Cari laporan..."

@@ -36,17 +36,17 @@ onMounted(async () => {
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <NavLink href="/dashboard" :active="route().current('dashboard')">
-                            Form Laporan
+                            Form Pelaporan
                         </NavLink>
                         <NavLink href="/riwayat" :active="route().current()?.startsWith('riwayat')">
-                            Riwayat Laporan
+                            Riwayat
                         </NavLink>
                         <!-- ini perubahannya di dalam assets -->
                         <Dropdown align="right" width="48">
                             <template #trigger>
                                 <button
                                     class="flex items-center rounded-md px-3 py-2 my-4 text-sm font-medium leading-4 text-gray-700 hover:bg-gray-200">
-                                    IT Assets
+                                    Aset IT
                                     <svg class="ms-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                         viewBox="0 0 20 20">
                                         <path
@@ -137,7 +137,7 @@ onMounted(async () => {
                     <template v-if="$page.props.auth.user.role === 'admin'">
                         <div class=" mr-8">
                             <NavLink href="/admin/users">
-                                User Management
+                                Manajemen Pengguna
                             </NavLink>
                         </div>
                     </template>

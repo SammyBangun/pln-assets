@@ -91,7 +91,7 @@ const submit = () => {
                         <div class="w-full md:w-full px-3 mb-6">
                             <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
                                 for="aset">
-                                Serial Number Aset
+                                Pilih Aset
                             </label>
 
                             <!-- Jika data tersedia, tampilkan select -->
@@ -109,7 +109,7 @@ const submit = () => {
                         <div class="w-full md:w-full px-3 mb-6">
                             <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
                                 for="category_name">
-                                Laporan Kerusakan
+                                Identifikasi Masalah
                             </label>
                             <select v-model="form.laporan_kerusakan" name="category_name"
                                 class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]">
@@ -130,7 +130,7 @@ const submit = () => {
 
                         <div class="w-full px-3 mb-6">
                             <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
-                                for="deskripsi">Deskripsi</label>
+                                for="deskripsi">Deskripsi Masalah</label>
                             <textarea rows="4"
                                 class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
                                 name="deskripsi" v-model="form.deskripsi" required></textarea>
@@ -146,7 +146,7 @@ const submit = () => {
                                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                 </svg>
 
-                                <h2 class="mt-4 text-xl font-medium text-gray-700 tracking-wide">Gambar Laporan</h2>
+                                <h2 class="mt-4 text-xl font-medium text-gray-700 tracking-wide">Gambar Pelaporan</h2>
                                 <p class="mt-2 text-gray-500 tracking-wide">Unggah atau seret & letakkan file Anda (SVG,
                                     PNG, JPG, GIF).</p>
 
