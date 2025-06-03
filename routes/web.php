@@ -72,6 +72,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('Admin/Dashboard');
         })->name('admin.dashboard');
+
+        Route::get('/request-account', function () {
+            return Inertia::render('Admin/ReqAccount');
+        })->name('admin.request_account');
     });
 
     // Route untuk form laporan
