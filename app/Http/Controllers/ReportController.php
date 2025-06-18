@@ -17,8 +17,14 @@ class ReportController extends Controller
 
     public function index(): Response
     {
+        $user = Auth::user();
+
+        $reports = $user->role === 'admin'
+            ? Report::with('user')->get()
+            : Report::with('user')->where('user_pelapor', $user->id)->get();
+
         return Inertia::render('Reports/Index', [
-            'reports' => Report::with('user')->get()
+            'reports' => $reports
         ]);
     }
 

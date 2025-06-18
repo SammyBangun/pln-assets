@@ -172,7 +172,7 @@ function submit() {
 <template>
     <Navbar />
 
-    <div class="container grid mx-auto md:grid-cols-2 my-8 sm:grid-cols-1">
+    <div class="container grid mx-auto lg:grid-cols-2 my-8 md:grid-cols-1">
 
         <div class="w-9/12 mx-auto my-8 min-h-screen">
             <div class="mt-6">
@@ -262,7 +262,28 @@ function submit() {
 
                 <form @submit.prevent="submit" enctype="multipart/form-data">
 
-                    <div class="w-full md:w-2/3 mx-auto px-3 mb-6">
+                    <div class="my-7">
+                        <h2 class="text-2xl font-bold">Penugasan</h2>
+
+                        <div class="w-full md:w-2/3 mx-auto px-3 mb-6">
+                            <label for="" class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2">
+                                Tanggal</label>
+                            <input type="date" name="tanggal_penugasan" id="" class="input w-full">
+                            <input type="time" name="waktu_penugasan" id="" class="text-center ">
+                        </div>
+
+                        <div>
+                            <label for="">Nama Petugas</label>
+                            <input type="text">
+                        </div>
+
+                        <div>
+                            <label for="">Lokasi</label>
+                            <input type="text">
+                        </div>
+                    </div>
+
+                    <div class=" w-full md:w-2/3 mx-auto px-3 mb-6">
                         <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
                             for="category_name">
                             Tindak Lanjut Pekerjaan
@@ -271,7 +292,8 @@ function submit() {
                             class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]">
                             <option value="Gangguan Hardware">Gangguan Karena Hardware</option>
                             <option value="Gangguan Software">Gangguan Karena Software</option>
-                            <option value="Gangguan Jaringan">Gangguan Karena Jaringan, Jaringan LAN, INTRANET, WIFI,
+                            <option value="Gangguan Jaringan">Gangguan Karena Jaringan, Jaringan LAN, INTRANET,
+                                WIFI,
                                 INTERNET
                             </option>
                             <option value="other">Gangguan Lainnya...</option>
@@ -346,22 +368,27 @@ function submit() {
                         </label>
                         <select name="category_name" v-model="form.jaringan"
                             class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]">
-                            <option value="Check dan Perbaikan Kabel LAN yang Putus">Check dan Perbaikan Kabel LAN yang
+                            <option value="Check dan Perbaikan Kabel LAN yang Putus">Check dan Perbaikan Kabel LAN
+                                yang
                                 Putus</option>
-                            <option value="Check Kabel LAN dari PC ke Hubswitch">Check Kabel LAN dari PC ke Hubswitch
+                            <option value="Check Kabel LAN dari PC ke Hubswitch">Check Kabel LAN dari PC ke
+                                Hubswitch
                             </option>
-                            <option value="Check Koneksi Jaringan LAN ke Server">Check Koneksi Jaringan LAN ke Server
+                            <option value="Check Koneksi Jaringan LAN ke Server">Check Koneksi Jaringan LAN ke
+                                Server
                             </option>
                             <option value="Check Configuration TCP/IP dan DNS">Check Configuration TCP/IP dan DNS
                             </option>
                             <option value="Check Koneksi Layanan Jaringan Intranet">Check Koneksi Layanan Jaringan
                                 Intranet
                             </option>
-                            <option value="Check Koneksi Jaringan WIFI Router ke HUB">Check Koneksi Jaringan WIFI Router
+                            <option value="Check Koneksi Jaringan WIFI Router ke HUB">Check Koneksi Jaringan WIFI
+                                Router
                                 ke
                                 HUB</option>
                             <option value="Check Sinyal WIFI">Check Sinyal WIFI</option>
-                            <option value="Check Koneksi Layanan Jaringan ISP Internet">Check Koneksi Layanan Jaringan
+                            <option value="Check Koneksi Layanan Jaringan ISP Internet">Check Koneksi Layanan
+                                Jaringan
                                 ISP
                                 Internet</option>
                             <option value="other_network">Lainnya...</option>

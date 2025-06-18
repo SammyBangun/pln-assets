@@ -103,7 +103,7 @@ const submit = () => {
                             </select>
 
                             <!-- Jika data kosong, tampilkan pesan -->
-                            <p v-else class="text-gray-500 text-sm italic">Memuat...</p>
+                            <p v-else class="text-gray-500 text-sm italic">Aset tidak tersedia</p>
                         </div>
 
                         <div class="w-full md:w-full px-3 mb-6">

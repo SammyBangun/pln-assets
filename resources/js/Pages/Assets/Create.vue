@@ -161,7 +161,7 @@ const submit = () => {
         </div>
 
         <div class="mb-5">
-          <label class="block text-sm font-medium">Last Service</label>
+          <label class="block text-sm font-medium">Terakhir Servis</label>
           <input v-model="form.last_service" type="date" class="input" />
         </div>
       </div>

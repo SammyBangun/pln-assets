@@ -47,7 +47,7 @@ const updatePassword = () => {
 
         <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
             <div>
-                <InputLabel for="current_password" value="Current Password" />
+                <InputLabel for="current_password" value="Password saat ini" />
 
                 <TextInput id="current_password" ref="currentPasswordInput" v-model="form.current_password"
                     type="password" class="mt-1 block w-full" autocomplete="current-password" />
@@ -56,7 +56,7 @@ const updatePassword = () => {
             </div>
 
             <div>
-                <InputLabel for="password" value="New Password" />
+                <InputLabel for="password" value="Password Baru" />
 
                 <TextInput id="password" ref="passwordInput" v-model="form.password" type="password"
                     class="mt-1 block w-full" autocomplete="new-password" />
@@ -65,7 +65,7 @@ const updatePassword = () => {
             </div>
 
             <div>
-                <InputLabel for="password_confirmation" value="Confirm Password" />
+                <InputLabel for="password_confirmation" value="Konfirmasi Password" />
 
                 <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"
                     class="mt-1 block w-full" autocomplete="new-password" />

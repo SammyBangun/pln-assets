@@ -76,7 +76,7 @@ const deleteReport = (id) => {
         <h1 class="text-2xl font-bold text-center mb-6">Riwayat</h1>
 
         <div class="mb-4 w-3/12 mx-auto">
-            <input v-model="searchQuery" type="text" placeholder="Cari laporan..."
+            <input v-model="searchQuery" type="text" placeholder="Cari sesuatu..."
                 class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-300">
         </div>
 
@@ -85,9 +85,11 @@ const deleteReport = (id) => {
                 <thead class="bg-gray-800 text-white">
                     <tr>
                         <th class="py-3 px-4 text-left">No</th>
-                        <th class="py-3 px-4 text-left">Pelapor</th>
+                        <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
+                            <th class="py-3 px-4 text-left">Pelapor</th>
+                        </template>
                         <th class="py-3 px-4 text-left">Serial Number</th>
-                        <th class="py-3 px-4 text-left">Laporan Kerusakan</th>
+                        <th class="py-3 px-4 text-left">Identifikasi Masalah</th>
                         <th class="py-3 px-4 text-left">Deskripsi</th>
                         <th class="py-3 px-4 text-left">Tanggal</th>
                         <th class="py-3 px-4 text-left">Status</th>
@@ -101,7 +103,9 @@ const deleteReport = (id) => {
                 <tbody>
                     <tr v-for="(report, index) in latestReports" :key="report.id" class="border-b hover:bg-gray-100">
                         <td class="py-3 px-4">{{ index + 1 }}</td>
-                        <td class="py-3 px-4">{{ report.user?.name }}</td>
+                        <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
+                            <td class="py-3 px-4">{{ report.user?.name }}</td>
+                        </template>
                         <td class="py-3 px-4">{{ report.aset }}</td>
                         <td class="py-3 px-4">{{ report.laporan_kerusakan }}</td>
                         <td class="py-3 px-4">{{ report.deskripsi?.slice(0, 60) }}{{ report.deskripsi?.length > 60 ?
