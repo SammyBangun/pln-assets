@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { ref, onMounted, computed } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
 import fetchLatestAssets from '@/functions/fetchItem';
 import ApplicationLogo from '@/components/ApplicationLogo.vue';
 import Dropdown from '@/components/Dropdown.vue';
@@ -10,6 +10,8 @@ import ResponsiveNavLink from '@/components/ResponsiveNavLink.vue';
 
 const showingNavigationDropdown = ref(false);
 const latestAssets = ref([]);
+const page = usePage();
+const auth = computed(() => page.props.auth);
 
 const toggleDropdown = () => {
     showingNavigationDropdown.value = !showingNavigationDropdown.value;
@@ -23,24 +25,35 @@ onMounted(async () => {
 <template>
     <nav class="border-b border-gray-100 bg-yellow-400 sticky top-0 w-full">
         <!-- Primary Navigation Menu -->
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
             <div class="flex h-16 justify-between">
                 <div class="flex">
                     <!-- Logo -->
                     <div class="flex shrink-0 items-center w-48">
-                        <Link href="/dashboard">
+                        <Link :href="auth.user?.role === 'admin' ? '/admin/dashboard' : '/dashboard'">
                         <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800" />
                         </Link>
                     </div>
 
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <NavLink href="/dashboard" :active="route().current('dashboard')">
-                            Form Pelaporan
-                        </NavLink>
-                        <NavLink href="/riwayat" :active="route().current()?.startsWith('riwayat')">
-                            Riwayat
-                        </NavLink>
+                        <template v-if="auth.user.role === 'user'">
+                            <NavLink href="/dashboard" :active="route().current('dashboard')">
+                                Dashboard
+                            </NavLink>
+                            <NavLink href="/riwayat" :active="route().current()?.startsWith('riwayat')">
+                                Riwayat
+                            </NavLink>
+                        </template>
+                        <template v-if="auth.user.role === 'admin'">
+                            <NavLink href="/admin/dashboard" :active="route().current('admin.dashboard')">
+                                Dashboard
+                            </NavLink>
+                            <!-- Tambah Aset dipindahkan ke luar grid -->
+                            <NavLink :href="route('assets.create')" :active="route().current('assets.create')">
+                                Tambah Aset
+                            </NavLink>
+                        </template>
                         <!-- ini perubahannya di dalam assets -->
                         <Dropdown align="right" width="48">
                             <template #trigger>
@@ -56,7 +69,7 @@ onMounted(async () => {
                             </template>
 
                             <template #content>
-                                <div class="w-[42rem] bg-white shadow-lg rounded-lg p-4">
+                                <div class="w-[42rem] bg-white shadow-lg rounded-lg p-4 mx-auto">
                                     <div class="grid grid-cols-3">
                                         <div>
                                             <DropdownLink :href="route('Item.Show', { type: 'Proyektor' })">Proyektor
@@ -92,17 +105,6 @@ onMounted(async () => {
                                         </div>
                                     </div>
 
-                                    <!-- Tambah Aset dipindahkan ke luar grid -->
-                                    <template v-if="$page.props.auth.user.role === 'admin'">
-                                        <div class="flex justify-center w-[8rem] mx-auto mt-6">
-                                            <DropdownLink :href="route('assets.create')"
-                                                class="bg-yellow-400 hover:bg-yellow-500 text-gray-500 font-bold py-2 px-4 rounded inline-flex items-center justify-center">
-                                                Tambah Aset
-                                            </DropdownLink>
-                                        </div>
-                                    </template>
-
-
                                     <!-- Aset Terbaru -->
                                     <div class="mt-6 w-[40rem] mx-auto">
                                         <h1 class="text-xl font-bold mb-3">Aset Terbaru</h1>
@@ -133,10 +135,10 @@ onMounted(async () => {
                     </div>
                 </div>
 
-                <div class="hidden sm:ms-6 sm:flex sm:items-center">
-                    <template v-if="$page.props.auth.user.role === 'admin'">
+                <div class="hidden md:ms-6 md:flex md:items-center">
+                    <template v-if="auth.user.role === 'admin'">
                         <div class=" mr-8">
-                            <NavLink href="/admin/users">
+                            <NavLink href="/admin/users" :active="route().current('admin.users')">
                                 Manajemen Pengguna
                             </NavLink>
                         </div>
@@ -146,7 +148,7 @@ onMounted(async () => {
                         <template #trigger>
                             <button
                                 class="flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 hover:text-gray-700 focus:outline-none">
-                                {{ $page.props.auth.user.name }}
+                                {{ auth.user.name }}
                                 <svg class="-me-0.5 ms-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                     viewBox="0 0 20 20">
                                     <path
@@ -167,7 +169,7 @@ onMounted(async () => {
                 </div>
 
                 <!-- Hamburger -->
-                <div class="-me-2 flex items-center sm:hidden">
+                <div class="-me-2 flex items-center md:hidden">
                     <button @click="toggleDropdown"
                         class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none">
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -183,32 +185,62 @@ onMounted(async () => {
         </div>
 
         <!-- Responsive Navigation Menu -->
-        <div v-show="showingNavigationDropdown" class="sm:hidden">
-            <div class="space-y-1 pb-3 pt-2">
-                <ResponsiveNavLink href="/dashboard" :active="route().current('dashboard')">
-                    Form Laporan
-                </ResponsiveNavLink>
-                <ResponsiveNavLink href="/riwayat" :active="route().current()?.startsWith('riwayat')">
-                    Riwayat Laporan
-                </ResponsiveNavLink>
-                <ResponsiveNavLink href="/assets" :active="route().current()?.startsWith('assets')">
-                    IT Assets
-                </ResponsiveNavLink>
-            </div>
-            <!-- Responsive Settings Options -->
-            <div class="border-t border-gray-200 pb-1 pt-4">
-                <div class="px-4">
-                    <div class="text-base font-medium text-gray-800">{{ $page.props.auth.user.name }}</div>
-                    <div class="text-sm font-medium text-gray-500">{{ $page.props.auth.user.email }}</div>
-                </div>
+        <div class="relative">
+            <transition name="fade">
+                <div v-show="showingNavigationDropdown"
+                    class="md:hidden absolute top-full left-0 w-full bg-yellow-400 z-50">
+                    <div class="space-y-1 pb-3 pt-2">
+                        <template v-if="auth.user.role === 'user'">
+                            <ResponsiveNavLink href="/dashboard" :active="route().current('dashboard')">
+                                Dashboard
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink href="/riwayat" :active="route().current()?.startsWith('riwayat')">
+                                Riwayat
+                            </ResponsiveNavLink>
+                        </template>
+                        <template v-if="auth.user.role === 'admin'">
+                            <ResponsiveNavLink href="/admin/dashboard" :active="route().current('admin.dashboard')">
+                                Dashboard
+                            </ResponsiveNavLink>
+                            <!-- Tambah Aset dipindahkan ke luar grid -->
+                            <ResponsiveNavLink :href="route('assets.create')"
+                                :active="route().current('assets.create')">
+                                Tambah Aset
+                            </ResponsiveNavLink>
+                        </template>
+                        <ResponsiveNavLink href="/assets" :active="route().current('assets')">
+                            Aset IT
+                        </ResponsiveNavLink>
+                    </div>
+                    <!-- Responsive Settings Options -->
+                    <div class="border-t border-gray-200 pb-1 pt-4">
+                        <div class="px-4">
+                            <div class="text-base font-medium text-gray-800">{{ auth.user.name }}</div>
+                            <div class="text-sm font-medium text-gray-500">{{ auth.user.email }}</div>
+                        </div>
 
-                <div class="mt-3 space-y-1">
-                    <ResponsiveNavLink href="/profile">Profile</ResponsiveNavLink>
-                    <ResponsiveNavLink href="/logout" method="post" as="button">
-                        Log Out
-                    </ResponsiveNavLink>
+                        <div class="mt-3 space-y-1">
+                            <ResponsiveNavLink href="/profile">Profile</ResponsiveNavLink>
+                            <ResponsiveNavLink href="/logout" method="post" as="button">
+                                Log Out
+                            </ResponsiveNavLink>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </transition>
         </div>
+
     </nav>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+</style>

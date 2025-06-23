@@ -6,6 +6,7 @@ use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Report;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +32,7 @@ Route::get('/admin/users', function () {
 
     // Arahkan ke halaman login jika bukan admin
     return redirect()->route('login');
-});
+})->name('admin.users');
 
 Route::get('/admin/konfirmasi/{id}', [ReportController::class, 'konfirmasi'])->name('konfirmasi');
 Route::post('/admin/konfirmasi/{id}', [ReportController::class, 'kirim'])->name('kirim');
@@ -70,7 +71,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route khusus admin dengan middleware role:admin
     Route::middleware([CheckRole::class . ':admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
-            return Inertia::render('Admin/Dashboard');
+            return Inertia::render('Admin/Dashboard', [
+                'reports' => Report::with('user')->get()
+            ]);
         })->name('admin.dashboard');
 
         Route::get('/request-account', function () {
