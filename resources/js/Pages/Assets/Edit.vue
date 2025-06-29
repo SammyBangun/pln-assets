@@ -13,28 +13,32 @@ const props = defineProps({
     validator: (value) => {
       return [
         "serial_number",
-        "id_user",
-        "name",
-        "type",
-        "series",
-        "tgl_beli",
-        "last_service",
+        "divisi",
+        "nama",
+        "tipe",
+        "seri",
+        "tanggal_beli",
+        "terakhir_servis",
         "gambar",
+        "lokasi",
+        "status_aset",
       ].every((key) => key in value);
     },
   },
-  users: Array
+  divisions: Array
 });
 
 const form = useForm({
   serial_number: props.item.serial_number,
-  id_user: props.item.id_user,
-  name: props.item.name,
-  type: props.item.type,
-  series: props.item.series,
-  tgl_beli: props.item.tgl_beli,
-  last_service: props.item.last_service,
+  divisi: props.item.divisi,
+  nama: props.item.nama,
+  tipe: props.item.tipe,
+  seri: props.item.seri,
+  tanggal_beli: props.item.tanggal_beli,
+  terakhir_servis: props.item.terakhir_servis,
   gambar: null, // Awalnya null
+  lokasi: props.item.lokasi,
+  status_aset: props.item.status_aset,
 });
 
 // Variabel untuk menyimpan gambar lama
@@ -45,12 +49,14 @@ function submit() {
   formData.append("_method", "PUT");
   formData.append("old_serial_number", props.item.serial_number); // Simpan serial_number lama
   formData.append("serial_number", form.serial_number); // Serial baru yang diedit
-  formData.append("id_user", form.id_user);
-  formData.append("name", form.name);
-  formData.append("type", form.type);
-  formData.append("series", form.series);
-  formData.append("tgl_beli", form.tgl_beli);
-  formData.append("last_service", form.last_service);
+  formData.append("divisi", form.divisi);
+  formData.append("nama", form.nama);
+  formData.append("tipe", form.tipe);
+  formData.append("seri", form.seri);
+  formData.append("lokasi", form.lokasi);
+  formData.append("status_aset", form.status_aset);
+  formData.append("tanggal_beli", form.tanggal_beli);
+  formData.append("terakhir_servis", form.terakhir_servis);
 
   if (form.gambar instanceof File) {
     formData.append("gambar", form.gambar);
@@ -66,7 +72,7 @@ function submit() {
         position: "center-top",
         distance: "70px",
       });
-      router.get(route("Item.Show", { type: props.item.type }));
+      router.get(route("Item.Show", { tipe: props.item.tipe }));
     },
     onError: (errors) => {
       Notify.failure(
@@ -120,41 +126,41 @@ function handleFileUpload(event) {
           </div>
 
           <div>
-            <label for="id_user" class="block text-sm font-medium text-gray-700">
-              Nama User
+            <label for="divisi" class="block text-sm font-medium text-gray-700">
+              Divisi
             </label>
             <div class="mt-1">
-              <select v-model="form.id_user" class="input">
-                <option v-for="user in users" :key="user.id" :value="user.id">
-                  {{ user.name }}
+              <select v-model="form.divisi" class="input">
+                <option v-for="division in divisions" :key="division.id" :value="division.id">
+                  {{ division.nama_divisi }}
                 </option>
               </select>
             </div>
-            <div v-if="form.errors.id_user" class="text-red-500 text-sm mt-1">
-              {{ form.errors.id_user }}
+            <div v-if="form.errors.divisi" class="text-red-500 text-sm mt-1">
+              {{ form.errors.divisi }}
             </div>
           </div>
         </div>
 
         <div class="grid grid-cols-3 gap-3">
           <div>
-            <label for="name" class="block text-sm font-medium text-gray-700">
+            <label for="nama" class="block text-sm font-medium text-gray-700">
               Nama Aset
             </label>
             <div class="mt-1">
-              <input type="text" id="name" v-model="form.name" class="input" required />
+              <input type="text" id="nama" v-model="form.nama" class="input" required />
             </div>
-            <div v-if="form.errors.name" class="text-red-500 text-sm mt-1">
-              {{ form.errors.name }}
+            <div v-if="form.errors.nama" class="text-red-500 text-sm mt-1">
+              {{ form.errors.nama }}
             </div>
           </div>
 
           <div>
-            <label for="type" class="block text-sm font-medium text-gray-700">
+            <label for="tipe" class="block text-sm font-medium text-gray-700">
               Tipe
             </label>
             <div class="mt-1">
-              <select v-model="form.type" class="input">
+              <select v-model="form.tipe" class="input">
                 <option value="Proyektor">Proyektor</option>
                 <option value="Monitor">Monitor</option>
                 <option value="Access Point">Access Point</option>
@@ -172,20 +178,20 @@ function handleFileUpload(event) {
                 <option value="DLL">DLL</option>
               </select>
             </div>
-            <div v-if="form.errors.type" class="text-red-500 text-sm mt-1">
-              {{ form.errors.type }}
+            <div v-if="form.errors.tipe" class="text-red-500 text-sm mt-1">
+              {{ form.errors.tipe }}
             </div>
           </div>
 
           <div class="mb-6">
-            <label for="series" class="block text-sm font-medium text-gray-700">
+            <label for="seri" class="block text-sm font-medium text-gray-700">
               Series
             </label>
             <div class="mt-1">
-              <input type="text" id="series" v-model="form.series" class="input" required />
+              <input type="text" id="seri" v-model="form.seri" class="input" required />
             </div>
-            <div v-if="form.errors.series" class="text-red-500 text-sm mt-1">
-              {{ form.errors.series }}
+            <div v-if="form.errors.seri" class="text-red-500 text-sm mt-1">
+              {{ form.errors.seri }}
             </div>
           </div>
         </div>
@@ -219,37 +225,68 @@ function handleFileUpload(event) {
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="tgl_beli" class="block text-sm font-medium text-gray-700">
-              Tanggal Beli
+            <label for="lokasi" class="block text-sm font-medium text-gray-700">
+              Lokasi
             </label>
             <div class="mt-1">
-              <input type="date" id="tgl_beli" v-model="form.tgl_beli" class="input" required />
+              <input type="input" id="lokasi" v-model="form.lokasi" class="input" required />
             </div>
-            <div v-if="form.errors.tgl_beli" class="text-red-500 text-sm mt-1">
-              {{ form.errors.tgl_beli }}
+            <div v-if="form.errors.lokasi" class="text-red-500 text-sm mt-1">
+              {{ form.errors.lokasi }}
             </div>
           </div>
 
           <div>
-            <label for="last_service" class="block text-sm font-medium text-gray-700">
+            <label for="status_aset" class="block text-sm font-medium text-gray-700">
+              Status
+            </label>
+            <div class="mt-1">
+              <select v-model="form.status_aset" class="input">
+                <option value="Aktif">Aktif</option>
+                <option value="Dalam Penanganan">Dalam Penanganan</option>
+                <option value="Hilang">Hilang</option>
+              </select>
+            </div>
+            <div v-if="form.errors.status_aset" class="text-red-500 text-sm mt-1">
+              {{ form.errors.status_aset }}
+            </div>
+          </div>
+
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="tanggal_beli" class="block text-sm font-medium text-gray-700">
+              Tanggal Beli
+            </label>
+            <div class="mt-1">
+              <input type="date" id="tanggal_beli" v-model="form.tanggal_beli" class="input" required />
+            </div>
+            <div v-if="form.errors.tanggal_beli" class="text-red-500 text-sm mt-1">
+              {{ form.errors.tanggal_beli }}
+            </div>
+          </div>
+
+          <div>
+            <label for="terakhir_servis" class="block text-sm font-medium text-gray-700">
               Terakhir Servis
             </label>
             <div class="mt-1">
-              <input type="date" id="last_service" v-model="form.last_service" class="input" required />
+              <input type="date" id="terakhir_servis" v-model="form.terakhir_servis" class="input" />
             </div>
-            <div v-if="form.errors.last_service" class="text-red-500 text-sm mt-1">
-              {{ form.errors.last_service }}
+            <div v-if="form.errors.terakhir_servis" class="text-red-500 text-sm mt-1">
+              {{ form.errors.terakhir_servis }}
             </div>
           </div>
         </div>
 
         <div class="flex justify-between">
-          <Link :href="route('Item.Show', { type: form.type })"
+          <Link :href="route('Item.Show', { tipe: form.tipe })"
             class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
           Kembali
           </Link>
           <div class="flex space-x-3">
-            <Link :href="route('Item.Show', { type: form.type })"
+            <Link :href="route('Item.Show', { tipe: form.tipe })"
               class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
             Batalkan
             </Link>

@@ -39,14 +39,15 @@ const closeModal = () => {
         <div class="w-full">
           <p class="text-gray-700 text-lg"><span class="font-semibold">Serial Number:</span> {{ item.serial_number }}
           </p>
-          <p class="text-gray-700 text-lg"><span class="font-semibold">Nama:</span> {{ item.name }}</p>
-          <p class="text-gray-700 text-lg"><span class="font-semibold">Tipe:</span> {{ item.type }}</p>
-          <p class="text-gray-700 text-lg"><span class="font-semibold">Serial:</span> {{ item.series }}</p>
-          <p class="text-gray-700 text-lg"><span class="font-semibold">Tanggal Beli:</span> {{ formatDate(item.tgl_beli)
+          <p class="text-gray-700 text-lg"><span class="font-semibold">Nama:</span> {{ item.nama }}</p>
+          <p class="text-gray-700 text-lg"><span class="font-semibold">Tipe:</span> {{ item.tipe }}</p>
+          <p class="text-gray-700 text-lg"><span class="font-semibold">Serial:</span> {{ item.seri }}</p>
+          <p class="text-gray-700 text-lg"><span class="font-semibold">Tanggal Beli:</span> {{
+            formatDate(item.tanggal_beli)
             }}</p>
           <p class="text-gray-700 text-lg">
             <span class="font-semibold">Terakhir Service:</span>
-            {{ formatDate(item.last_service) || 'Belum pernah service' }}
+            {{ formatDate(item.terakhir_servis) || 'Belum pernah service' }}
           </p>
         </div>
       </div>
@@ -58,7 +59,7 @@ const closeModal = () => {
 
         <!-- Tombol Aksi -->
         <div class="mt-6 flex gap-4">
-          <button @click="$inertia.get('/item/' + item.type)"
+          <button @click="$inertia.get('/item/' + item.tipe)"
             class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
             Kembali ke List
           </button>

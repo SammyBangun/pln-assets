@@ -12,11 +12,11 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/assets', [AssetsController::class, 'index'])->name('assets.index');
 
-Route::get('/item/{type}', [AssetsController::class, 'show'])->name('Item.Show');
+Route::get('/item/{tipe}', [AssetsController::class, 'show'])->name('Item.Show');
 
-Route::get('/item/{type}/{serial_number}', [AssetsController::class, 'detail'])->name('Item.Detail');
+Route::get('/item/{tipe}/{serial_number}', [AssetsController::class, 'detail'])->name('Item.Detail');
 
-Route::get('/item/{type}/{serial_number}/edit', [AssetsController::class, 'edit'])->name('Item.Edit');
+Route::get('/item/{tipe}/{serial_number}/edit', [AssetsController::class, 'edit'])->name('Item.Edit');
 
 Route::post('/item/{serial_number}/update', [AssetsController::class, 'update'])->name('Item.Update');
 

@@ -17,36 +17,36 @@ onMounted(async () => {
   <div class="container mx-auto min-h-screen">
     <div class="grid grid-cols-3 gap-4 mt-8 p-8 mx-auto max-w-[40rem]">
       <div>
-        <DropdownLink :href="route('Item.Show', { type: 'Proyektor' })">Proyektor
+        <DropdownLink :href="route('Item.Show', { tipe: 'Proyektor' })">Proyektor
         </DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'Keyboard' })">Keyboard
+        <DropdownLink :href="route('Item.Show', { tipe: 'Keyboard' })">Keyboard
         </DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'Kamera' })">Kamera
+        <DropdownLink :href="route('Item.Show', { tipe: 'Kamera' })">Kamera
         </DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'Printer' })">Printer
+        <DropdownLink :href="route('Item.Show', { tipe: 'Printer' })">Printer
         </DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'PC' })">PC</DropdownLink>
+        <DropdownLink :href="route('Item.Show', { tipe: 'PC' })">PC</DropdownLink>
       </div>
       <div>
-        <DropdownLink :href="route('Item.Show', { type: 'Monitor' })">Monitor
+        <DropdownLink :href="route('Item.Show', { tipe: 'Monitor' })">Monitor
         </DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'Switch' })">Switch
+        <DropdownLink :href="route('Item.Show', { tipe: 'Switch' })">Switch
         </DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'Mouse' })">Mouse
+        <DropdownLink :href="route('Item.Show', { tipe: 'Mouse' })">Mouse
         </DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'Audio' })">Audio
+        <DropdownLink :href="route('Item.Show', { tipe: 'Audio' })">Audio
         </DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'Hub' })">Hub</DropdownLink>
+        <DropdownLink :href="route('Item.Show', { tipe: 'Hub' })">Hub</DropdownLink>
       </div>
       <div>
-        <DropdownLink :href="route('Item.Show', { type: 'Access Point' })">Access
+        <DropdownLink :href="route('Item.Show', { tipe: 'Access Point' })">Access
           Point</DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'Laptop' })">Laptop
+        <DropdownLink :href="route('Item.Show', { tipe: 'Laptop' })">Laptop
         </DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'Router' })">Router
+        <DropdownLink :href="route('Item.Show', { tipe: 'Router' })">Router
         </DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'TV' })">TV</DropdownLink>
-        <DropdownLink :href="route('Item.Show', { type: 'DLL' })">DLL</DropdownLink>
+        <DropdownLink :href="route('Item.Show', { tipe: 'TV' })">TV</DropdownLink>
+        <DropdownLink :href="route('Item.Show', { tipe: 'DLL' })">DLL</DropdownLink>
       </div>
     </div>
     <div class="mx-auto w-4/6">
@@ -56,15 +56,15 @@ onMounted(async () => {
         data...</p>
 
       <div v-else class="grid sm:grid-cols-1 md:grid-cols-2 gap-4 justify-center">
-        <Link v-for="asset in latestAssets" :key="asset.id_asset" :href="`/item/${asset.type}/${asset.serial_number}`"
+        <Link v-for="asset in latestAssets" :key="asset.id_asset" :href="`/item/${asset.tipe}/${asset.serial_number}`"
           class="flex items-center mx-auto bg-white rounded-lg shadow-md p-4 cursor-pointer hover:bg-gray-100 transition duration-200">
 
         <img :src="`/storage/assets/${asset.gambar}`" alt="Asset Image"
           class="w-24 h-24 object-cover rounded-md border border-gray-200">
 
         <div class="flex flex-col ml-4">
-          <p class="font-semibold text-gray-800 text-lg">{{ asset.name }}</p>
-          <p class="text-sm text-gray-500">{{ asset.series }}</p>
+          <p class="font-semibold text-gray-800 text-lg">{{ asset.nama }}</p>
+          <p class="text-sm text-gray-500">{{ asset.seri }}</p>
         </div>
         </Link>
       </div>

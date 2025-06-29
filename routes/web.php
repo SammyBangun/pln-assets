@@ -6,7 +6,7 @@ use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProfileController;
-use App\Models\Report;
+use App\Models\Reports\Report;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;

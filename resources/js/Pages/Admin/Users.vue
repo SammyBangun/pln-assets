@@ -35,8 +35,7 @@ const updateRole = async (user) => {
           <Link :href="route('admin.dashboard')">Kembali</Link>
         </div>
         <div class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 mt-3 w-fit">
-          <span>4️⃣</span>
-          <Link :href="route('admin.request_account')">Permintaan Akun</Link>
+          <Link :href="route('register')">Buat Akun</Link>
         </div>
       </div>
       <div class="bg-white overflow-hidden shadow-sm rounded-lg">

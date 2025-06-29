@@ -6,8 +6,13 @@ import PrimaryButton from '@/components/PrimaryButton.vue';
 import TextInput from '@/components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
+defineProps({
+    divisions: Array
+});
+
 const form = useForm({
     id: '',
+    divisi: '',
     name: '',
     email: '',
     password: '',
@@ -36,6 +41,19 @@ const submit = () => {
 
                 <InputError class="mt-2" :message="form.errors.id" />
             </div>
+
+            <div class="mt-4 w-8/12 mx-auto">
+                <InputLabel for="divisi" value="Divisi" />
+
+                <select id="divisi" v-model="form.divisi" class="mt-1 block w-full rounded border-gray-300">
+                    <option v-for="division in divisions" :key="division.id" :value="division.id">
+                        {{ division.nama_divisi }}
+                    </option>
+                </select>
+
+                <InputError class="mt-2" :message="form.errors.divisi" />
+            </div>
+
 
             <div class="mt-4 w-8/12 mx-auto">
                 <InputLabel for="name" value="Nama" />

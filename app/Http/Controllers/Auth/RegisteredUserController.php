@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Division;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,11 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        $divisions = Division::select('id', 'nama_divisi')->get();
+
+        return Inertia::render('Auth/Register', [
+            'divisions' => $divisions
+        ]);
     }
 
     /**
@@ -31,14 +36,16 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'id' => 'required|string|max:16|unique:users', // Validasi NIK
+            'id' => 'required|string|max:16|unique:users',
+            'divisi' => 'required|exists:divisions,id',
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'id' => $request->id, // Simpan NIK
+            'id' => $request->id,
+            'divisi' => $request->divisi,
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -46,6 +53,6 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        return redirect(route('login'))->with('status', 'Registration successful. Please login.');
+        return redirect(route('admin.dashboard'))->with('status', 'Registrasi berhasil, silahkan login.');
     }
 }

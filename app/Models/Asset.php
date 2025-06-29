@@ -4,26 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Reports\Report;
 
 class Asset extends Model
 {
     use HasFactory;
 
     protected $table = 'assets';
-
     protected $primaryKey = 'serial_number';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
         'serial_number',
-        'name',
-        'id_user',
-        'type',
-        'series',
+        'divisi',
+        'nama',
+        'tipe',
+        'seri',
         'gambar',
-        'tgl_beli',
-        'last_service',
+        'tanggal_beli',
+        'terakhir_servis',
+        'lokasi',
+        'status_aset'
     ];
 
     public function reports()
@@ -31,8 +33,8 @@ class Asset extends Model
         return $this->hasMany(Report::class, 'aset', 'serial_number');
     }
 
-    public function user()
+    public function division()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(Division::class, 'divisi');
     }
 }

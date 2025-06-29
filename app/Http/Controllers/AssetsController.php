@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Response;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Asset;
+use App\Models\Division;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -23,13 +24,13 @@ class AssetsController extends Controller
         return Inertia::render('Assets/Index');
     }
 
-    public function show($type)
+    public function show($tipe)
     {
-        $items = Asset::where('type', $type)->get();
+        $items = Asset::where('tipe', $tipe)->get();
 
         return Inertia::render('Assets/Item', [
             'items' => $items,
-            'type' => $type
+            'tipe' => $tipe
         ]);
     }
 
@@ -48,9 +49,9 @@ class AssetsController extends Controller
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
-        $users = User::select('id', 'name')->get();
+        $divisions = Division::select('id', 'nama_divisi')->get();
 
-        return Inertia::render('Assets/Create', ['users' => $users]);
+        return Inertia::render('Assets/Create', ['divisions' => $divisions]);
     }
 
     public function store(Request $request)
@@ -62,13 +63,15 @@ class AssetsController extends Controller
         // Validasi input
         $validated = $request->validate([
             'serial_number' => 'required|string|max:50|unique:assets',
-            'id_user' => 'required|exists:users,id',
-            'name' => 'nullable|string|max:50',
-            'type' => 'nullable|string|max:50',
-            'series' => 'nullable|string|max:50',
+            'divisi' => 'required|exists:divisions,id',
+            'nama' => 'nullable|string|max:50',
+            'tipe' => 'nullable|string|max:50',
+            'seri' => 'nullable|string|max:50',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'tgl_beli' => 'nullable|date',
-            'last_service' => 'nullable|date',
+            'lokasi' => 'nullable|string|max:50',
+            'status_aset' => 'required|in:Aktif,Dalam Penanganan,Hilang',
+            'tanggal_beli' => 'nullable|date',
+            'terakhir_servis' => 'nullable|date',
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -87,10 +90,10 @@ class AssetsController extends Controller
         return response()->json($assets);
     }
 
-    public function detail($type, $serial_number)
+    public function detail($tipe, $serial_number)
     {
-        $item = Asset::with('user')
-            ->where('type', $type)
+        $item = Asset::with('division')
+            ->where('tipe', $tipe)
             ->where('serial_number', $serial_number)
             ->firstOrFail();
         return Inertia::render('Assets/Detail', ['item' => $item]);
@@ -103,23 +106,23 @@ class AssetsController extends Controller
         }
 
         $asset = Asset::findOrFail($serial_number);
-        $type = $asset->type;
+        $tipe = $asset->tipe;
         $asset->delete();
-        return redirect()->route('Item.Show', ['type' => $type]);
+        return redirect()->route('Item.Show', ['tipe' => $tipe]);
     }
 
-    public function edit($type, $serial_number): Response
+    public function edit($tipe, $serial_number): Response
     {
         if (Auth::check() && Auth::user()->role !== 'admin') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
         $item = Asset::findOrFail($serial_number);
-        $users = User::select('id', 'name')->get();
+        $divisions = Division::select('id', 'nama_divisi')->get();
 
         return Inertia::render('Assets/Edit', [
             'item' => $item,
-            'users' => $users
+            'divisions' => $divisions
         ]);
     }
 
@@ -131,11 +134,13 @@ class AssetsController extends Controller
 
         $validatedData = $request->validate([
             'serial_number' => 'required|string|max:255|unique:assets,serial_number,' . $serial_number . ',serial_number',
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'series' => 'required|string|max:255',
-            'tgl_beli' => 'required|date',
-            'last_service' => 'nullable|date',
+            'nama' => 'required|string|max:255',
+            'tipe' => 'required|string|max:255',
+            'seri' => 'required|string|max:255',
+            'lokasi' => 'required|string|max:255',
+            'status_aset' => 'required|in:Aktif,Dalam Penanganan,Hilang',
+            'tanggal_beli' => 'required|date',
+            'terakhir_servis' => 'nullable|date',
             'gambar' => 'nullable|image|mimes:jpeg,png,webp|max:2048',
         ]);
 
@@ -162,15 +167,17 @@ class AssetsController extends Controller
         }
 
         $item->update([
-            'name' => $validatedData['name'],
-            'type' => $validatedData['type'],
-            'series' => $validatedData['series'],
-            'tgl_beli' => $validatedData['tgl_beli'],
-            'last_service' => $validatedData['last_service'],
+            'nama' => $validatedData['nama'],
+            'tipe' => $validatedData['tipe'],
+            'seri' => $validatedData['seri'],
+            'lokasi' => $validatedData['lokasi'],
+            'status_aset' => $validatedData['status_aset'],
+            'tanggal_beli' => $validatedData['tanggal_beli'],
+            'terakhir_servis' => $validatedData['terakhir_servis'],
         ]);
 
         return redirect()->route('Item.Edit', [
-            'type' => $item->type,
+            'tipe' => $item->tipe,
             'serial_number' => $validatedData['serial_number']
         ])->with('success', 'Data berhasil diperbarui.');
     }

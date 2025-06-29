@@ -6,20 +6,22 @@ import { useForm } from "@inertiajs/vue3";
 import { Notify } from 'notiflix';
 
 defineProps({
-  users: Array
+  divisions: Array
 });
 
 const gambarPreview = ref(null);
 
 const form = useForm({
   serial_number: "",
-  id_user: "",
-  name: "",
-  type: "",
-  series: "",
+  divisi: "",
+  nama: "",
+  tipe: "",
+  seri: "",
   gambar: null,
-  tgl_beli: "",
-  last_service: "",
+  tanggal_beli: "",
+  terakhir_servis: "",
+  lokasi: "",
+  status_aset: "",
 });
 
 const handleFileUpload = (event) => {
@@ -33,12 +35,14 @@ const handleFileUpload = (event) => {
 const submit = () => {
   const formData = new FormData();
   formData.append("serial_number", form.serial_number);
-  formData.append("id_user", form.id_user);
+  formData.append("divisi", form.divisi);
   formData.append("name", form.name);
-  formData.append("type", form.type);
-  formData.append("series", form.series);
-  formData.append("tgl_beli", form.tgl_beli);
-  formData.append("last_service", form.last_service);
+  formData.append("tipe", form.tipe);
+  formData.append("seri", form.seri);
+  formData.append("tanggal_beli", form.tgl_beli);
+  formData.append("terkahir_servis", form.terakhir_servis);
+  formData.append("lokasi", form.lokasi);
+  formData.append("status_aset", form.status_aset);
   if (form.gambar) {
     formData.append("gambar", form.gambar);
   }
@@ -78,27 +82,27 @@ const submit = () => {
 
     <form @submit.prevent="submit" enctype="multipart/form-data" class="space-y-4">
 
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-3">
         <div>
           <label class="block text-sm font-medium">Serial Number</label>
           <input v-model="form.serial_number" type="text" class="input" required />
         </div>
 
         <div>
-          <label class="block text-sm font-medium">Nama User</label>
-          <select v-model="form.id_user" class="input">
-            <option v-for="user in users" :key="user.id" :value="user.id">
-              {{ user.name }}
+          <label class="block text-sm font-medium">Divisi</label>
+          <select v-model="form.divisi" class="input">
+            <option v-for="division in divisions" :key="division.id" :value="division.id">
+              {{ division.nama_divisi }}
             </option>
           </select>
         </div>
 
       </div>
 
-      <div class="grid grid-cols-3 gap-3">
+      <div class="grid sm:grid-cols-1 lg:grid-cols-3 gap-3">
         <div>
           <label class="block text-sm font-medium">Tipe</label>
-          <select v-model="form.type" class="input">
+          <select v-model="form.tipe" class="input">
             <option value="Proyektor">Proyektor</option>
             <option value="Monitor">Monitor</option>
             <option value="Access Point">Access Point</option>
@@ -119,16 +123,16 @@ const submit = () => {
 
         <div>
           <label class="block text-sm font-medium">Nama</label>
-          <input v-model="form.name" type="text" class="input" />
+          <input v-model="form.nama" type="text" class="input" />
         </div>
 
-        <div class="mb-5">
-          <label class="block text-sm font-medium">Series</label>
-          <input v-model="form.series" type="text" class="input" />
+        <div>
+          <label class="block text-sm font-medium">Seri</label>
+          <input v-model="form.seri" type="text" class="input" />
         </div>
       </div>
 
-      <div class="w-full px-3 my-5">
+      <div class="w-full px-3 py-5">
         <label
           class="mx-auto cursor-pointer flex w-full max-w-lg flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-400 bg-white p-6 text-center"
           for="dropzone-file">
@@ -154,15 +158,31 @@ const submit = () => {
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium">Lokasi</label>
+          <input v-model="form.lokasi" type="input" class="input" />
+        </div>
+
+        <div class="mb-5">
+          <label class="block text-sm font-medium" for="status_aset">Status</label>
+          <select id="status_aset" v-model="form.status_aset" class="input">
+            <option value="Aktif">Aktif</option>
+            <option value="Dalam Penanganan">Dalam Penanganan</option>
+            <option value="Hilang">Hilang</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-3">
         <div>
           <label class="block text-sm font-medium">Tanggal Beli</label>
-          <input v-model="form.tgl_beli" type="date" class="input" />
+          <input v-model="form.tanggal_beli" type="date" class="input" />
         </div>
 
         <div class="mb-5">
           <label class="block text-sm font-medium">Terakhir Servis</label>
-          <input v-model="form.last_service" type="date" class="input" />
+          <input v-model="form.terakhir_servis" type="date" class="input" />
         </div>
       </div>
 
