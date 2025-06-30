@@ -12,7 +12,7 @@ const props = defineProps({
 
 const showModal = ref(false);
 const selectedImage = ref('');
-const assetName = ref(props.report.asset ? props.report.asset.name : 'Tidak ditemukan');
+const assetName = ref(props.report.aset ? props.report.aset.nama : 'Tidak ditemukan');
 
 const openImage = (image) => {
     selectedImage.value = image;
@@ -32,7 +32,7 @@ const printPdf = (id) => {
 
     <div class="container mx-auto my-12 min-h-screen px-4">
         <div class="flex justify-between items-center my-6">
-            <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Detail Laporan</h1>
+            <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Detail</h1>
             <button @click="$inertia.get('/riwayat')"
                 class="bg-yellow-500 hover:bg-yellow-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-all">
                 Kembali ke Riwayat
@@ -47,10 +47,19 @@ const printPdf = (id) => {
                         </p>
                         <p class="text-lg font-semibold text-gray-700"><strong>Pelapor:</strong> {{ report.user?.name }}
                         </p>
-                        <p class="text-lg text-gray-600"><strong>Serial Number:</strong> {{ report.aset }}</p>
-                        <p class="text-lg text-gray-600"><strong>Aset:</strong> {{ assetName }}</p>
-                        <p class="text-lg text-gray-600"><strong>Laporan Kerusakan:</strong> {{ report.laporan_kerusakan
-                            }}</p>
+                        <p class="text-lg text-gray-600"><strong>Serial Number:</strong> {{ report.aset?.serial_number
+                            ?? 'Tidak ditemukan' }}</p>
+                        <p class="text-lg text-gray-600"><strong>Nama:</strong> {{ report.aset?.nama }}</p>
+                        <p class="text-lg text-gray-600"><strong>Tipe:</strong> {{ report.aset?.tipe }}</p>
+                        <p class="text-lg text-gray-600"><strong>Lokasi:</strong> {{ report.aset?.lokasi }}</p>
+
+                        <!-- <p class="text-lg text-gray-600"><strong>Aset:</strong> {{ assetName }}</p> -->
+                        <p class="text-lg text-gray-600"><strong>Identifikasi Masalah:</strong></p>
+                        <ul class="ml-4 list-disc text-gray-600">
+                            <li v-for="item in report.report_identifications" :key="item.id">
+                                {{ item.identification?.identifikasi_masalah ?? 'Tidak ditemukan' }}
+                            </li>
+                        </ul>
                     </div>
 
                     <div class="border border-gray-300 p-4 rounded-md bg-gray-50">

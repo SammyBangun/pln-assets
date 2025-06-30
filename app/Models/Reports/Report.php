@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Asset;
+use App\Models\Reports\ReportIdentification;
+use App\Models\Identification;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Report extends Model
@@ -36,13 +38,28 @@ class Report extends Model
         });
     }
 
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_pelapor');
     }
 
-    public function asset()
+    public function aset()
     {
         return $this->belongsTo(Asset::class, 'aset', 'serial_number');
+    }
+
+    public function identifications()
+    {
+        return $this->belongsToMany(
+            Identification::class,
+            ReportIdentification::class,
+            'report_id',
+            'identifikasi_masalah'
+        );
+    }
+
+    public function reportIdentifications()
+    {
+        return $this->hasMany(ReportIdentification::class, 'report_id', 'id');
     }
 }

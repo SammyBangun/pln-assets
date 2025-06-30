@@ -6,6 +6,7 @@ use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Identification;
 use App\Models\Reports\Report;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +51,7 @@ Route::put('/users/{user}/role', function (Request $request, User $user) {
 
 //laporan
 Route::middleware(['auth'])->group(function () {
+    Route::get('/form', [ReportController::class, 'create'])->name('form');
     Route::get('/riwayat', [ReportController::class, 'index'])->name('riwayat.index');
     Route::post('/riwayat', [ReportController::class, 'store'])->name('riwayat.store');
     Route::get('/riwayat/{id}', [ReportController::class, 'show'])->name('riwayat.show');
@@ -72,7 +74,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware([CheckRole::class . ':admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('Admin/Dashboard', [
-                'reports' => Report::with('user')->get()
+                'reports' => Report::with('user', 'reportIdentifications.identification')->get()
             ]);
         })->name('admin.dashboard');
 
@@ -80,13 +82,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return Inertia::render('Admin/ReqAccount');
         })->name('admin.request_account');
     });
-
-    // Route untuk form laporan
-    Route::get('/form', function () {
-        return Inertia::render('FormLaporan');
-    })->name('form');
-
-    // Route untuk manajemen asset
 
     // Route untuk profile user
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

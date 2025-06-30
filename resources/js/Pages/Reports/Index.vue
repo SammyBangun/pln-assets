@@ -30,7 +30,7 @@ const latestReports = computed(() => {
     return [...(props.reports || [])]
         .filter(report =>
             report.user?.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            report.laporan_kerusakan?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            report.identifikasi_masalah?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
             report.deskripsi?.toLowerCase().includes(searchQuery.value.toLowerCase())
         )
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -92,7 +92,7 @@ const deleteReport = (id) => {
                         <th class="py-3 px-4 text-left">Identifikasi Masalah</th>
                         <th class="py-3 px-4 text-left">Deskripsi</th>
                         <!-- <th class="py-3 px-4 text-left">Tanggal</th> -->
-                        <th class="py-3 px-4 text-left">Status</th>
+                        <!-- <th class="py-3 px-4 text-left">Status</th> -->
                         <th class="py-3 px-4 text-left">Gambar</th>
                         <th class="py-3 px-4 text-center">Aksi</th>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
@@ -107,18 +107,27 @@ const deleteReport = (id) => {
                             <td class="py-3 px-4">{{ report.user?.name }}</td>
                         </template>
                         <td class="py-3 px-4">{{ report.aset }}</td>
-                        <td class="py-3 px-4">{{ report.laporan_kerusakan }}</td>
+                        <td class="py-3 px-4">
+                            <ul>
+                                <li v-for="item in report.report_identifications.slice(0, 2)" :key="item.id">
+                                    {{ item.identification?.identifikasi_masalah ?? 'Tidak ditemukan' }}
+                                </li>
+                                <li v-if="report.report_identifications.length > 2">
+                                    ...
+                                </li>
+                            </ul>
+                        </td>
                         <td class="py-3 px-4">{{ report.deskripsi?.slice(0, 60) }}{{ report.deskripsi?.length > 60 ?
                             '...' : '' }}</td>
                         <!-- <td class="py-3 px-4">{{ formatDate(report.created_at) }}</td> -->
-                        <td class="py-3 px-4">
+                        <!-- <td class="py-3 px-4">
                             <span v-if="report.status === 'Diproses'"
                                 class="text-yellow-500 font-semibold">Diproses</span>
                             <span v-else-if="report.status === 'Selesai'"
                                 class="text-green-500 font-semibold">Selesai</span>
                             <span v-else-if="report.status === 'Diterima'"
                                 class="text-blue-500 font-semibold">Diterima</span>
-                        </td>
+                        </td> -->
                         <td class="py-3 px-4">
                             <img v-if="report.gambar" :src="report.gambar" alt="Gambar Laporan"
                                 class="w-20 h-20 object-cover rounded-md">

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Reports\Report;
+namespace App\Models\Reports;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Identification;
@@ -10,17 +10,17 @@ class ReportIdentification extends Model
 {
     public $timestamps = false;
     protected $fillable = [
-        'id_pelaporan',
+        'report_id',
         'identifikasi_masalah'
     ];
 
     public function report()
     {
-        return $this->belongsTo(Report::class, 'id_pelaporan');
+        return $this->belongsTo(Report::class, 'report_id', 'id');
     }
 
     public function identification()
     {
-        return $this->belongsTo(Identification::class, 'identifikasi_masalah');
+        return $this->belongsTo(Identification::class, 'identifikasi_masalah', 'id');
     }
 }

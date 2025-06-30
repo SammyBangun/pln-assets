@@ -1,28 +1,26 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
 import { fetchAssets, assets } from '@/functions/fetchAssets';
 import { useForm } from '@inertiajs/vue3';
 import { Notify } from 'notiflix';
 
+onMounted(fetchAssets);
+
+defineProps({
+    identifications: Array,
+});
+
 const showOtherInput = ref(false);
 const otherCategory = ref('');
 const gambarPreview = ref(null);
 
-
 const form = useForm({
     aset: '',
-    laporan_kerusakan: '',
+    identifikasi_masalah: [],
     deskripsi: '',
     gambar: null
-});
-
-watch(() => form.laporan_kerusakan, (newValue) => {
-    showOtherInput.value = newValue === 'other';
-    if (!showOtherInput.value) {
-        otherCategory.value = '';
-    }
 });
 
 const handleFileUpload = (event) => {
@@ -34,17 +32,17 @@ const handleFileUpload = (event) => {
     }
 };
 
-onMounted(fetchAssets);
-
 const submit = () => {
-    if (showOtherInput.value) {
-        form.laporan_kerusakan = otherCategory.value;
-    }
-
     // Gunakan FormData untuk mengirim file
     const formData = new FormData();
+
+    console.log('formData aset:', form.aset);
+    console.log('formData identifikasi:', form.identifikasi_masalah);
+
     formData.append('aset', form.aset);
-    formData.append('laporan_kerusakan', form.laporan_kerusakan);
+    form.identifikasi_masalah.forEach((id, index) => {
+        formData.append(`identifikasi_masalah[${index}]`, id);
+    });
     formData.append('deskripsi', form.deskripsi);
     if (form.gambar) {
         formData.append('gambar', form.gambar);
@@ -98,7 +96,7 @@ const submit = () => {
                             <select v-if="assets.length > 0" v-model="form.aset" name="aset"
                                 class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]">
                                 <option v-for="asset in assets" :key="asset.serial_number" :value="asset.serial_number">
-                                    {{ asset.serial_number }} - {{ asset.name }}
+                                    {{ asset.serial_number }} - {{ asset.nama }}
                                 </option>
                             </select>
 
@@ -107,25 +105,20 @@ const submit = () => {
                         </div>
 
                         <div class="w-full md:w-full px-3 mb-6">
-                            <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
-                                for="category_name">
+                            <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2">
                                 Identifikasi Masalah
                             </label>
-                            <select v-model="form.laporan_kerusakan" name="category_name"
-                                class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]">
-                                <option value="Gangguan Hardware">Gangguan Hardware</option>
-                                <option value="Gangguan Software">Gangguan Software</option>
-                                <option value="Gangguan Virus">Gangguan Virus</option>
-                                <option value="Gangguan Sistem Operasi">Gangguan Sistem Operasi</option>
-                                <option value="Gangguan Jaringan LAN">Gangguan Jaringan LAN</option>
-                                <option value="Gangguan Jaringan WIFI">Gangguan Jaringan WIFI</option>
-                                <option value="Gangguan Jaringan Internet">Gangguan Jaringan Internet</option>
-                                <option value="Gangguan Jaringan Intranet">Gangguan Jaringan Intranet</option>
-                                <option value="other">Lainnya...</option>
-                            </select>
-                            <input v-if="showOtherInput" v-model="otherCategory" type="text"
-                                placeholder="Masukkan jenis gangguan"
-                                class="appearance-none w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d] mt-3" />
+
+                            <div v-if="identifications.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <label v-for="identification in identifications" :key="identification.id"
+                                    class="flex items-center space-x-2">
+                                    <input type="checkbox" :value="identification.id"
+                                        v-model="form.identifikasi_masalah"
+                                        class="rounded border-gray-300 text-[#98c01d] shadow-sm focus:ring-[#98c01d]" />
+                                    <span class="text-gray-700">{{ identification.identifikasi_masalah }}</span>
+                                </label>
+                            </div>
+                            <p v-else class="text-gray-500 text-sm italic">Data identifikasi belum tersedia</p>
                         </div>
 
                         <div class="w-full px-3 mb-6">
@@ -146,7 +139,7 @@ const submit = () => {
                                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                 </svg>
 
-                                <h2 class="mt-4 text-xl font-medium text-gray-700 tracking-wide">Gambar Pelaporan</h2>
+                                <h2 class="mt-4 text-xl font-medium text-gray-700 tracking-wide">Upload Gambar</h2>
                                 <p class="mt-2 text-gray-500 tracking-wide">Unggah atau seret & letakkan file Anda (SVG,
                                     PNG, JPG, GIF).</p>
 

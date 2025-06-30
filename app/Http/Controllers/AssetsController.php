@@ -86,7 +86,7 @@ class AssetsController extends Controller
 
     public function getAssets()
     {
-        $assets = Asset::select('serial_number', 'name')->get();
+        $assets = Asset::select('serial_number', 'nama')->get();
         return response()->json($assets);
     }
 
