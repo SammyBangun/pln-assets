@@ -76,7 +76,7 @@ class ReportController extends Controller
 
             DB::commit();
 
-            return back()->with('success', 'Laporan berhasil disimpan.');
+            return redirect()->route('riwayat.index')->with('success', 'Laporan berhasil dikirim');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Gagal menyimpan laporan. ' . $e->getMessage()]);
@@ -196,7 +196,7 @@ class ReportController extends Controller
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
-        $report = Report::with(['user', 'asset'])->findOrFail($id);
+        $report = Report::with(['user', 'aset'])->findOrFail($id);
 
         return Inertia::render('Admin/AdminConfirmation', [
             'report' => $report

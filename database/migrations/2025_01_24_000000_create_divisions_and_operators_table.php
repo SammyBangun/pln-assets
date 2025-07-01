@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('divisions', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->unsignedInteger('id')->primary()->autoIncrement();
             $table->string('nama_divisi');
         });
 
         Schema::create('operators', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->unsignedInteger('id')->primary()->autoIncrement();
             $table->string('nama_petugas');
             $table->string('no_hp');
         });

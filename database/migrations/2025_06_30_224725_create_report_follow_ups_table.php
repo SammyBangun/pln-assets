@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('report_follow_ups', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedInteger('id')->primary()->autoIncrement();
             $table->string('id_penugasan');
             $table->foreign('id_penugasan')->references('id')->on('report_assignments')->onDelete('cascade');
-            $table->foreignId('id_gangguan')->constrained('disruptions')->onDelete('cascade');
+            $table->unsignedInteger('jenis_gangguan');
+            $table->foreign('jenis_gangguan')->references('id')->on('disruptions')->onDelete('cascade');
             $table->string('id_detail_gangguan');
             $table->foreign('id_detail_gangguan')->references('id')->on('detail_disruptions')->onDelete('cascade');
             $table->text('catatan_tambahan')->nullable();

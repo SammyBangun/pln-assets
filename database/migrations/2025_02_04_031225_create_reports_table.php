@@ -9,7 +9,8 @@ return new class extends Migration {
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_pelapor')->constrained('users')->onDelete('cascade');
+            $table->unsignedInteger('user_pelapor');
+            $table->foreign('user_pelapor')->references('id')->on('users')->onDelete('cascade');
             $table->string('aset');
             $table->foreign('aset')->references('serial_number')->on('assets')->onDelete('cascade');
             $table->text('deskripsi');

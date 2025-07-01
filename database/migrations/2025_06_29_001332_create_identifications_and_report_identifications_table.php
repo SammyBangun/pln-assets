@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('identifications', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->unsignedInteger('id')->primary()->autoIncrement();
             $table->string('identifikasi_masalah');
         });
 
         Schema::create('report_identifications', function (Blueprint $table) {
-            $table->id()->autoIncrement();
+            $table->unsignedInteger('id')->primary()->autoIncrement();
             $table->string('report_id');
             $table->foreign('report_id')->references('id')->on('reports')->onDelete('cascade');
-            $table->string('identifikasi_masalah');
+            $table->unsignedInteger('identifikasi_masalah');
             $table->foreign('identifikasi_masalah')->references('id')->on('identifications')->onDelete('cascade');
         });
     }

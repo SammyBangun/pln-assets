@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('deliverables', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedInteger('id')->primary()->autoIncrement();
             $table->string('realisasi_hasil');
             $table->text('catatan')->nullable();
         });

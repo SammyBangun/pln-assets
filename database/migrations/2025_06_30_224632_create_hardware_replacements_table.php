@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('hardware_replacements', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedInteger('id')->primary()->autoIncrement();
             $table->string('id_gangguan_hardware');
             $table->foreign('id_gangguan_hardware')->references('id')->on('detail_disruptions')->onDelete('cascade');
             $table->string('detail_merek_hardware');

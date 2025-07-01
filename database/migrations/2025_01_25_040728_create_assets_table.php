@@ -13,8 +13,8 @@
         {
             Schema::create('assets', function (Blueprint $table) {
                 $table->string('serial_number', 50)->primary();
-                $table->string('divisi');
-                $table->foreign('divisi')->references('id')->on('divisions')->onDelete('cascade');
+                $table->unsignedInteger('id_divisi');
+                $table->foreign('id_divisi')->references('id')->on('divisions')->onDelete('cascade');
                 $table->string('nama', 50);
                 $table->string('tipe', 50);
                 $table->string('seri', 50);

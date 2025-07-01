@@ -15,9 +15,10 @@ return new class extends Migration
             $table->string('id')->primary();
             $table->string('report_id');
             $table->foreign('report_id')->references('id')->on('reports')->onDelete('cascade');
-            $table->string('petugas');
+            $table->unsignedInteger('petugas');
             $table->foreign('petugas')->references('id')->on('operators')->onDelete('cascade');
-            $table->foreignId('realisasi')->references('id')->on('deliverables')->onDelete('cascade');
+            $table->unsignedInteger('realisasi');
+            $table->foreign('realisasi')->references('id')->on('deliverables')->onDelete('cascade');
             $table->string('gambar_tindak_lanjut')->nullable();
             $table->date('tanggal_penugasan');
             $table->string('lokasi');
