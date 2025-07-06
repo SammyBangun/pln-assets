@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Disruptions\DetailDisruption;
 
 class HardwareReplacement extends Model
 {
@@ -13,4 +14,9 @@ class HardwareReplacement extends Model
         'detail_merek_hardware',
         'jumlah',
     ];
+
+    public function detailDisruption()
+    {
+        return $this->belongsTo(DetailDisruption::class, 'id_gangguan_hardware', 'id');
+    }
 }

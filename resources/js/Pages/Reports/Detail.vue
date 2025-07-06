@@ -43,7 +43,9 @@ const printPdf = (id) => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-4">
                     <div class="border border-gray-300 p-4 rounded-md bg-gray-50">
-                        <p class="text-lg text-gray-600"><strong>Tanggal:</strong> {{ formatDate(report.created_at) }}
+                        <p class="text-lg text-gray-600">
+                            <strong>Tanggal:</strong>
+                            {{ report.created_at ? formatDate(report.created_at) : 'Tidak diketahui' }}
                         </p>
                         <p class="text-lg font-semibold text-gray-700"><strong>Pelapor:</strong> {{ report.user?.name }}
                         </p>
@@ -81,11 +83,19 @@ const printPdf = (id) => {
                     <div class="mb-5 flex justify-between items-center">
                         <p class="text-xl font-semibold text-gray-800">Konfirmasi Admin</p>
                         <p class="text-lg font-semibold text-gray-700 flex items-center">
-                            <strong>Status:</strong>&nbsp;{{ report.status }}
-                            <span v-if="report.status === 'Selesai'" class="ml-2 text-green-500">✅</span>
-                            <span v-if="report.status === 'Diproses'" class="ml-2 text-yellow-500">⏳</span>
-                            <span v-if="report.status === 'Diterima'" class="ml-2 text-blue-500">➡️</span>
+                            <strong>Status:</strong>&nbsp;{{ report.assignment?.status }}
+                            <span v-if="report.assignment?.status === 'Selesai'" class="ml-2 text-green-500">✅</span>
+                            <span v-if="report.assignment?.status === 'Menunggu Konfirmasi'"
+                                class="ml-2 text-green-500">⌛</span>
+                            <span v-if="report.assignment?.status === 'Diproses'" class="ml-2 text-yellow-500">♻️</span>
+                            <span v-if="report.assignment?.status === 'Diterima'" class="ml-2 text-blue-500">➡️</span>
+                            <span v-if="report.assignment?.status === 'Ditolak'" class="ml-2 text-red-500">❌</span>
                         </p>
+                    </div>
+                    <div class="border border-gray-300 p-4 rounded-md bg-gray-50 mb-3">
+                        <p class="text-lg text-gray-700"><strong>Alasan Penolakan:</strong> {{
+                            report.assignment?.keterangan_status
+                            || 'Belum dikonfirmasi admin' }}</p>
                     </div>
                     <div>
                         <p class="text-lg text-gray-700"><strong>Tindak Lanjut:</strong> {{ report.tindak_lanjut ||

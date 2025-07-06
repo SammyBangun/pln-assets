@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('aset');
             $table->foreign('aset')->references('serial_number')->on('assets')->onDelete('cascade');
             $table->text('deskripsi');
-            $table->string('gambar');
+            $table->string('gambar')->nullable();
             $table->timestamps();
         });
     }

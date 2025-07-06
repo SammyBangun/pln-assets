@@ -6,14 +6,15 @@ import { useForm } from "@inertiajs/vue3";
 import { Notify } from 'notiflix';
 
 defineProps({
-  divisions: Array
+  divisions: Array,
+  asset_types: Array
 });
 
 const gambarPreview = ref(null);
 
 const form = useForm({
   serial_number: "",
-  divisi: "",
+  id_divisi: "",
   nama: "",
   tipe: "",
   seri: "",
@@ -21,7 +22,6 @@ const form = useForm({
   tanggal_beli: "",
   terakhir_servis: "",
   lokasi: "",
-  status_aset: "",
 });
 
 const handleFileUpload = (event) => {
@@ -33,16 +33,22 @@ const handleFileUpload = (event) => {
 };
 
 const submit = () => {
+  if (!form.gambar) {
+    Notify.failure("Gambar harus diunggah terlebih dahulu.", {
+      position: 'center-top',
+      distance: '70px',
+    });
+    return;
+  }
   const formData = new FormData();
   formData.append("serial_number", form.serial_number);
-  formData.append("divisi", form.divisi);
+  formData.append("id_divisi", form.id_divisi);
   formData.append("name", form.name);
   formData.append("tipe", form.tipe);
   formData.append("seri", form.seri);
   formData.append("tanggal_beli", form.tgl_beli);
   formData.append("terkahir_servis", form.terakhir_servis);
   formData.append("lokasi", form.lokasi);
-  formData.append("status_aset", form.status_aset);
   if (form.gambar) {
     formData.append("gambar", form.gambar);
   }
@@ -72,7 +78,6 @@ const submit = () => {
     }
   });
 };
-
 </script>
 
 <template>
@@ -90,7 +95,7 @@ const submit = () => {
 
         <div>
           <label class="block text-sm font-medium">Divisi</label>
-          <select v-model="form.divisi" class="input">
+          <select v-model="form.id_divisi" class="input">
             <option v-for="division in divisions" :key="division.id" :value="division.id">
               {{ division.nama_divisi }}
             </option>
@@ -102,22 +107,11 @@ const submit = () => {
       <div class="grid sm:grid-cols-1 lg:grid-cols-3 gap-3">
         <div>
           <label class="block text-sm font-medium">Tipe</label>
-          <select v-model="form.tipe" class="input">
-            <option value="Proyektor">Proyektor</option>
-            <option value="Monitor">Monitor</option>
-            <option value="Access Point">Access Point</option>
-            <option value="Keyboard">Keyboard</option>
-            <option value="Switch">Switch</option>
-            <option value="Laptop">Laptop</option>
-            <option value="Kamera">Kamera</option>
-            <option value="Mouse">Mouse</option>
-            <option value="Router">Router</option>
-            <option value="Printer">Printer</option>
-            <option value="Audio">Audio</option>
-            <option value="TV">TV</option>
-            <option value="PC">PC</option>
-            <option value="Hub">Hub</option>
-            <option value="DLL">DLL</option>
+          <select v-model="form.tipe" name="tipe"
+            class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]">
+            <option v-for="aset in asset_types" :key="aset.id" :value="aset.id">
+              {{ aset.tipe }}
+            </option>
           </select>
         </div>
 
@@ -135,7 +129,7 @@ const submit = () => {
       <div class="w-full px-3 py-5">
         <label
           class="mx-auto cursor-pointer flex w-full max-w-lg flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-400 bg-white p-6 text-center"
-          for="dropzone-file">
+          for="dropzone-file" required>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-800" fill="none" viewBox="0 0 24 24"
             stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round"
@@ -158,20 +152,20 @@ const submit = () => {
         </div>
       </div>
 
-      <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="w-8/12 mx-auto grid sm:grid-cols-1 md:grid-cols-1 gap-3">
         <div>
           <label class="block text-sm font-medium">Lokasi</label>
-          <input v-model="form.lokasi" type="input" class="input" />
+          <textarea v-model="form.lokasi" class="input"></textarea>
         </div>
 
-        <div class="mb-5">
+        <!-- <div class="mb-5">
           <label class="block text-sm font-medium" for="status_aset">Status</label>
           <select id="status_aset" v-model="form.status_aset" class="input">
             <option value="Aktif">Aktif</option>
             <option value="Dalam Penanganan">Dalam Penanganan</option>
             <option value="Hilang">Hilang</option>
           </select>
-        </div>
+        </div> -->
       </div>
 
       <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-3">

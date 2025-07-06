@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Assets;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Reports\Report;
+use App\Models\Assets\AssetType;
+use App\Models\Division;
 
 class Asset extends Model
 {
@@ -17,7 +19,7 @@ class Asset extends Model
 
     protected $fillable = [
         'serial_number',
-        'divisi',
+        'id_divisi',
         'nama',
         'tipe',
         'seri',
@@ -35,6 +37,11 @@ class Asset extends Model
 
     public function division()
     {
-        return $this->belongsTo(Division::class, 'divisi');
+        return $this->belongsTo(Division::class, 'id_divisi');
+    }
+
+    public function tipe()
+    {
+        return $this->belongsTo(AssetType::class, 'tipe');
     }
 }

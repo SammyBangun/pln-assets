@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use App\Models\Reports\ReportAssignment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Operator extends Model
@@ -14,4 +14,9 @@ class Operator extends Model
         'nama_petugas',
         'no_hp'
     ];
+
+    public function assign()
+    {
+        return $this->hasMany(ReportAssignment::class);
+    }
 }

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Middleware\AdminOnly;
+use App\Models\Assets\AssetType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Response;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use App\Models\Asset;
+use App\Models\Assets\Asset;
 use App\Models\Division;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -26,11 +27,15 @@ class AssetsController extends Controller
 
     public function show($tipe)
     {
-        $items = Asset::where('tipe', $tipe)->get();
+        $tipeModel = AssetType::where('id',  $tipe)->first();
+
+        $items = Asset::with('tipe')
+            ->where('tipe', $tipeModel->id)
+            ->get();
 
         return Inertia::render('Assets/Item', [
             'items' => $items,
-            'tipe' => $tipe
+            'tipe' => $tipeModel->tipe,
         ]);
     }
 
@@ -50,8 +55,12 @@ class AssetsController extends Controller
         }
 
         $divisions = Division::select('id', 'nama_divisi')->get();
+        $asset_types = AssetType::select('id', 'tipe')->get();
 
-        return Inertia::render('Assets/Create', ['divisions' => $divisions]);
+        return Inertia::render('Assets/Create', [
+            'divisions' => $divisions,
+            'asset_types' => $asset_types
+        ]);
     }
 
     public function store(Request $request)
@@ -63,16 +72,18 @@ class AssetsController extends Controller
         // Validasi input
         $validated = $request->validate([
             'serial_number' => 'required|string|max:50|unique:assets',
-            'divisi' => 'required|exists:divisions,id',
-            'nama' => 'nullable|string|max:50',
-            'tipe' => 'nullable|string|max:50',
-            'seri' => 'nullable|string|max:50',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'lokasi' => 'nullable|string|max:50',
-            'status_aset' => 'required|in:Aktif,Dalam Penanganan,Hilang',
-            'tanggal_beli' => 'nullable|date',
+            'id_divisi' => 'required|exists:divisions,id',
+            'nama' => 'required|string|max:50',
+            'tipe' => 'required|string|max:50',
+            'seri' => 'required|string|max:50',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'lokasi' => 'required|string',
+            'status_aset' => 'in:Aktif,Dalam Penanganan,Hilang',
+            'tanggal_beli' => 'required|date',
             'terakhir_servis' => 'nullable|date',
         ]);
+
+        $validated['status_aset'] = $validated['status_aset'] ?? 'Aktif';
 
         if ($request->hasFile('gambar')) {
             $gambarPath = $request->file('gambar')->store('assets', 'public');

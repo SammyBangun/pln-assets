@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AssetsController;
-use App\Models\Asset;
+use App\Models\Assets\Asset;
 
 // Group route untuk menambahkan aset
 Route::middleware(['auth'])->group(function () {

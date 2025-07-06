@@ -11,4 +11,9 @@ class Disruption extends Model
     protected $fillable = [
         'nama_gangguan',
     ];
+
+    public function details()
+    {
+        return $this->hasMany(DetailDisruption::class, 'jenis_gangguan', 'id');
+    }
 }

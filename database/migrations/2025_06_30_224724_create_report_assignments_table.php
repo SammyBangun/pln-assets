@@ -22,7 +22,8 @@ return new class extends Migration
             $table->string('gambar_tindak_lanjut')->nullable();
             $table->date('tanggal_penugasan');
             $table->string('lokasi');
-            $table->enum('status', ['Diterima', 'Diproses', 'Selesai'])->default('Diterima');
+            $table->enum('status', ['Menunggu Konfirmasi', 'Ditolak', 'Diterima', 'Diproses', 'Selesai'])->default('Menunggu Konfirmasi');
+            $table->string('keterangan_status')->nullable();
         });
     }
 

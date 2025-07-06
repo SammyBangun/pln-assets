@@ -12,8 +12,6 @@ defineProps({
     identifications: Array,
 });
 
-const showOtherInput = ref(false);
-const otherCategory = ref('');
 const gambarPreview = ref(null);
 
 const form = useForm({

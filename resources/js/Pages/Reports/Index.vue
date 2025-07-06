@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import Navbar from '@/components/Navbar.vue';
-import Footer from '@/components/Footer.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notiflix from "notiflix";
 import formatDate from '@/functions/formatDate';
 import { useForm } from '@inertiajs/vue3';
@@ -71,7 +70,6 @@ const deleteReport = (id) => {
 </script>
 
 <template>
-    <Navbar />
     <div class="container-fluid mx-3 my-8 min-h-screen">
         <h1 class="text-2xl font-bold text-center mb-6">Riwayat</h1>
 
@@ -92,7 +90,7 @@ const deleteReport = (id) => {
                         <th class="py-3 px-4 text-left">Identifikasi Masalah</th>
                         <th class="py-3 px-4 text-left">Deskripsi</th>
                         <!-- <th class="py-3 px-4 text-left">Tanggal</th> -->
-                        <!-- <th class="py-3 px-4 text-left">Status</th> -->
+                        <th class="py-3 px-4 text-left">Status</th>
                         <th class="py-3 px-4 text-left">Gambar</th>
                         <th class="py-3 px-4 text-center">Aksi</th>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
@@ -110,7 +108,7 @@ const deleteReport = (id) => {
                         <td class="py-3 px-4">
                             <ul>
                                 <li v-for="item in report.report_identifications.slice(0, 2)" :key="item.id">
-                                    {{ item.identification?.identifikasi_masalah ?? 'Tidak ditemukan' }}
+                                    ~ {{ item.identification?.identifikasi_masalah ?? 'Tidak ditemukan' }}
                                 </li>
                                 <li v-if="report.report_identifications.length > 2">
                                     ...
@@ -120,14 +118,19 @@ const deleteReport = (id) => {
                         <td class="py-3 px-4">{{ report.deskripsi?.slice(0, 60) }}{{ report.deskripsi?.length > 60 ?
                             '...' : '' }}</td>
                         <!-- <td class="py-3 px-4">{{ formatDate(report.created_at) }}</td> -->
-                        <!-- <td class="py-3 px-4">
-                            <span v-if="report.status === 'Diproses'"
+                        <td class="py-3 px-4">
+                            <span v-if="report.assignment?.status === 'Diproses'"
                                 class="text-yellow-500 font-semibold">Diproses</span>
-                            <span v-else-if="report.status === 'Selesai'"
+                            <span v-else-if="report.assignment?.status === 'Selesai'"
                                 class="text-green-500 font-semibold">Selesai</span>
-                            <span v-else-if="report.status === 'Diterima'"
+                            <span v-else-if="report.assignment?.status === 'Diterima'"
                                 class="text-blue-500 font-semibold">Diterima</span>
-                        </td> -->
+                            <span v-else-if="report.assignment?.status === 'Ditolak'"
+                                class="text-red-500 font-semibold">Ditolak</span>
+                            <span v-else-if="report.assignment?.status === 'Menunggu Konfirmasi'"
+                                class="text-gray-500 font-semibold">Menunggu Konfirmasi</span>
+                            <span v-else class="text-gray-400 italic">Belum ada status</span>
+                        </td>
                         <td class="py-3 px-4">
                             <img v-if="report.gambar" :src="report.gambar" alt="Gambar Laporan"
                                 class="w-20 h-20 object-cover rounded-md">
@@ -157,7 +160,11 @@ const deleteReport = (id) => {
                             <td class="py-3 px-4">
                                 <button @click="$inertia.get(`/admin/konfirmasi/${report.id}`)"
                                     class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
-                                    Konfirmasi Admin
+                                    <span v-if="report.assignment?.status === 'Menunggu Konfirmasi'">Konfirmasi</span>
+                                    <span v-if="report.assignment?.status === 'Diterima'">Penugasan</span>
+                                    <span v-if="report.assignment?.status === 'Diproses'">Tindak Lanjut</span>
+                                    <span v-if="report.assignment?.status === 'Ditolak'">Lihat Alasan</span>
+                                    <span v-if="report.assignment?.status === 'Selesai'">Lihat Laporan</span>
                                 </button>
                             </td>
                         </template>
@@ -166,5 +173,4 @@ const deleteReport = (id) => {
             </table>
         </div>
     </div>
-    <Footer />
 </template>

@@ -23,7 +23,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <nav class="border-b border-gray-100 bg-yellow-400 sticky top-0 w-full">
+    <nav class="border-b border-gray-100 bg-yellow-400 w-full">
         <!-- Primary Navigation Menu -->
         <div class="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
             <div class="flex h-16 justify-between">

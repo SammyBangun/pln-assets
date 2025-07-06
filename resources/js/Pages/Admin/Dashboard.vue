@@ -1,5 +1,6 @@
 <script setup>
 import Index from '../Reports/Index.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 const props = defineProps({
     reports: Array
@@ -8,7 +9,8 @@ const props = defineProps({
 
 <template>
 
-    <Navbar />
-    <Index :reports="reports" />
+    <AdminLayout>
+        <Index :reports="reports" />
+    </AdminLayout>
 
 </template>

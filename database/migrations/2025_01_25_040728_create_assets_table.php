@@ -16,7 +16,8 @@
                 $table->unsignedInteger('id_divisi');
                 $table->foreign('id_divisi')->references('id')->on('divisions')->onDelete('cascade');
                 $table->string('nama', 50);
-                $table->string('tipe', 50);
+                $table->unsignedInteger('tipe');
+                $table->foreign('tipe')->references('id')->on('asset_types')->onDelete('cascade');
                 $table->string('seri', 50);
                 $table->string('gambar');
                 $table->date('tanggal_beli');

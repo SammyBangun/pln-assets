@@ -6,7 +6,6 @@ use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProfileController;
-use App\Models\Identification;
 use App\Models\Reports\Report;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -34,9 +33,6 @@ Route::get('/admin/users', function () {
     // Arahkan ke halaman login jika bukan admin
     return redirect()->route('login');
 })->name('admin.users');
-
-Route::get('/admin/konfirmasi/{id}', [ReportController::class, 'konfirmasi'])->name('konfirmasi');
-Route::post('/admin/konfirmasi/{id}', [ReportController::class, 'kirim'])->name('kirim');
 
 // Rute untuk memperbarui role pengguna (admin only)
 Route::put('/users/{user}/role', function (Request $request, User $user) {
@@ -74,7 +70,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware([CheckRole::class . ':admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('Admin/Dashboard', [
-                'reports' => Report::with('user', 'reportIdentifications.identification')->get()
+                'reports' => Report::with('user', 'reportIdentifications.identification', 'assignment')->get()
             ]);
         })->name('admin.dashboard');
 
@@ -91,3 +87,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/assets.php';
+require __DIR__ . '/admin.php';

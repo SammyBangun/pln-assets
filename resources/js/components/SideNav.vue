@@ -1,28 +1,53 @@
-<!-- <script setup>
-import { inject } from 'vue'
-
-const isExpanded = inject('isExpanded')
-const toggleSidebar = inject('toggleSidebar')
+<script setup>
+import { ref } from 'vue'
+const isOpen = ref(false)
 </script>
 
 <template>
-    <div v-show="isExpanded" class="fixed inset-0 bg-black bg-opacity-50 z-40" @click="toggleSidebar"></div>
+    <div>
+        <!-- Mobile Toggle Button -->
+        <button class="md:hidden p-2 m-4 bg-gray-100 rounded" @click="isOpen = !isOpen">
+            ☰ Menu
+        </button>
 
-    <aside :class="[
-        'fixed top-0 left-0 h-full bg-yellow-500 text-white z-50 transition-transform duration-300 ease-in-out',
-        isExpanded ? 'translate-x-0 w-64' : '-translate-x-full'
-    ]">
-        <div class="p-4 font-bold border-b border-white">
-            SISPA
-            <button @click="toggleSidebar" class="absolute top-4 right-4 text-white">
-                ✕
-            </button>
-        </div>
+        <transition name="fade">
+            <!-- Mobile SideNav -->
+            <nav v-if="isOpen" class="md:hidden bg-white border border-gray-200 rounded mx-4 p-4 mb-4 shadow">
+                <ul class="space-y-3">
+                    <Link :href="route('admin.lookup.divisions')" class="block text-gray-700 hover:text-blue-600">
+                    Divisi
+                    </Link>
+                    <Link :href="route('admin.lookup.operators')" class="block text-gray-700 hover:text-blue-600">
+                    Petugas
+                    </Link>
+                </ul>
+            </nav>
+        </transition>
 
-        <ul class="p-4 space-y-4">
-            <li>Dashboard</li>
-            <li>Assets</li>
-  
-        </ul>
-    </aside>
-</template> -->
+        <!-- Desktop SideNav -->
+        <nav class="hidden md:block bg-white border-r border-gray-200 w-48 h-screen p-4">
+            <h2 class="text-xl font-bold mb-6">Menu</h2>
+            <ul class="space-y-3">
+                <Link :href="route('admin.lookup.divisions')" class="block text-gray-700 hover:text-blue-600">
+                Divisi
+                </Link>
+                <Link :href="route('admin.lookup.operators')" class="block text-gray-700 hover:text-blue-600">
+                Petugas
+                </Link>
+            </ul>
+        </nav>
+    </div>
+</template>
+
+<style scoped>
+/* Simple fade animation for mobile */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+</style>

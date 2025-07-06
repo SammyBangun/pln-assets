@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reports\Report;
-use App\Models\Asset;
+use App\Models\Assets\Asset;
 use App\Models\Identification;
 use App\Models\Reports\ReportIdentification;
+use App\Models\Reports\ReportAssignment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -26,16 +27,16 @@ class ReportController extends Controller
         ]);
     }
 
-    public function index(): Response
+    public function index()
     {
         $user = Auth::user();
 
         $reports = $user->role === 'admin'
-            ? Report::with('user', 'reportIdentifications.identification')->get()
-            : Report::with('user', 'reportIdentifications.identification')
+            ? Report::with('user', 'reportIdentifications.identification', 'assignment')->get()
+            : Report::with('user', 'reportIdentifications.identification', 'assignment')
             ->where('user_pelapor', $user->id)->get();
 
-        return Inertia::render('Reports/Index', [
+        return Inertia::render('Dashboard', [
             'reports' => $reports
         ]);
     }
@@ -66,6 +67,11 @@ class ReportController extends Controller
 
             $report->save();
 
+            ReportAssignment::create([
+                'report_id' => $report->id,
+                'status' => 'Menunggu Konfirmasi',
+            ]);
+
             // Simpan identifikasi masalah ke table `report_identifications`
             foreach ($validated['identifikasi_masalah'] as $idMasalah) {
                 ReportIdentification::create([
@@ -85,7 +91,7 @@ class ReportController extends Controller
 
     public function show($id)
     {
-        $report = Report::with('user', 'aset', 'reportIdentifications.identification')->findOrFail($id);
+        $report = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->findOrFail($id);
         return Inertia::render('Reports/Detail', [
             'report' => $report
         ]);
@@ -188,49 +194,5 @@ class ReportController extends Controller
         }
 
         return response()->json($asset);
-    }
-
-    public function konfirmasi($id): Response
-    {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
-        $report = Report::with(['user', 'aset'])->findOrFail($id);
-
-        return Inertia::render('Admin/AdminConfirmation', [
-            'report' => $report
-        ]);
-    }
-
-    public function kirim(Request $request, $id)
-    {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
-        $report = Report::where('id', $id)->firstOrFail();
-
-        $validatedData = $request->validate([
-            'tindak_lanjut' => 'required|string|max:255',
-            'deskripsi_lanjut' => 'required|string',
-            'realisasi' => 'required|string',
-            'gambar_konfirmasi' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'status' => 'required|string'
-        ]);
-
-        if ($request->hasFile('gambar_konfirmasi')) {
-            $file = $request->file('gambar_konfirmasi');
-            $filename = time() . '-' . $file->getClientOriginalName();
-            $path = $file->storeAs('konfirmasi', $filename, 'public');
-
-            $validatedData['gambar_konfirmasi'] = '/storage/' . $path;
-        } else {
-            $validatedData['gambar_konfirmasi'] = $report->gambar_konfirmasi;
-        }
-
-        $report->update($validatedData);
-
-        return redirect()->back()->with('success', 'Item berhasil diperbarui.');
     }
 }
