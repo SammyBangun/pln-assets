@@ -1,7 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import { useForm, router } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { useForm } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Notify } from 'notiflix';
 
 const props = defineProps({
@@ -36,16 +35,16 @@ function submit() {
 </script>
 
 <template>
-    <AdminLayout>
+    <AuthenticatedLayout>
 
         <div class="container mx-auto my-12 min-h-screen px-4">
             <div class="border border-gray-200 rounded-lg p-6 shadow-sm">
-                <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Assign</h1>
+                <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Penugasan</h1>
 
                 <form @submit.prevent="submit" class="space-y-4 max-w-lg mx-auto">
                     <div>
                         <label class="block text-gray-700">Nama Petugas</label>
-                        <select v-model="form.petugas" class="w-full border border-gray-300 rounded p-2">
+                        <select v-model="form.petugas" class="w-full border border-gray-300 rounded p-2" required>
                             <option v-for="petugas in props.operators" :key="petugas.id" :value="petugas.id">
                                 {{ petugas.nama_petugas }}
                             </option>
@@ -55,12 +54,13 @@ function submit() {
                     <div>
                         <label class="block text-gray-700">Tanggal Penugasan</label>
                         <input type="date" v-model="form.tanggal_penugasan"
-                            class="w-full border border-gray-300 rounded p-2" />
+                            class="w-full border border-gray-300 rounded p-2" required />
                     </div>
 
                     <div>
                         <label class="block text-gray-700">Lokasi</label>
-                        <textarea v-model="form.lokasi" class="w-full border border-gray-300 rounded p-2"></textarea>
+                        <textarea v-model="form.lokasi" class="w-full border border-gray-300 rounded p-2"
+                            required></textarea>
                     </div>
 
                     <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">
@@ -70,5 +70,5 @@ function submit() {
             </div>
         </div>
 
-    </AdminLayout>
+    </AuthenticatedLayout>
 </template>

@@ -57,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
 
     //pdf
     Route::get('/laporan/{id}/export', [ReportController::class, 'exportPdf'])->name('laporan.export');
+    Route::get('/laporan/export', [ReportController::class, 'exportAllPdf'])->name('laporan.export.all');
 });
 
 // Group untuk route yang membutuhkan autentikasi dan verifikasi email
@@ -70,7 +71,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware([CheckRole::class . ':admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('Admin/Dashboard', [
-                'reports' => Report::with('user', 'reportIdentifications.identification', 'assignment')->get()
+                'reports' => Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->get()
             ]);
         })->name('admin.dashboard');
 

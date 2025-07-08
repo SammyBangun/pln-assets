@@ -39,9 +39,13 @@ class AdminConfirmController extends Controller
         if (in_array($report->assignment?->status, ['Diterima'])) {
             return redirect()->route('admin.penugasan.index', ['id' => $report_assign->id]);
         } else if (in_array($report->assignment?->status, ['Ditolak'])) {
-            return redirect()->route('riwayat.index');
-        } else if (in_array($report->assignment?->status, ['Diproses'])) {
+            return redirect()->route('admin.dashboard');
+        } else if (in_array($report->assignment?->status, ['Ditugaskan'])) {
             return redirect()->route('admin.tindak_lanjut.indexHardware', ['id' => $report_assign->id]);
+        } else if (in_array($report->assignment?->status, ['Finalisasi'])) {
+            return redirect()->route('admin.tindak_lanjut.finalization', ['id' => $report_assign->id]);
+        } else if (in_array($report->assignment?->status, ['Selesai'])) {
+            return redirect()->route('admin.dashboard');
         }
 
         return Inertia::render('Admin/AdminConfirmation', [

@@ -1,7 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notiflix from 'notiflix';
 
 const props = defineProps({
@@ -12,7 +12,6 @@ const props = defineProps({
 
 const selectedDisruption = props.disruption[2];
 
-// Ambil hanya jenis_gangguan == 3 (Network)
 const filteredDetails = computed(() =>
     props.detail_disruption.filter(d => d.jenis_gangguan === 3)
 );
@@ -33,7 +32,6 @@ function submit() {
         },
         onError: (errors) => {
             const allErrors = Object.values(errors).join('\n');
-            // console.log(allErrors);
             Notiflix.Notify.failure(`Gagal menyimpan:\n${allErrors}`, {
                 position: 'center-top',
                 distance: '70px',
@@ -45,7 +43,8 @@ function submit() {
 </script>
 
 <template>
-    <AdminLayout>
+
+    <AuthenticatedLayout>
 
         <div class="mx-auto my-12 min-h-screen px-4">
             <div class="min-w-full border border-gray-200 rounded-lg p-6 shadow-sm">
@@ -82,5 +81,6 @@ function submit() {
             </div>
         </div>
 
-    </AdminLayout>
+    </AuthenticatedLayout>
+
 </template>

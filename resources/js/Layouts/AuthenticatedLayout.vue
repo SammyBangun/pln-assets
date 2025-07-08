@@ -1,14 +1,22 @@
 <script setup>
 import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
+import SideNav from '@/components/SideNav.vue';
+import { usePage } from '@inertiajs/vue3';
+
+const userAdmin = usePage().props.auth.user;
 </script>
 
 <template>
     <Navbar />
 
-    <main class="p-4">
-        <slot />
-    </main>
+    <div class="flex flex-col md:flex-row">
+        <SideNav v-if="userAdmin?.role === 'admin'" />
+
+        <main class="flex-1 p-4">
+            <slot />
+        </main>
+    </div>
 
     <Footer />
 </template>

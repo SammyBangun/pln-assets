@@ -120,7 +120,7 @@ class AdminFollowUpController extends Controller
         // Validasi data
         $validated = $request->validate([
             'detail' => 'array|required',
-            'hal_lain' => 'array|required',
+            'hal_lain' => 'array',
             'hal_lain.lainnya' => 'nullable|string',
         ]);
 
@@ -224,6 +224,7 @@ class AdminFollowUpController extends Controller
             'realisasi' => $validated['realisasi_hasil'],
             'catatan' => $validated['catatan'],
             'gambar_tindak_lanjut' => $gambarPath,
+            'status' => 'Selesai'
         ]);
 
         return redirect()->route('riwayat.index')

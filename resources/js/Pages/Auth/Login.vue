@@ -6,6 +6,7 @@ import InputLabel from '@/components/InputLabel.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import TextInput from '@/components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import Notiflix from 'notiflix';
 
 defineProps({
     canResetPassword: {
@@ -25,7 +26,20 @@ const form = useForm({
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
+        onError: () => {
+            Notiflix.Notify.failure(`Login Gagal, silahkan coba lagi`, {
+                position: 'center-top',
+                distance: '70px',
+            });
+        },
+        onSuccess: () => {
+            Notiflix.Notify.success(`Login Berhasil, selamat datang :)`, {
+                position: 'center-top',
+                distance: '70px',
+            });
+        },
     });
+
 };
 </script>
 
@@ -67,7 +81,7 @@ const submit = () => {
             <div class="mt-4 flex items-center justify-between">
                 <Link v-if="canResetPassword" :href="route('password.request')"
                     class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mr-24">
-                Lupa Password?
+                <!-- Lupa Password? -->
                 </Link>
 
                 <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">

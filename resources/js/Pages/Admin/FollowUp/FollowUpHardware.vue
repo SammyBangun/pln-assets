@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notiflix from 'notiflix';
 
 const props = defineProps({
@@ -68,7 +68,7 @@ function submit() {
 
 
 <template>
-    <AdminLayout>
+    <AuthenticatedLayout>
 
         <div class="mx-auto my-12 min-h-screen px-4">
             <div class="min-w-full border border-gray-200 rounded-lg p-6 shadow-sm">
@@ -80,7 +80,7 @@ function submit() {
                         <!-- Kolom Gangguan Karena Hardware -->
                         <div class="border border-gray-300 p-4 rounded-md bg-gray-50">
                             <h1 v-if="selectedDisruption" class="mb-4 text-center">{{ selectedDisruption.nama_gangguan
-                                }}
+                            }}
                             </h1>
                             <div v-if="filteredDetails.length > 0" class="grid sm:grid-cols-1 md:grid-cols-3 gap-2">
                                 <label v-for="detail in filteredDetails" :key="detail.id"
@@ -165,5 +165,5 @@ function submit() {
             </div>
         </div>
 
-    </AdminLayout>
+    </AuthenticatedLayout>
 </template>

@@ -5,7 +5,6 @@ import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <!-- <Navbar /> -->
     <AuthenticatedLayout>
         <div class="bg-cover bg-center min-h-screen flex flex-col items-center justify-center text-center">
             <div class="bg-white p-8 rounded-lg shadow-lg w-3/4 md:w-1/2">
@@ -18,5 +17,4 @@ import { Link } from '@inertiajs/vue3';
             </div>
         </div>
     </AuthenticatedLayout>
-    <!-- <Footer /> -->
 </template>

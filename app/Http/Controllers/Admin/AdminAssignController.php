@@ -47,7 +47,7 @@ class AdminAssignController extends Controller
             'petugas' => $validated['petugas'],
             'tanggal_penugasan' => $validated['tanggal_penugasan'],
             'lokasi' => $validated['lokasi'],
-            'status' => 'Diproses'
+            'status' => 'Ditugaskan'
         ]);
 
         return redirect()->route('admin.tindak_lanjut.indexHardware', ['id' => $assignment->id])->with('success', 'Penugasan berhasil disimpan.');

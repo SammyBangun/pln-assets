@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Reports\Report;
 use App\Models\Assets\Asset;
+use App\Models\Assets\AssetType;
 use App\Models\Identification;
+use App\Models\Reports\ReportFollowUp;
 use App\Models\Reports\ReportIdentification;
 use App\Models\Reports\ReportAssignment;
 use Illuminate\Http\Request;
@@ -32,12 +34,12 @@ class ReportController extends Controller
         $user = Auth::user();
 
         $reports = $user->role === 'admin'
-            ? Report::with('user', 'reportIdentifications.identification', 'assignment')->get()
-            : Report::with('user', 'reportIdentifications.identification', 'assignment')
+            ? Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->get()
+            : Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')
             ->where('user_pelapor', $user->id)->get();
 
         return Inertia::render('Dashboard', [
-            'reports' => $reports
+            'reports' => $reports,
         ]);
     }
 
@@ -92,8 +94,15 @@ class ReportController extends Controller
     public function show($id)
     {
         $report = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->findOrFail($id);
+        $aset = Asset::find($report->aset);
+        $tipe = AssetType::where('id', $aset->tipe)->first();
+        $assignment = ReportAssignment::with('petugas')->where('report_id', $report->id)->first();
+        $followUp = ReportFollowUp::where('id_penugasan', $assignment->id)->get();
         return Inertia::render('Reports/Detail', [
-            'report' => $report
+            'report' => $report,
+            'tipe' => $tipe,
+            'assignment' => $assignment,
+            'followUp' => $followUp
         ]);
     }
 
@@ -175,14 +184,29 @@ class ReportController extends Controller
 
     public function exportPdf($id)
     {
-        $report = Report::with('user')->findOrFail($id);
-        // $this->authorize('exportPdf', $report);
+        $report = Report::with('user', 'aset', 'assignment')->get();
 
         $no_tiket = 'WG-' . strtoupper(uniqid());
 
-        $pdf = Pdf::loadView('pdf.report', ['report' => $report, 'no_tiket' => $no_tiket])->setPaper('A4', 'portrait');;
+        $pdf = Pdf::loadView('pdf.report', ['report' => $report, 'no_tiket' => $no_tiket])->setPaper('A4', 'portrait');
 
-        return $pdf->stream('laporan_kerusakan_' . $id . '.pdf');
+        dd($pdf);
+
+        return $pdf->stream('laporan_gangguan_' . $id . '.pdf');
+    }
+
+    public function exportAllPdf()
+    {
+        $reports = Report::with(['user', 'aset', 'assignment', 'reportIdentifications.identification'])->latest()->get();
+
+        $no_tiket = 'WG-' . strtoupper(uniqid());
+
+        $pdf = Pdf::loadView('pdf.reports-all', [
+            'reports' => $reports,
+            'no_tiket' => $no_tiket
+        ])->setPaper('A4', 'landscape');
+
+        return $pdf->stream('laporan_gangguan.pdf');
     }
 
     public function getAssetBySerial($serialNumber)

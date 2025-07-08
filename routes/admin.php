@@ -28,7 +28,3 @@ Route::post('/admin/tindak-lanjut/finalization/{id}', [AdminFollowUpController::
 Route::get('/admin/divisions/', [AdminLookupController::class, 'divisions'])->name('admin.lookup.divisions');
 Route::post('/admin/divisions/', [AdminLookupController::class, 'storeDivisions'])->name('admin.divisions.store');
 Route::delete('/admin/divisions/{id}', [AdminLookupController::class, 'deleteDivision'])->name('admin.divisions.delete');
-
-Route::get('/admin/operators/', [AdminLookupController::class, 'operators'])->name('admin.lookup.operators');
-Route::post('/admin/operators/', [AdminLookupController::class, 'storeOperators'])->name('admin.operators.store');
-Route::delete('/admin/operators/{id}', [AdminLookupController::class, 'deleteOperator'])->name('admin.operators.delete');

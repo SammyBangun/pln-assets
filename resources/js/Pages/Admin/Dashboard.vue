@@ -1,6 +1,6 @@
 <script setup>
 import Index from '../Reports/Index.vue';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const props = defineProps({
     reports: Array
@@ -9,8 +9,8 @@ const props = defineProps({
 
 <template>
 
-    <AdminLayout>
+    <AuthenticatedLayout>
         <Index :reports="reports" />
-    </AdminLayout>
+    </AuthenticatedLayout>
 
 </template>

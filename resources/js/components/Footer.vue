@@ -3,14 +3,6 @@
         <div class="container mx-auto text-center">
             <p class="font-bold text-lg">PT PLN NUSANTARA POWER UP Belawan</p>
             <div class="mt-4 space-y-2">
-                <p>
-                    Dibuat oleh :
-                </p>
-                <p>
-                    <a class="text-blue-400 hover:underline" href="https://github.com/SammyBangun">Kahlil Rifqi Samoedra
-                        Bangun</a>
-                    <br>
-                </p>
                 <p>Address: Jl. Pulau Sicanang No.1, Belawan Pulau Sicanang, Medan Kota Belawan, Kota Medan, Sumatera
                     Utara</p>
             </div>

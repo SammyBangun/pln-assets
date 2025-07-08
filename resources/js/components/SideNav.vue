@@ -17,22 +17,17 @@ const isOpen = ref(false)
                     <Link :href="route('admin.lookup.divisions')" class="block text-gray-700 hover:text-blue-600">
                     Divisi
                     </Link>
-                    <Link :href="route('admin.lookup.operators')" class="block text-gray-700 hover:text-blue-600">
-                    Petugas
-                    </Link>
                 </ul>
             </nav>
         </transition>
 
         <!-- Desktop SideNav -->
-        <nav class="hidden md:block bg-white border-r border-gray-200 w-48 h-screen p-4">
-            <h2 class="text-xl font-bold mb-6">Menu</h2>
+        <nav class="hidden md:block bg-gray-100 border-r border-gray-200 w-48 h-full p-4">
+            <h2 class="text-xl font-bold text-center">Menu</h2>
+            <div class="border-b border-gray-200 mb-4"></div>
             <ul class="space-y-3">
                 <Link :href="route('admin.lookup.divisions')" class="block text-gray-700 hover:text-blue-600">
                 Divisi
-                </Link>
-                <Link :href="route('admin.lookup.operators')" class="block text-gray-700 hover:text-blue-600">
-                Petugas
                 </Link>
             </ul>
         </nav>

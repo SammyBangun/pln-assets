@@ -3,7 +3,6 @@ import { ref, computed } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notiflix from "notiflix";
 import formatDate from '@/functions/formatDate';
-import { useForm } from '@inertiajs/vue3';
 
 Notiflix.Confirm.init({
     width: "400px",
@@ -20,7 +19,7 @@ Notiflix.Confirm.init({
 });
 
 const props = defineProps({
-    reports: Array
+    reports: Array,
 });
 
 const searchQuery = ref('');
@@ -30,12 +29,14 @@ const latestReports = computed(() => {
         .filter(report =>
             report.user?.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
             report.identifikasi_masalah?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            report.deskripsi?.toLowerCase().includes(searchQuery.value.toLowerCase())
+            report.deskripsi?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            report.assignment?.status?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            report.aset?.nama?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            formatDate(report.created_at).toLowerCase().includes(searchQuery.value.toLowerCase())
         )
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 });
 
-const form = useForm({});
 const deleteReport = (id) => {
     Notiflix.Confirm.show(
         'Hapus Laporan',
@@ -71,7 +72,20 @@ const deleteReport = (id) => {
 
 <template>
     <div class="container-fluid mx-3 my-8 min-h-screen">
-        <h1 class="text-2xl font-bold text-center mb-6">Riwayat</h1>
+        <div class="flex justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-center mb-6">Riwayat</h1>
+            </div>
+            <div class="flex justify-end mb-4 mr-10">
+                <template v-if="$page.props.auth.user.role === 'admin'">
+                    <button @click="$inertia.get('/laporan/export')"
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow-md">
+                        🖨️ Print PDF
+                    </button>
+                </template>
+            </div>
+        </div>
+
 
         <div class="mb-4 w-3/12 mx-auto">
             <input v-model="searchQuery" type="text" placeholder="Cari sesuatu..."
@@ -79,7 +93,7 @@ const deleteReport = (id) => {
         </div>
 
         <div class="overflow-x-auto mb-32 rounded-lg">
-            <table class="min-w-full bg-white border border-gray-200 shadow-lg rounded-lg">
+            <table class="min-w-full text-sm bg-white border border-gray-200 shadow-lg rounded-lg">
                 <thead class="bg-gray-800 text-white">
                     <tr>
                         <th class="py-3 px-4 text-left">No</th>
@@ -87,9 +101,10 @@ const deleteReport = (id) => {
                             <th class="py-3 px-4 text-left">Pelapor</th>
                         </template>
                         <th class="py-3 px-4 text-left">Serial Number</th>
+                        <th class="py-3 px-4 text-left">Nama</th>
                         <th class="py-3 px-4 text-left">Identifikasi Masalah</th>
                         <th class="py-3 px-4 text-left">Deskripsi</th>
-                        <!-- <th class="py-3 px-4 text-left">Tanggal</th> -->
+                        <th class="py-3 px-4 text-left">Tanggal</th>
                         <th class="py-3 px-4 text-left">Status</th>
                         <th class="py-3 px-4 text-left">Gambar</th>
                         <th class="py-3 px-4 text-center">Aksi</th>
@@ -104,11 +119,12 @@ const deleteReport = (id) => {
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
                             <td class="py-3 px-4">{{ report.user?.name }}</td>
                         </template>
-                        <td class="py-3 px-4">{{ report.aset }}</td>
+                        <td class="py-3 px-4">{{ report.aset?.serial_number }}</td>
+                        <td class="py-3 px-4">{{ report.aset?.nama }}</td>
                         <td class="py-3 px-4">
                             <ul>
                                 <li v-for="item in report.report_identifications.slice(0, 2)" :key="item.id">
-                                    ~ {{ item.identification?.identifikasi_masalah ?? 'Tidak ditemukan' }}
+                                    {{ item.identification?.identifikasi_masalah ?? 'Tidak ditemukan' }}
                                 </li>
                                 <li v-if="report.report_identifications.length > 2">
                                     ...
@@ -117,10 +133,10 @@ const deleteReport = (id) => {
                         </td>
                         <td class="py-3 px-4">{{ report.deskripsi?.slice(0, 60) }}{{ report.deskripsi?.length > 60 ?
                             '...' : '' }}</td>
-                        <!-- <td class="py-3 px-4">{{ formatDate(report.created_at) }}</td> -->
+                        <td class="py-3 px-4">{{ formatDate(report.created_at) }}</td>
                         <td class="py-3 px-4">
-                            <span v-if="report.assignment?.status === 'Diproses'"
-                                class="text-yellow-500 font-semibold">Diproses</span>
+                            <span v-if="report.assignment?.status === 'Ditugaskan'"
+                                class="text-yellow-500 font-semibold">Ditugaskan</span>
                             <span v-else-if="report.assignment?.status === 'Selesai'"
                                 class="text-green-500 font-semibold">Selesai</span>
                             <span v-else-if="report.assignment?.status === 'Diterima'"
@@ -129,6 +145,8 @@ const deleteReport = (id) => {
                                 class="text-red-500 font-semibold">Ditolak</span>
                             <span v-else-if="report.assignment?.status === 'Menunggu Konfirmasi'"
                                 class="text-gray-500 font-semibold">Menunggu Konfirmasi</span>
+                            <span v-else-if="report.assignment?.status === 'Finalisasi'"
+                                class="text-gray-500 font-semibold">Finalisasi</span>
                             <span v-else class="text-gray-400 italic">Belum ada status</span>
                         </td>
                         <td class="py-3 px-4">
@@ -159,12 +177,14 @@ const deleteReport = (id) => {
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
                             <td class="py-3 px-4">
                                 <button @click="$inertia.get(`/admin/konfirmasi/${report.id}`)"
-                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 disabled:bg-gray-500 disabled:cursor-not-allowed"
+                                    :disabled="report.assignment?.status === 'Selesai' || report.assignment?.status === 'Ditolak'">
                                     <span v-if="report.assignment?.status === 'Menunggu Konfirmasi'">Konfirmasi</span>
+                                    <span v-if="report.assignment?.status === 'Ditolak'">Ditolak</span>
                                     <span v-if="report.assignment?.status === 'Diterima'">Penugasan</span>
-                                    <span v-if="report.assignment?.status === 'Diproses'">Tindak Lanjut</span>
-                                    <span v-if="report.assignment?.status === 'Ditolak'">Lihat Alasan</span>
-                                    <span v-if="report.assignment?.status === 'Selesai'">Lihat Laporan</span>
+                                    <span v-if="report.assignment?.status === 'Ditugaskan'">Tindak Lanjut</span>
+                                    <span v-if="report.assignment?.status === 'Finalisasi'">Finalisasi</span>
+                                    <span v-if="report.assignment?.status === 'Selesai'">Selesai</span>
                                 </button>
                             </td>
                         </template>
