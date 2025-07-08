@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed } from 'vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notiflix from "notiflix";
 import formatDate from '@/functions/formatDate';
 
@@ -68,29 +67,59 @@ const deleteReport = (id) => {
     );
 };
 
+const printPage = () => {
+    window.print();
+};
+
+const perPage = ref(20);
+const currentPage = ref(1);
+
+const paginatedReports = computed(() => {
+    const start = (currentPage.value - 1) * perPage.value;
+    const end = start + perPage.value;
+    return latestReports.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+    return Math.ceil(latestReports.value.length / perPage.value);
+});
+
+const changePage = (page) => {
+    currentPage.value = page;
+};
+
 </script>
 
 <template>
     <div class="container-fluid mx-3 my-8 min-h-screen">
+        <div class="text-center my-4 print-header">
+            <h1 class="text-2xl font-bold text-center">Riwayat</h1>
+            <h2 class="text-xl font-bold">Laporan Gangguan</h2>
+            <p>{{ new Date().toLocaleDateString('id-ID') }}</p>
+        </div>
         <div class="flex justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-center mb-6">Riwayat</h1>
-            </div>
-            <div class="flex justify-end mb-4 mr-10">
+            <div class="flex justify-end mb-8 mr-10 gap-2">
                 <template v-if="$page.props.auth.user.role === 'admin'">
+                    <button @click="$inertia.get('/laporan/sort')"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow-md no-print">
+                        📦 Sorting
+                    </button>
                     <button @click="$inertia.get('/laporan/export')"
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow-md">
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow-md no-print">
                         🖨️ Print PDF
                     </button>
+                    <button @click="printPage"
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md shadow-md no-print">
+                        🖨️ Print Langsung
+                    </button>
                 </template>
+                <div class="mb-4 w-4/12 mx-auto">
+                    <input v-model="searchQuery" type="text" placeholder="Cari sesuatu..."
+                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-300 no-print">
+                </div>
             </div>
         </div>
 
-
-        <div class="mb-4 w-3/12 mx-auto">
-            <input v-model="searchQuery" type="text" placeholder="Cari sesuatu..."
-                class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-300">
-        </div>
 
         <div class="overflow-x-auto mb-32 rounded-lg">
             <table class="min-w-full text-sm bg-white border border-gray-200 shadow-lg rounded-lg">
@@ -103,18 +132,20 @@ const deleteReport = (id) => {
                         <th class="py-3 px-4 text-left">Serial Number</th>
                         <th class="py-3 px-4 text-left">Nama</th>
                         <th class="py-3 px-4 text-left">Identifikasi Masalah</th>
-                        <th class="py-3 px-4 text-left">Deskripsi</th>
+                        <!-- <th class="py-3 px-4 text-left">Deskripsi</th> -->
                         <th class="py-3 px-4 text-left">Tanggal</th>
                         <th class="py-3 px-4 text-left">Status</th>
                         <th class="py-3 px-4 text-left">Gambar</th>
-                        <th class="py-3 px-4 text-center">Aksi</th>
+                        <th class="py-3 px-4 text-center no-print">Aksi</th>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
-                            <th class="py-3 px-4 text-center">Aksi Admin</th>
+                            <th class="py-3 px-4 text-center no-print">Aksi Admin</th>
                         </template>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(report, index) in latestReports" :key="report.id" class="border-b hover:bg-gray-100">
+                    <tr v-for="(report, index) in paginatedReports" :key="report.id"
+                        @click="$inertia.get(`/riwayat/${report.id}`)"
+                        class="border-b hover:bg-gray-100 cursor-pointer">
                         <td class="py-3 px-4">{{ index + 1 }}</td>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
                             <td class="py-3 px-4">{{ report.user?.name }}</td>
@@ -131,8 +162,8 @@ const deleteReport = (id) => {
                                 </li>
                             </ul>
                         </td>
-                        <td class="py-3 px-4">{{ report.deskripsi?.slice(0, 60) }}{{ report.deskripsi?.length > 60 ?
-                            '...' : '' }}</td>
+                        <!-- <td class="py-3 px-4">{{ report.deskripsi?.slice(0, 60) }}{{ report.deskripsi?.length > 60 ?
+                            '...' : '' }}</td> -->
                         <td class="py-3 px-4">{{ formatDate(report.created_at) }}</td>
                         <td class="py-3 px-4">
                             <span v-if="report.assignment?.status === 'Ditugaskan'"
@@ -154,12 +185,8 @@ const deleteReport = (id) => {
                                 class="w-20 h-20 object-cover rounded-md">
                             <span v-else class="text-gray-500">Tidak ada gambar</span>
                         </td>
-                        <td class="py-3 px-4 text-center">
+                        <td class="py-3 px-4 text-center no-print">
                             <div class="flex justify-center gap-2">
-                                <button @click="$inertia.get(`/riwayat/${report.id}`)"
-                                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md">
-                                    🔎
-                                </button>
                                 <template v-if="$page.props.auth.user &&
                                     ($page.props.auth.user.role === 'admin' ||
                                         report.user_pelapor === $page.props.auth.user.id)">
@@ -175,9 +202,9 @@ const deleteReport = (id) => {
                             </div>
                         </td>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
-                            <td class="py-3 px-4">
+                            <td class="py-3 px-4 no-print">
                                 <button @click="$inertia.get(`/admin/konfirmasi/${report.id}`)"
-                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 disabled:bg-gray-500 disabled:cursor-not-allowed"
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 disabled:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-50 "
                                     :disabled="report.assignment?.status === 'Selesai' || report.assignment?.status === 'Ditolak'">
                                     <span v-if="report.assignment?.status === 'Menunggu Konfirmasi'">Konfirmasi</span>
                                     <span v-if="report.assignment?.status === 'Ditolak'">Ditolak</span>
@@ -193,4 +220,57 @@ const deleteReport = (id) => {
             </table>
         </div>
     </div>
+    <div class="mb-4 flex justify-between items-center px-4 no-print">
+        <div>
+            <label class="mr-2 font-semibold">Tampilkan:</label>
+            <select v-model="perPage" class="border rounded px-2 py-1 w-16">
+                <option :value="10">10</option>
+                <option :value="20">20</option>
+                <option :value="50">50</option>
+                <option :value="100">100</option>
+            </select>
+            <span class="ml-2">data per halaman</span>
+        </div>
+    </div>
+    <div class="flex justify-center mt-4 space-x-2 no-print">
+        <button @click="changePage(page)" v-for="page in totalPages" :key="page" :class="[
+            'px-3 py-1 border rounded',
+            page === currentPage ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'
+        ]">
+            {{ page }}
+        </button>
+    </div>
 </template>
+
+<style>
+@media print {
+
+    body {
+        background: white;
+        color: black;
+        font-size: 12px;
+        margin: 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 6px;
+        text-align: left;
+    }
+
+    img {
+        max-width: 100px;
+        height: auto;
+    }
+
+    .container-fluid {
+        margin: 0;
+        padding: 0;
+    }
+}
+</style>

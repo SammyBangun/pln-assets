@@ -8,10 +8,10 @@ const userAdmin = usePage().props.auth.user;
 </script>
 
 <template>
-    <Navbar />
+    <Navbar class="no-print" />
 
     <div class="flex flex-col md:flex-row">
-        <SideNav v-if="userAdmin?.role === 'admin'" />
+        <SideNav v-if="userAdmin?.role === 'admin'" class="no-print" />
 
         <main class="flex-1 p-4">
             <slot />

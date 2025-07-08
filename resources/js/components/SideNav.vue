@@ -14,8 +14,33 @@ const isOpen = ref(false)
             <!-- Mobile SideNav -->
             <nav v-if="isOpen" class="md:hidden bg-white border border-gray-200 rounded mx-4 p-4 mb-4 shadow">
                 <ul class="space-y-3">
-                    <Link :href="route('admin.lookup.divisions')" class="block text-gray-700 hover:text-blue-600">
+                    <Link :href="route('riwayat.index')"
+                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                    Aset IT
+                    </Link>
+                    <Link :href="route('riwayat.index')"
+                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                    Tipe Aset
+                    </Link>
+                    <Link :href="route('riwayat.index')"
+                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                    Identifikasi Masalah
+                    </Link>
+                    <Link :href="route('admin.lookup.divisions')"
+                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
                     Divisi
+                    </Link>
+                    <Link :href="route('riwayat.index')"
+                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                    Gangguan
+                    </Link>
+                    <Link :href="route('riwayat.index')"
+                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                    Detail Gangguan
+                    </Link>
+                    <Link :href="route('riwayat.index')"
+                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                    Realisasi
                     </Link>
                 </ul>
             </nav>
@@ -26,8 +51,33 @@ const isOpen = ref(false)
             <h2 class="text-xl font-bold text-center">Menu</h2>
             <div class="border-b border-gray-200 mb-4"></div>
             <ul class="space-y-3">
-                <Link :href="route('admin.lookup.divisions')" class="block text-gray-700 hover:text-blue-600">
+                <Link :href="route('riwayat.index')"
+                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                Aset IT
+                </Link>
+                <Link :href="route('riwayat.index')"
+                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                Tipe Aset
+                </Link>
+                <Link :href="route('riwayat.index')"
+                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                Identifikasi Masalah
+                </Link>
+                <Link :href="route('admin.lookup.divisions')"
+                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
                 Divisi
+                </Link>
+                <Link :href="route('riwayat.index')"
+                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                Gangguan
+                </Link>
+                <Link :href="route('riwayat.index')"
+                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                Detail Gangguan
+                </Link>
+                <Link :href="route('riwayat.index')"
+                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-blue-600">
+                Realisasi
                 </Link>
             </ul>
         </nav>

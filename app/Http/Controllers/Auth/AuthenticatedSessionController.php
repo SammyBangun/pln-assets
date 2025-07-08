@@ -31,14 +31,14 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         $request->authenticate();
-    
+
         $request->session()->regenerate();
-    
+
         if (Auth::user()->role === 'admin') {
             return Inertia::location('/admin/dashboard');
+        } else {
+            return Inertia::location('/dashboard');
         }
-    
-        return Inertia::location('/dashboard');
     }
 
     /**

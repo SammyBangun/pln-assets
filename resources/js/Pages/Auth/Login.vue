@@ -81,15 +81,15 @@ const submit = () => {
             <div class="mt-4 flex items-center justify-between">
                 <Link v-if="canResetPassword" :href="route('password.request')"
                     class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mr-24">
-                <!-- Lupa Password? -->
+                Lupa Password?
                 </Link>
 
-                <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
+                <!-- <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
                     <Link :href="route('register')"
                         class="rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25">
                     Buat Akun
                     </Link>
-                </template>
+                </template> -->
 
                 <PrimaryButton class=" ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in

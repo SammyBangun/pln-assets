@@ -28,7 +28,7 @@ const deleteDivision = (id) => {
 
     <AuthenticatedLayout>
 
-        <div class="p-4">
+        <div class="p-4 min-h-screen">
             <h1 class="text-2xl font-bold mb-4">Divisi</h1>
 
             <form @submit.prevent="submit" class="mb-6">
