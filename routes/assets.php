@@ -25,7 +25,7 @@ Route::delete('/item/{serial_number}', [AssetsController::class, 'destroy'])->na
 Route::get('/item/latest/{serial_number}', [AssetsController::class, 'latest'])->name('Item.Latest');
 
 Route::get('/latest-assets', function () {
-    return response()->json(Asset::latest()->take(4)->get());
+    return response()->json(Asset::with('tipe')->latest()->take(4)->get());
 });
 
 Route::get('/api/assets', [AssetsController::class, 'getAssets']);

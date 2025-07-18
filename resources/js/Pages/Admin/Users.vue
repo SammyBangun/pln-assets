@@ -91,8 +91,13 @@ const confirmRoleUpdate = (user) => {
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="user in users" :key="user.id">
-                  <td class="px-6 py-4 whitespace-nowrap">{{ user.id }}</td>
+                <tr v-for="user in users" :key="user.id" class="hover:bg-gray-200 ">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <Link :href="route('admin.users.show', user.id)"
+                      class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow">
+                    {{ user.id }}
+                    </Link>
+                  </td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ user.name }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ user.email }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">
@@ -100,12 +105,14 @@ const confirmRoleUpdate = (user) => {
                       class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                       <option value="user">User</option>
                       <option value="admin">Admin</option>
+                      <option value="petugas">Petugas</option>
                     </select>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     {{ formatDate(user.created_at) }}
                   </td>
                 </tr>
+
               </tbody>
             </table>
           </div>

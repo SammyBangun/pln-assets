@@ -3,9 +3,11 @@ import { ref } from 'vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import formatDate from '@/functions/formatDate';
 
-defineProps({
-  item: Object
-})
+const props = defineProps({
+  item: Object,
+});
+
+console.log(props.item);
 
 const showModal = ref(false);
 const selectedImage = ref('');
@@ -40,12 +42,14 @@ const closeModal = () => {
           <div class="w-full">
             <p class="text-gray-700 text-lg"><span class="font-semibold">Serial Number:</span> {{ item.serial_number }}
             </p>
+            <p class="text-gray-700 text-lg"><span class="font-semibold">Diserahkan ke Divisi:</span> {{
+              item.division.nama_divisi }}</p>
             <p class="text-gray-700 text-lg"><span class="font-semibold">Nama:</span> {{ item.nama }}</p>
-            <p class="text-gray-700 text-lg"><span class="font-semibold">Tipe:</span> {{ item.tipe }}</p>
+            <p class="text-gray-700 text-lg"><span class="font-semibold">Tipe:</span> {{ item.tipe.tipe }}</p>
             <p class="text-gray-700 text-lg"><span class="font-semibold">Serial:</span> {{ item.seri }}</p>
             <p class="text-gray-700 text-lg"><span class="font-semibold">Tanggal Beli:</span> {{
               formatDate(item.tanggal_beli)
-              }}</p>
+            }}</p>
             <p class="text-gray-700 text-lg">
               <span class="font-semibold">Terakhir Service:</span>
               {{ formatDate(item.terakhir_servis) || 'Belum pernah service' }}
@@ -54,7 +58,7 @@ const closeModal = () => {
         </div>
         <div class="flex flex-col items-center">
           <div class="mt-6 flex gap-4">
-            <button @click="$inertia.get('/item/' + item.tipe)"
+            <button @click="$inertia.get('/item/' + item.tipe.tipe)"
               class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
               Kembali ke List
             </button>

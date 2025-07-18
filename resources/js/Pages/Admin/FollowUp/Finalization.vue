@@ -117,14 +117,14 @@ function submit() {
                     </div>
 
                     <div class="flex justify-center space-x-4">
-                        <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">
                             Simpan
                         </button>
                     </div>
                 </form>
-                <button @click="$inertia.get(route('admin.tindak_lanjut.indexNetwork', props.assignment.id))"
-                    type="submit" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">
-                    Lanjutkan
+                <button @click="$inertia.get(route('admin.dashboard'))" type="submit"
+                    class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">
+                    Kembali
                 </button>
 
             </div>

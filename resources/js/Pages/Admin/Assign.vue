@@ -1,7 +1,7 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Notify } from 'notiflix';
+import Notiflix from 'notiflix';
 
 const props = defineProps({
     operators: Array,
@@ -11,20 +11,20 @@ const props = defineProps({
 const form = useForm({
     petugas: '',
     tanggal_penugasan: '',
-    lokasi: '',
+    // lokasi: '',
 });
 
 function submit() {
     form.post(`/admin/penugasan/${props.assignment?.id}`, {
         onSuccess: () => {
-            Notify.success('Penugasan berhasil disimpan!', {
+            Notiflix.Notify.success('Penugasan berhasil disimpan!', {
                 position: 'center-top',
                 distance: '70px',
             }
             );
         },
         onError: () => {
-            Notify.error('Penugasan gagal disimpan!', {
+            Notiflix.Notify.failure(`Penugasan gagal disimpan`, {
                 position: 'center-top',
                 distance: '70px',
             }
@@ -46,7 +46,7 @@ function submit() {
                         <label class="block text-gray-700">Nama Petugas</label>
                         <select v-model="form.petugas" class="w-full border border-gray-300 rounded p-2" required>
                             <option v-for="petugas in props.operators" :key="petugas.id" :value="petugas.id">
-                                {{ petugas.nama_petugas }}
+                                {{ petugas.name }}
                             </option>
                         </select>
                     </div>
@@ -57,11 +57,11 @@ function submit() {
                             class="w-full border border-gray-300 rounded p-2" required />
                     </div>
 
-                    <div>
+                    <!-- <div>
                         <label class="block text-gray-700">Lokasi</label>
                         <textarea v-model="form.lokasi" class="w-full border border-gray-300 rounded p-2"
                             required></textarea>
-                    </div>
+                    </div> -->
 
                     <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">
                         Simpan Penugasan

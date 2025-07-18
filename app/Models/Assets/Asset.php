@@ -42,6 +42,6 @@ class Asset extends Model
 
     public function tipe()
     {
-        return $this->belongsTo(AssetType::class, 'tipe');
+        return $this->belongsTo(AssetType::class, 'tipe', 'id');
     }
 }

@@ -16,11 +16,31 @@ const filteredDetails = computed(() =>
     props.detail_disruption.filter(d => d.jenis_gangguan === 3)
 );
 
+const markForm = useForm({})
 
 const form = useForm({
     detail: [],
     hal_lain: {}
 });
+
+function markAsDone() {
+    markForm.post(route('admin.tindak_lanjut.markAsDone', props.assignment.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            Notiflix.Notify.success('Berhasil menyelesaikan tindak lanjut!', {
+                position: 'center-top',
+                distance: '70px',
+            });
+        },
+        onError: (errors) => {
+            const allErrors = Object.values(errors).join('\n');
+            Notiflix.Notify.failure(`Gagal menyimpan:\n${allErrors}`, {
+                position: 'center-top',
+                distance: '70px',
+            });
+        }
+    });
+}
 
 function submit() {
     form.post(`/admin/tindak-lanjut/network/${props.assignment.id}`, {
@@ -37,7 +57,6 @@ function submit() {
                 distance: '70px',
             });
         }
-
     });
 }
 </script>
@@ -68,16 +87,26 @@ function submit() {
                     </div>
 
                     <div class="flex justify-center space-x-4">
-                        <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">
                             Simpan
                         </button>
                     </div>
                 </form>
-                <button @click="$inertia.get(route('admin.tindak_lanjut.indexNetwork', props.assignment.id))"
-                    type="submit" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">
-                    Lanjutkan
-                </button>
-
+                <div class="flex justify-between space-x-4">
+                    <div>
+                        <button @click="$inertia.get(route('admin.tindak_lanjut.indexSoftware', props.assignment.id))"
+                            type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">
+                            Kembali
+                        </button>
+                    </div>
+                    <div>
+                        <form @submit.prevent="markAsDone">
+                            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">
+                                Selesai
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
 

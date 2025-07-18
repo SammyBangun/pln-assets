@@ -32,9 +32,6 @@ const handleFileUpload = (event) => {
 const submit = () => {
     const formData = new FormData();
 
-    console.log('formData aset:', form.aset);
-    console.log('formData identifikasi:', form.identifikasi_masalah);
-
     formData.append('aset', form.aset);
     form.identifikasi_masalah.forEach((id, index) => {
         formData.append(`identifikasi_masalah[${index}]`, id);

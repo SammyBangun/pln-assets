@@ -22,7 +22,7 @@ class AdminFollowUpController extends Controller
 
     public function indexHardware($id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
+        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
@@ -41,50 +41,55 @@ class AdminFollowUpController extends Controller
 
     public function storeHardware(Request $request, $id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
+        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
-        $assignment = ReportAssignment::with('followUp')->find($id);
-
-        if (!$assignment) {
-            return back()->withErrors("Penugasan dengan ID $id tidak ditemukan.");
         }
 
         $request->validate([
             'detail' => 'required|array|min:1',
-            'hal_lain' => 'required|array',
+            'hal_lain' => 'required|array|min:1',
+            'hal_lain.*' => 'required|string',
             'hardware_replacements' => 'nullable|array',
-            'hardware_replacements.*.nama_komponen' => 'required|string',
-            'hardware_replacements.*.detail_merek_hardware' => 'required|string',
-            'hardware_replacements.*.jumlah' => 'required|integer|min:1',
+            'hardware_replacements.*.nama_komponen' => 'nullable|string',
+            'hardware_replacements.*.detail_merek_hardware' => 'nullable|string',
+            'hardware_replacements.*.jumlah' => 'nullable|integer|min:1',
         ]);
 
         DB::beginTransaction();
 
         try {
-            // 1. Simpan ke report_follow_ups
-            $report = ReportFollowUp::create([
-                'id_penugasan' => $assignment->id,
-                'jenis_gangguan' => $request->jenis_gangguan,
-                'id_detail_gangguan' => implode(',', $request->detail),
-                'hal_lain' => json_encode($request->hal_lain),
-            ]);
+            // Simpan semua laporan tindak lanjut
+            $reportIds = [];
 
-            dd($report);
-
-            // 2. Simpan ke hardware_replacements (jika ada)
-            foreach ($request->hardware_replacements ?? [] as $item) {
-                HardwareReplacement::create([
-                    'id_tindak_lanjut' => $report->id,
-                    'nama_komponen' => $item['nama_komponen'], // isian ID detail_disruption
-                    'detail_merek_hardware' => $item['detail_merek_hardware'],
-                    'jumlah' => $item['jumlah']
+            foreach ($request->detail as $detailId) {
+                $keterangan = $request->hal_lain[$detailId] ?? null;
+                $report = ReportFollowUp::create([
+                    'id_penugasan' => $id,
+                    'jenis_gangguan' => $request->jenis_gangguan,
+                    'id_detail_gangguan' => $detailId,
+                    'hal_lain' => $keterangan
                 ]);
+
+                $reportIds[] = $report->id;
+            }
+
+            // Simpan penggantian hardware (hanya untuk satu report, misal pertama)
+            $firstReportId = $reportIds[0] ?? null;
+
+            if ($firstReportId && isset($request->hardware_replacements)) {
+                foreach ($request->hardware_replacements as $item) {
+                    if (!empty($item['nama_komponen']) && !empty($item['detail_merek_hardware']) && !empty($item['jumlah'])) {
+                        HardwareReplacement::create([
+                            'id_tindak_lanjut' => $firstReportId,
+                            'nama_komponen' => $item['nama_komponen'],
+                            'detail_merek_hardware' => $item['detail_merek_hardware'],
+                            'jumlah' => $item['jumlah']
+                        ]);
+                    }
+                }
             }
 
             DB::commit();
-
             return back()->with('success', 'Berhasil disimpan!');
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -94,7 +99,7 @@ class AdminFollowUpController extends Controller
 
     public function indexSoftware($id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
+        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
@@ -113,7 +118,7 @@ class AdminFollowUpController extends Controller
 
     public function storeSoftware(Request $request, $id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
+        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
@@ -129,7 +134,6 @@ class AdminFollowUpController extends Controller
             $detail = DetailDisruption::find($detailId);
             $isLainnya = str_contains(strtolower($detail->detail), 'lainnya');
 
-            // dd($inputLainnya);
             ReportFollowUp::create([
                 'id_penugasan' => $id,
                 'jenis_gangguan' => 2,
@@ -143,7 +147,7 @@ class AdminFollowUpController extends Controller
 
     public function indexNetwork($id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
+        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
@@ -162,7 +166,7 @@ class AdminFollowUpController extends Controller
 
     public function storeNetwork(Request $request, $id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
+        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
@@ -182,9 +186,22 @@ class AdminFollowUpController extends Controller
         return redirect()->route('admin.tindak_lanjut.finalization', $id);
     }
 
+    public function mark($id)
+    {
+        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
+            abort(403, 'Akses ditolak. Anda bukan admin.');
+        }
+
+        $assignment = ReportAssignment::findOrFail($id);
+        $assignment->status = 'Finalisasi';
+        $assignment->save();
+
+        return redirect()->route('riwayat.index')->with('success', 'Tindak lanjut selesai, masuk ke tahap finalisasi.');
+    }
+
     public function finalization($id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
+        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
@@ -200,7 +217,7 @@ class AdminFollowUpController extends Controller
 
     public function storeFinalization(Request $request, $id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
+        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
@@ -224,7 +241,8 @@ class AdminFollowUpController extends Controller
             'realisasi' => $validated['realisasi_hasil'],
             'catatan' => $validated['catatan'],
             'gambar_tindak_lanjut' => $gambarPath,
-            'status' => 'Selesai'
+            'status' => 'Selesai',
+            'tanggal_selesai' => now()
         ]);
 
         return redirect()->route('riwayat.index')

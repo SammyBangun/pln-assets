@@ -20,13 +20,13 @@ class AdminConfirmController extends Controller
 
     public function index($id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
+        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
         $report = Report::with([
             'user',
-            'aset',
+            'aset.tipe',
             'reportIdentifications.identification',
             'assignment'
         ])->findOrFail($id);
@@ -76,6 +76,6 @@ class AdminConfirmController extends Controller
         $assignment->status = $validatedData['status'];
         $assignment->save();
 
-        return redirect()->back()->with('success', 'Status berhasil diperbarui.');
+        return redirect()->route('admin.dashboard')->with('success', 'Status berhasil diperbarui.');
     }
 }

@@ -28,16 +28,17 @@ Notiflix.Confirm.init({
 
 const searchQuery = ref('');
 
-const latestReports = computed(() => {
+const latestAssets = computed(() => {
     return [...(props.items || [])]
-        .filter(items =>
-            items.user?.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            items.serial_number?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            items.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            items.series?.toLowerCase().includes(searchQuery.value.toLowerCase())
+        .filter(item =>
+            (item.user?.name || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            (item.serial_number || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            (item.nama || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            (item.seri || '').toLowerCase().includes(searchQuery.value.toLowerCase())
         )
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 });
+
 
 const deleteReport = (serial_number) => {
     Notiflix.Confirm.show(
@@ -96,7 +97,7 @@ const deleteReport = (serial_number) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in latestReports" :key="item.id_asset"
+                        <tr v-for="(item, index) in latestAssets" :key="items.id_asset"
                             class="border-b border-gray-200 hover:bg-gray-100">
                             <td class="px-4 py-2 text-center align-middle">{{ index + 1 }}</td>
                             <td class="px-4 py-2 text-center align-middle">{{ item.serial_number }}</td>
@@ -108,20 +109,22 @@ const deleteReport = (serial_number) => {
                                 <span v-else class="text-gray-500">Tidak ada gambar</span>
                             </td>
                             <td class="px-4 py-2 text-center align-middle">{{ formatDate(item.tanggal_beli) }}</td>
-                            <td class="px-4 py-2 text-center align-middle">{{ formatDate(item.terakhir_servis) }}</td>
+                            <td class="px-4 py-2 text-center align-middle">
+                                {{ formatDate(item.terakhir_servis) || 'Belum Pernah Diservis' }}
+                            </td>
                             <td class="py-3 px-4 flex justify-center my-5">
-                                <button @click="$inertia.get(`/item/${item.tipe}/${item.serial_number}`)"
+                                <button @click="$inertia.get(`/item/${item.tipe.tipe}/${item.serial_number}`)"
                                     class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md mr-2">
-                                    Detail
+                                    🔎
                                 </button>
                                 <template v-if="$page.props.auth.user.role === 'admin'">
-                                    <button @click="$inertia.get(`/item/${item.tipe}/${item.serial_number}/edit`)"
+                                    <button @click="$inertia.get(`/item/${item.tipe.tipe}/${item.serial_number}/edit`)"
                                         class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
-                                        Edit
+                                        ✏️
                                     </button>
                                     <button @click="deleteReport(item.serial_number)"
                                         class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">
-                                        Delete
+                                        🗑️
                                     </button>
                                 </template>
                             </td>

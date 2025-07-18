@@ -4,7 +4,8 @@ namespace App\Models\Reports;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use App\Models\Operator;
+use App\Models\User;
+use App\Models\Deliverable;
 
 class ReportAssignment extends Model
 {
@@ -19,7 +20,8 @@ class ReportAssignment extends Model
         'catatan',
         'gambar_tindak_lanjut',
         'tanggal_penugasan',
-        'lokasi',
+        'tanggal_selesai',
+        // 'lokasi',
         'status',
         'keterangan_status'
     ];
@@ -43,14 +45,18 @@ class ReportAssignment extends Model
         return $this->belongsTo(Report::class, 'report_id', 'id');
     }
 
-
     public function petugas()
     {
-        return $this->belongsTo(Operator::class, 'petugas', 'id');
+        return $this->belongsTo(User::class, 'petugas', 'id');
     }
 
     public function followUp()
     {
         return $this->hasMany(ReportFollowUp::class, 'id_penugasan', 'id');
+    }
+
+    public function realisasi()
+    {
+        return $this->belongsTo(Deliverable::class, 'realisasi', 'id');
     }
 }

@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Reports\Report;
+use App\Models\Reports\ReportAssignment;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
@@ -24,6 +26,7 @@ class User extends Authenticatable
         'password',
         'role',
         'divisi',
+        'lokasi',
     ];
 
     /**
@@ -52,5 +55,15 @@ class User extends Authenticatable
     public function division()
     {
         return $this->belongsTo(Division::class, 'divisi');
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'user_pelapor', 'id');
+    }
+
+    public function assignments()
+    {
+        return $this->hasMany(ReportAssignment::class, 'petugas', 'id');
     }
 }

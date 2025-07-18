@@ -22,22 +22,17 @@ const form = useForm({
     jenis_gangguan: 1,
     detail: [],
     hal_lain: {},
-    hardware_replacements: [
-        {
-            nama_komponen: '',
-            detail_merek_hardware: '',
-            jumlah: 1
-        }
-    ]
+    hardware_replacements: []
 });
 
 function addHardwareReplacement() {
     if (form.detail.length === 0) return;
 
     form.hardware_replacements.push({
+        id: form.detail[0],
         nama_komponen: '',
         detail_merek_hardware: '',
-        jumlah: 1
+        jumlah: 0
     });
 }
 
@@ -46,7 +41,7 @@ function removeHardwareReplacement(id) {
 }
 
 function submit() {
-    form.post(`/admin/tindak-lanjut/hardware/${props.assignment}`, {
+    form.post(`/admin/tindak-lanjut/hardware/${props.assignment.id}`, {
         onSuccess: () => {
             Notiflix.Notify.success('Tindak lanjut berhasil disimpan!', {
                 position: 'center-top',
@@ -55,7 +50,6 @@ function submit() {
         },
         onError: (errors) => {
             const allErrors = Object.values(errors).join('\n');
-            console.log(allErrors);
             Notiflix.Notify.failure(`Gagal menyimpan:\n${allErrors}`, {
                 position: 'center-top',
                 distance: '70px',
@@ -63,7 +57,7 @@ function submit() {
         }
 
     });
-}
+}       
 </script>
 
 
@@ -116,35 +110,37 @@ function submit() {
                             </div>
 
                             <!-- Daftar Form Penggantian -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div v-for="(replacement, index) in form.hardware_replacements" :key="replacement.id"
-                                    class="border rounded-md p-3 bg-white space-y-2 relative">
+                            <div v-if="form.hardware_replacements.length > 0">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div v-for="(replacement, index) in form.hardware_replacements"
+                                        :key="replacement.id" class="border rounded-md p-3 bg-white space-y-2 relative">
 
-                                    <!-- Tombol Hapus -->
-                                    <button type="button" @click="removeHardwareReplacement(replacement.id)"
-                                        class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm">
-                                        ✕
-                                    </button>
+                                        <!-- Tombol Hapus -->
+                                        <button type="button" @click="removeHardwareReplacement(replacement.id)"
+                                            class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm">
+                                            ✕
+                                        </button>
 
-                                    <!-- Dropdown Nama Komponen -->
-                                    <label class="block text-sm font-medium text-gray-700">Nama Komponen</label>
-                                    <select v-model="replacement.nama_komponen"
-                                        class="w-full rounded border-gray-300 shadow-sm focus:ring-[#98c01d] focus:border-[#98c01d]">
-                                        <option disabled value="">Pilih Komponen</option>
-                                        <option v-for="id in form.detail" :key="id" :value="id">
-                                            {{ getDetailById(id)?.detail }}
-                                        </option>
-                                    </select>
+                                        <!-- Dropdown Nama Komponen -->
+                                        <label class="block text-sm font-medium text-gray-700">Nama Komponen</label>
+                                        <select v-model="replacement.nama_komponen"
+                                            class="w-full rounded border-gray-300 shadow-sm focus:ring-[#98c01d] focus:border-[#98c01d]">
+                                            <option disabled value="">Pilih Komponen</option>
+                                            <option v-for="id in form.detail" :key="id" :value="id">
+                                                {{ getDetailById(id)?.detail }}
+                                            </option>
+                                        </select>
 
-                                    <!-- Detail Merek -->
-                                    <label class="block text-sm font-medium text-gray-700">Detail Merek</label>
-                                    <input type="text" v-model="replacement.detail_merek_hardware"
-                                        class="w-full rounded border-gray-300 shadow-sm focus:ring-[#98c01d] focus:border-[#98c01d]" />
+                                        <!-- Detail Merek -->
+                                        <label class="block text-sm font-medium text-gray-700">Detail Merek</label>
+                                        <input type="text" v-model="replacement.detail_merek_hardware"
+                                            class="w-full rounded border-gray-300 shadow-sm focus:ring-[#98c01d] focus:border-[#98c01d]" />
 
-                                    <!-- Jumlah -->
-                                    <label class="block text-sm font-medium text-gray-700">Jumlah</label>
-                                    <input type="number" min="1" v-model="replacement.jumlah"
-                                        class="w-full rounded border-gray-300 shadow-sm focus:ring-[#98c01d] focus:border-[#98c01d]" />
+                                        <!-- Jumlah -->
+                                        <label class="block text-sm font-medium text-gray-700">Jumlah</label>
+                                        <input type="number" min="1" v-model="replacement.jumlah"
+                                            class="w-full rounded border-gray-300 shadow-sm focus:ring-[#98c01d] focus:border-[#98c01d]" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -152,16 +148,25 @@ function submit() {
                     </div>
 
                     <div class="flex justify-center space-x-4">
-                        <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">
                             Simpan
                         </button>
                     </div>
                 </form>
-                <button @click="$inertia.get(route('admin.tindak_lanjut.indexSoftware', props.assignment.id))"
-                    type="submit" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">
-                    Lanjutkan
-                </button>
-
+                <div class="flex justify-between space-x-4">
+                    <div>
+                        <button @click="$inertia.get(route('admin.dashboard'))" type="submit"
+                            class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">
+                            Kembali
+                        </button>
+                    </div>
+                    <div>
+                        <button @click="$inertia.get(route('admin.tindak_lanjut.indexSoftware', props.assignment.id))"
+                            type="submit" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">
+                            Lanjutkan
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 

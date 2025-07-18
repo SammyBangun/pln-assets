@@ -33,15 +33,23 @@ class ReportController extends Controller
     {
         $user = Auth::user();
 
-        $reports = $user->role === 'admin'
-            ? Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->get()
-            : Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')
-            ->where('user_pelapor', $user->id)->get();
+        if ($user->role === 'admin') {
+            $reports = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->get();
+        } elseif ($user->role === 'petugas') {
+            $reports = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')
+                ->whereHas('assignment', function ($query) use ($user) {
+                    $query->where('petugas', $user->id);
+                })->get();
+        } else {
+            $reports = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')
+                ->where('user_pelapor', $user->id)->get();
+        }
 
         return Inertia::render('Dashboard', [
             'reports' => $reports,
         ]);
     }
+
 
     public function store(Request $request)
     {
@@ -96,8 +104,8 @@ class ReportController extends Controller
         $report = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->findOrFail($id);
         $aset = Asset::find($report->aset);
         $tipe = AssetType::where('id', $aset->tipe)->first();
-        $assignment = ReportAssignment::with('petugas')->where('report_id', $report->id)->first();
-        $followUp = ReportFollowUp::where('id_penugasan', $assignment->id)->get();
+        $assignment = ReportAssignment::with('petugas', 'realisasi')->where('report_id', $report->id)->first();
+        $followUp = ReportFollowUp::with('disruption', 'detailDisruption')->where('id_penugasan', $assignment->id)->get();
         return Inertia::render('Reports/Detail', [
             'report' => $report,
             'tipe' => $tipe,
@@ -189,8 +197,6 @@ class ReportController extends Controller
         $no_tiket = 'WG-' . strtoupper(uniqid());
 
         $pdf = Pdf::loadView('pdf.report', ['report' => $report, 'no_tiket' => $no_tiket])->setPaper('A4', 'portrait');
-
-        dd($pdf);
 
         return $pdf->stream('laporan_gangguan_' . $id . '.pdf');
     }

@@ -85,7 +85,7 @@ export default {
             </div>
 
             <div
-                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded-lg shadow-2xl drop-shadow-2xl">
+                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-3 rounded-lg shadow-2xl drop-shadow-2xl">
                 <div class="mb-6">
                     <ApplicationLogo class="h-20 w-20 fill-current text-gray-500" />
                 </div>

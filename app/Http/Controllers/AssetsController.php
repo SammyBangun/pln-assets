@@ -27,10 +27,14 @@ class AssetsController extends Controller
 
     public function show($tipe)
     {
-        $tipeModel = AssetType::where('id',  $tipe)->first();
+        $tipeModel = AssetType::with('assets')->where('tipe', $tipe)->firstOrFail();
+
+        if (!$tipeModel) {
+            abort(404, 'Tipe aset tidak ditemukan');
+        }
 
         $items = Asset::with('tipe')
-            ->where('tipe', $tipeModel->id)
+            ->where('tipe', $tipeModel->id) // karena kolom 'tipe' di table Asset menyimpan ID
             ->get();
 
         return Inertia::render('Assets/Item', [
@@ -38,6 +42,7 @@ class AssetsController extends Controller
             'tipe' => $tipeModel->tipe,
         ]);
     }
+
 
     public function latest($serial_number)
     {
@@ -103,11 +108,16 @@ class AssetsController extends Controller
 
     public function detail($tipe, $serial_number)
     {
-        $item = Asset::with('division')
-            ->where('tipe', $tipe)
+        $tipeModel = AssetType::with('assets')->where('tipe', $tipe)->firstOrFail();
+        $item = Asset::with('division', 'tipe')
+            ->where('tipe', $tipeModel->id)
             ->where('serial_number', $serial_number)
             ->firstOrFail();
-        return Inertia::render('Assets/Detail', ['item' => $item]);
+
+        return Inertia::render('Assets/Detail', [
+            'item' => $item,
+            'tipeModel' => $tipeModel
+        ]);
     }
 
     public function destroy(Asset $asset, $serial_number)
@@ -128,12 +138,14 @@ class AssetsController extends Controller
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
+        $tipeModel = AssetType::with('assets')->where('tipe', $tipe)->firstOrFail();
         $item = Asset::findOrFail($serial_number);
         $divisions = Division::select('id', 'nama_divisi')->get();
 
         return Inertia::render('Assets/Edit', [
             'item' => $item,
-            'divisions' => $divisions
+            'divisions' => $divisions,
+            'tipeModel' => $tipeModel
         ]);
     }
 

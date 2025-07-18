@@ -2,6 +2,9 @@
 import { ref, computed } from 'vue';
 import Notiflix from "notiflix";
 import formatDate from '@/functions/formatDate';
+import { useForm } from '@inertiajs/vue3';
+
+const form = useForm();
 
 Notiflix.Confirm.init({
     width: "400px",
@@ -97,27 +100,23 @@ const changePage = (page) => {
             <h2 class="text-xl font-bold">Laporan Gangguan</h2>
             <p>{{ new Date().toLocaleDateString('id-ID') }}</p>
         </div>
-        <div class="flex justify-between">
-            <div class="flex justify-end mb-8 mr-10 gap-2">
-                <template v-if="$page.props.auth.user.role === 'admin'">
-                    <button @click="$inertia.get('/laporan/sort')"
+        <div class="flex justify-evenly">
+            <div class="mb-4 w-3/12 ">
+                <input v-model="searchQuery" type="text" placeholder="Cari sesuatu..."
+                    class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-300 no-print">
+            </div>
+            <template v-if="$page.props.auth.user.role === 'admin'">
+                <div class="flex gap-2 mb-8 mr-10">
+                    <button @click="$inertia.get('/admin/performance-monitoring')"
                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow-md no-print">
-                        📦 Sorting
-                    </button>
-                    <button @click="$inertia.get('/laporan/export')"
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow-md no-print">
-                        🖨️ Print PDF
+                        📊 Pemantauan Kinerja
                     </button>
                     <button @click="printPage"
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md shadow-md no-print">
-                        🖨️ Print Langsung
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow-md no-print">
+                        🖨️ Print
                     </button>
-                </template>
-                <div class="mb-4 w-4/12 mx-auto">
-                    <input v-model="searchQuery" type="text" placeholder="Cari sesuatu..."
-                        class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-300 no-print">
                 </div>
-            </div>
+            </template>
         </div>
 
 
@@ -136,9 +135,13 @@ const changePage = (page) => {
                         <th class="py-3 px-4 text-left">Tanggal</th>
                         <th class="py-3 px-4 text-left">Status</th>
                         <th class="py-3 px-4 text-left">Gambar</th>
-                        <th class="py-3 px-4 text-center no-print">Aksi</th>
-                        <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
-                            <th class="py-3 px-4 text-center no-print">Aksi Admin</th>
+                        <template
+                            v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin' || $page.props.auth.user.role === 'user'">
+                            <th class="py-3 px-4 text-center no-print">Aksi</th>
+                        </template>
+                        <template
+                            v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin' || $page.props.auth.user.role === 'petugas'">
+                            <th class="py-3 px-4 text-center no-print">Penanganan</th>
                         </template>
                     </tr>
                 </thead>
@@ -169,7 +172,10 @@ const changePage = (page) => {
                             <span v-if="report.assignment?.status === 'Ditugaskan'"
                                 class="text-yellow-500 font-semibold">Ditugaskan</span>
                             <span v-else-if="report.assignment?.status === 'Selesai'"
-                                class="text-green-500 font-semibold">Selesai</span>
+                                class="text-green-500 font-semibold">Selesai,
+                                <span v-if="report.assignment?.status === 'Selesai'">Pada tanggal:
+                                    {{ formatDate(report.assignment?.tanggal_selesai) }}</span>
+                            </span>
                             <span v-else-if="report.assignment?.status === 'Diterima'"
                                 class="text-blue-500 font-semibold">Diterima</span>
                             <span v-else-if="report.assignment?.status === 'Ditolak'"
@@ -185,34 +191,41 @@ const changePage = (page) => {
                                 class="w-20 h-20 object-cover rounded-md">
                             <span v-else class="text-gray-500">Tidak ada gambar</span>
                         </td>
-                        <td class="py-3 px-4 text-center no-print">
-                            <div class="flex justify-center gap-2">
-                                <template v-if="$page.props.auth.user &&
-                                    ($page.props.auth.user.role === 'admin' ||
-                                        report.user_pelapor === $page.props.auth.user.id)">
-                                    <button @click="$inertia.get(`/riwayat/${report.id}/edit`)"
+                        <template v-if="$page.props.auth.user &&
+                            ($page.props.auth.user.role === 'admin' ||
+                                report.user_pelapor === $page.props.auth.user.id)">
+                            <td class="py-3 px-4 text-center no-print">
+                                <div class="flex justify-center gap-2">
+                                    <button @click.stop="$inertia.get(`/riwayat/${report.id}/edit`)"
                                         class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md">
                                         ✏️
                                     </button>
-                                    <button @click="deleteReport(report.id)"
+                                    <button @click.stop="deleteReport(report.id)"
                                         class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">
                                         🗑️
                                     </button>
-                                </template>
-                            </div>
-                        </td>
-                        <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
-                            <td class="py-3 px-4 no-print">
-                                <button @click="$inertia.get(`/admin/konfirmasi/${report.id}`)"
-                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 disabled:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-50 "
-                                    :disabled="report.assignment?.status === 'Selesai' || report.assignment?.status === 'Ditolak'">
-                                    <span v-if="report.assignment?.status === 'Menunggu Konfirmasi'">Konfirmasi</span>
-                                    <span v-if="report.assignment?.status === 'Ditolak'">Ditolak</span>
-                                    <span v-if="report.assignment?.status === 'Diterima'">Penugasan</span>
-                                    <span v-if="report.assignment?.status === 'Ditugaskan'">Tindak Lanjut</span>
-                                    <span v-if="report.assignment?.status === 'Finalisasi'">Finalisasi</span>
-                                    <span v-if="report.assignment?.status === 'Selesai'">Selesai</span>
-                                </button>
+                                </div>
+                            </td>
+                        </template>
+                        <template
+                            v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin' || $page.props.auth.user.role === 'petugas'">
+                            <td class="py-3 px-4 no-print text-center">
+                                <div class="flex justify-center">
+                                    <button @click.stop="$inertia.get(`/admin/konfirmasi/${report.id}`)"
+                                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 disabled:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
+                                        :disabled="report.assignment?.status === 'Selesai' || report.assignment?.status === 'Ditolak'">
+                                        <span
+                                            v-if="report.assignment?.status === 'Menunggu Konfirmasi'">Konfirmasi</span>
+                                        <span v-if="report.assignment?.status === 'Ditolak'">Ditolak</span>
+                                        <span v-if="report.assignment?.status === 'Diterima'">Penugasan</span>
+                                        <template
+                                            v-if="$page.props.auth.user.role === 'petugas' || $page.props.auth.user.role === 'admin'">
+                                            <span v-if="report.assignment?.status === 'Ditugaskan'">Tindak Lanjut</span>
+                                            <span v-if="report.assignment?.status === 'Finalisasi'">Finalisasi</span>
+                                        </template>
+                                        <span v-if="report.assignment?.status === 'Selesai'">Selesai</span>
+                                    </button>
+                                </div>
                             </td>
                         </template>
                     </tr>

@@ -36,6 +36,8 @@ class AuthenticatedSessionController extends Controller
 
         if (Auth::user()->role === 'admin') {
             return Inertia::location('/admin/dashboard');
+        } else if (Auth::user()->role === 'petugas') {
+            return Inertia::location('/riwayat');
         } else {
             return Inertia::location('/dashboard');
         }

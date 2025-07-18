@@ -12,7 +12,7 @@ const props = defineProps({
     followUp: Array
 });
 
-console.log(props.followUp);
+console.log(props.assignment);
 
 const showModal = ref(false);
 const selectedImage = ref('');
@@ -55,12 +55,12 @@ const printPdf = (id) => {
                             <p class="text-lg font-semibold text-gray-700"><strong>Pelapor:</strong> {{
                                 report.user?.name }}
                             </p>
+                            <p class="text-lg text-gray-600"><strong>Lokasi:</strong> {{ report.user?.lokasi }}</p>
                             <p class="text-lg text-gray-600"><strong>Serial Number:</strong> {{
                                 report.aset?.serial_number
                                 ?? 'Tidak ditemukan' }}</p>
                             <p class="text-lg text-gray-600"><strong>Nama:</strong> {{ report.aset?.nama }}</p>
                             <p class="text-lg text-gray-600"><strong>Tipe:</strong> {{ tipe.tipe }}</p>
-                            <p class="text-lg text-gray-600"><strong>Lokasi:</strong> {{ report.aset?.lokasi }}</p>
 
                             <!-- <p class="text-lg text-gray-600"><strong>Aset:</strong> {{ assetName }}</p> -->
                             <p class="text-lg text-gray-600"><strong>Identifikasi Masalah:</strong></p>
@@ -86,9 +86,9 @@ const printPdf = (id) => {
                         </div>
                         <div class="mt-6">
                             <p class="text-lg font-semibold text-gray-700">Gambar Tindak Lanjut:</p>
-                            <div v-if="report.gambar_konfirmasi" class="mt-3 flex justify-center">
-                                <img :src="report.gambar_konfirmasi" alt="Gambar Konfirmasi"
-                                    @click="openImage(report.gambar_konfirmasi)"
+                            <div v-if="report.assignment?.gambar_tindak_lanjut" class="mt-3 flex justify-center">
+                                <img :src="`/storage/${report.assignment?.gambar_tindak_lanjut}`"
+                                    alt="Gambar Konfirmasi" @click="openImage(report.assignment?.gambar_tindak_lanjut)"
                                     class="cursor-pointer max-w-64 max-h-64 rounded-lg shadow-md">
                             </div>
                             <span v-else class="text-gray-500">Tidak ada gambar</span>
@@ -96,9 +96,9 @@ const printPdf = (id) => {
                     </div>
 
                     <div class="h-full border border-gray-300 p-6 rounded-lg bg-gray-50">
-                        <div class="mb-5 flex justify-between items-center">
-                            <p class="text-xl font-semibold text-gray-800">Konfirmasi Admin</p>
-                            <p class="text-lg font-semibold text-gray-700 flex items-center">
+                        <div class="mb-5">
+                            <p class="text-xl font-semibold text-gray-800 mb-6">Konfirmasi Admin</p>
+                            <div class="text-lg font-semibold text-gray-700 flex items-center">
                                 <strong>Status:</strong>&nbsp;{{ report.assignment?.status }}
                                 <span v-if="report.assignment?.status === 'Selesai'"
                                     class="ml-2 text-green-500">✅</span>
@@ -109,7 +109,11 @@ const printPdf = (id) => {
                                 <span v-if="report.assignment?.status === 'Diterima'"
                                     class="ml-2 text-blue-500">➡️</span>
                                 <span v-if="report.assignment?.status === 'Ditolak'" class="ml-2 text-red-500">❌</span>
-                            </p>
+                            </div>
+                            <!-- Tanggal di baris baru -->
+                            <div v-if="report.assignment?.status === 'Selesai'" class=" mt-1 text-sm text-gray-600">
+                                Pada Tanggal {{ formatDate(report.assignment?.tanggal_selesai) }}
+                            </div>
                         </div>
                         <div v-if="report.assignment?.status === 'Ditolak'"
                             class="border border-gray-300 p-4 rounded-md bg-gray-50 mb-3">
@@ -120,29 +124,36 @@ const printPdf = (id) => {
                         <div class="border border-gray-300 p-4 rounded-md bg-gray-50">
                             <h2 class="text-xl font-semibold text-gray-800">Petugas</h2>
                             <p class="text-lg text-gray-700"><strong>Nama Petugas:</strong> {{
-                                assignment?.petugas || 'Belum dikonfirmasi admin' }}</p>
+                                assignment?.petugas.name || 'Belum dikonfirmasi admin' }}</p>
                             <p class="text-lg text-gray-700"><strong>Tanggal Penugasan:</strong> {{
-                                assignment?.tanggal_penugasan || 'Belum dikonfirmasi admin' }}</p>
-                            <p class="text-lg text-gray-700"><strong>Lokasi Penugasan:</strong> {{ assignment?.lokasi
-                                || 'Belum dikonfirmasi admin' }}</p>
+                                formatDate(assignment?.tanggal_penugasan) || 'Belum dikonfirmasi admin' }}</p>
+                            <!-- <p class="text-lg text-gray-700"><strong>Lokasi Penugasan:</strong> {{ assignment?.lokasi
+                                || 'Belum dikonfirmasi admin' }}</p> -->
                         </div>
                         <div class="border border-gray-300 p-4 rounded-md bg-gray-50 mt-2">
-                            <h2 class="text-xl font-semibold text-gray-800">Tindak Lanjut</h2>
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">Tindak Lanjut</h2>
                             <div v-if="followUp.length > 0">
                                 <div v-for="(item, index) in followUp" :key="item.id" class="mb-4 border-b pb-2">
                                     <p class="text-lg text-gray-700">
-                                        <strong>Jenis Gangguan {{ index + 1 }}:</strong>
-                                        {{ item.jenis_gangguan }}
+                                        <strong>Jenis Gangguan :</strong>
+                                        {{ item.disruption.nama_gangguan }}
                                     </p>
                                     <p class="text-lg text-gray-700">
-                                        <strong>ID Detail Gangguan:</strong>
-                                        {{ item.id_detail_gangguan }}
+                                        <strong>Tindak Lanjut:</strong>
+                                        {{ item.detail_disruption.detail }}
                                     </p>
                                     <p class="text-lg text-gray-700">
-                                        <strong>Tindakan Lain:</strong>
-                                        {{ item.hal_lain || 'Tidak ada' }}
+                                        <strong>Keterangan:</strong>
+                                        {{ item.hal_lain || '-' }}
                                     </p>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="border border-gray-300 p-4 rounded-md bg-gray-50 mt-2">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">Realisasi Hasil Pekerjaan</h2>
+                            <div>
+                                <p class="text-lg text-gray-600"><strong>Realisasi: </strong>{{
+                                    assignment.realisasi.realisasi_hasil }}</p>
                             </div>
                         </div>
                         <div v-if="report.status === 'Selesai' && ($page.props.auth.user.role === 'admin' || $page.props.auth.user.id === report.user_pelapor)"

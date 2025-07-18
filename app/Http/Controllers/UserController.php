@@ -18,11 +18,19 @@ class UserController extends Controller
         ]);
     }
 
+    public function show(User $user)
+    {
+        $user = User::with('division')->find($user->id);
+        return Inertia::render('Admin/User', [
+            'user' => $user
+        ]);
+    }
+
     // Memperbarui role pengguna (admin only)
     public function updateRole(Request $request, User $user)
     {
         $request->validate([
-            'role' => 'required|in:admin,user'
+            'role' => 'required|in:admin,user,petugas'
         ]);
 
         $user->update([

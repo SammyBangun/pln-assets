@@ -15,7 +15,6 @@ const form = useForm({
 });
 
 function submit() {
-    console.log(props.report.id);
     form.post(`/admin/konfirmasi/${props.report.id}`, {
         onSuccess: () => {
             Notify.success('Status berhasil diperbarui!',
@@ -66,7 +65,7 @@ function submit() {
                                 report.aset?.serial_number
                                 ?? 'Tidak ditemukan' }}</p>
                             <p class="text-lg text-gray-600"><strong>Nama:</strong> {{ report.aset?.nama }}</p>
-                            <p class="text-lg text-gray-600"><strong>Tipe:</strong> {{ report.aset?.tipe }}</p>
+                            <p class="text-lg text-gray-600"><strong>Tipe:</strong> {{ report.aset?.tipe.tipe }}</p>
                             <p class="text-lg text-gray-600"><strong>Lokasi:</strong> {{ report.aset?.lokasi }}</p>
 
                             <p class="text-lg text-gray-600"><strong>Identifikasi Masalah:</strong></p>

@@ -24,7 +24,8 @@ const props = defineProps({
       ].every((key) => key in value);
     },
   },
-  divisions: Array
+  divisions: Array,
+  tipeModel: Object
 });
 
 const form = useForm({

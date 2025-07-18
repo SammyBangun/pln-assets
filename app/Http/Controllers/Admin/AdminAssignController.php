@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Reports\ReportAssignment;
-use App\Models\Operator;
+use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
@@ -20,7 +20,7 @@ class AdminAssignController extends Controller
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
-        $operators = Operator::all();
+        $operators = User::where('role', 'petugas')->get();
 
         $assignment = ReportAssignment::findOrFail($id);
 
@@ -37,19 +37,19 @@ class AdminAssignController extends Controller
         }
 
         $validated = $request->validate([
-            'petugas' => 'required|exists:operators,id',
+            'petugas' => 'required|exists:users,id',
             'tanggal_penugasan' => 'required|date',
-            'lokasi' => 'required|string|max:255',
+            // 'lokasi' => 'required|string|max:255',
         ]);
 
         $assignment = ReportAssignment::findOrFail($id);
         $assignment->update([
             'petugas' => $validated['petugas'],
             'tanggal_penugasan' => $validated['tanggal_penugasan'],
-            'lokasi' => $validated['lokasi'],
+            // 'lokasi' => $validated['lokasi'],
             'status' => 'Ditugaskan'
         ]);
 
-        return redirect()->route('admin.tindak_lanjut.indexHardware', ['id' => $assignment->id])->with('success', 'Penugasan berhasil disimpan.');
+        return redirect()->route('admin.dashboard')->with('success', 'Penugasan berhasil disimpan.');
     }
 }

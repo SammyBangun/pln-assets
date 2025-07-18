@@ -38,14 +38,16 @@ class RegisteredUserController extends Controller
         $request->validate([
             'id' => 'required|string|max:16|unique:users',
             'divisi' => 'required|exists:divisions,id',
+            'lokasi' => 'required|string',
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'id' => $request->id,
             'divisi' => $request->divisi,
+            'lokasi' => $request->lokasi,
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -53,6 +55,6 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        return redirect(route('admin.dashboard'))->with('status', 'Registrasi berhasil, silahkan login.');
+        return redirect(route('admin.users'))->with('status', 'Registrasi berhasil, silahkan login.');
     }
 }

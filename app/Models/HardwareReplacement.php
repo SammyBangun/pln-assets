@@ -11,8 +11,9 @@ class HardwareReplacement extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_gangguan_hardware',
         'detail_merek_hardware',
+        'id_tindak_lanjut',
+        'nama_komponen',
         'jumlah',
     ];
 

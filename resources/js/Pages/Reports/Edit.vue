@@ -44,7 +44,6 @@ function submit() {
     });
     formData.append("deskripsi", form.deskripsi);
 
-    console.log('Data yang dikirim:', form);
     if (form.gambar instanceof File) {
         formData.append("gambar", form.gambar);
     } else if (gambarLama) {
