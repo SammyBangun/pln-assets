@@ -183,19 +183,22 @@ class AdminLookupController extends Controller
         }
 
         $detailDisruptions = DetailDisruption::with('disruption')->get();
+        $disruptions = Disruption::all();
 
         return Inertia::render('Admin/Lookup/DetailDisruptions', [
-            'detailDisruptions' => $detailDisruptions
+            'detailDisruptions' => $detailDisruptions,
+            'disruptions' => $disruptions
         ]);
     }
 
     public function storeDetailDisruptions(Request $request)
     {
         $validated = $request->validate([
-            'tipe' => 'required|string|max:255|unique:asset_types,tipe',
+            'disruption_id' => 'required|exists:disruptions,id',
+            'detail' => 'required|string|max:255',
         ]);
 
-        AssetType::create($validated);
+        DetailDisruption::create($validated);
 
         return back()->with('success', 'Data tipe aset berhasil ditambahkan.');
     }

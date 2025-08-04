@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HardwareReplacement;
 use App\Models\Reports\Report;
 use App\Models\Assets\Asset;
 use App\Models\Assets\AssetType;
@@ -105,12 +106,17 @@ class ReportController extends Controller
         $aset = Asset::find($report->aset);
         $tipe = AssetType::where('id', $aset->tipe)->first();
         $assignment = ReportAssignment::with('petugas', 'realisasi')->where('report_id', $report->id)->first();
-        $followUp = ReportFollowUp::with('disruption', 'detailDisruption')->where('id_penugasan', $assignment->id)->get();
+        $followUp = ReportFollowUp::with('disruption', 'detailDisruption', 'hardwareReplacement')->where('id_penugasan', $assignment->id)->get();
+        $hardwareReplacement = HardwareReplacement::where('id_tindak_lanjut', $followUp[0]->id)->get();
+
+        // dd($hardwareReplacement);
+
         return Inertia::render('Reports/Detail', [
             'report' => $report,
             'tipe' => $tipe,
             'assignment' => $assignment,
-            'followUp' => $followUp
+            'followUp' => $followUp,
+            'hardwareReplacement' => $hardwareReplacement
         ]);
     }
 

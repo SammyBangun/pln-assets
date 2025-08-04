@@ -9,10 +9,11 @@ const props = defineProps({
     report: Object,
     tipe: Object,
     assignment: Object,
-    followUp: Array
+    followUp: Array,
+    hardwareReplacement: Array
 });
 
-console.log(props.assignment);
+console.log(props.hardwareReplacement);
 
 const showModal = ref(false);
 const selectedImage = ref('');
@@ -124,9 +125,9 @@ const printPdf = (id) => {
                         <div class="border border-gray-300 p-4 rounded-md bg-gray-50">
                             <h2 class="text-xl font-semibold text-gray-800">Petugas</h2>
                             <p class="text-lg text-gray-700"><strong>Nama Petugas:</strong> {{
-                                assignment?.petugas.name || 'Belum dikonfirmasi admin' }}</p>
+                                assignment?.petugas?.name || 'Belum ditugaskan admin' }}</p>
                             <p class="text-lg text-gray-700"><strong>Tanggal Penugasan:</strong> {{
-                                formatDate(assignment?.tanggal_penugasan) || 'Belum dikonfirmasi admin' }}</p>
+                                formatDate(assignment?.tanggal_penugasan) || 'Belum ditugaskan admin' }}</p>
                             <!-- <p class="text-lg text-gray-700"><strong>Lokasi Penugasan:</strong> {{ assignment?.lokasi
                                 || 'Belum dikonfirmasi admin' }}</p> -->
                         </div>
@@ -148,12 +149,42 @@ const printPdf = (id) => {
                                     </p>
                                 </div>
                             </div>
+                            <div v-else>
+                                <p class="text-lg text-gray-600">Belum ada tindak lanjut</p>
+                            </div>
+                        </div>
+                        <div class="border border-gray-300 p-4 rounded-md bg-gray-50 mt-2">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">Hardware yang diganti baru</h2>
+                            <div v-if="hardwareReplacement.length > 0">
+                                <div v-for="(item, index) in hardwareReplacement" :key="item.id"
+                                    class="mb-4 border-b pb-2">
+                                    <p class="text-lg text-gray-700">
+                                        <strong>Merek:</strong>
+                                        {{ item.detail_merek_hardware }}
+                                    </p>
+                                    <p class="text-lg text-gray-700">
+                                        <strong>Jumlah:</strong>
+                                        {{ item.jumlah }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <p class="text-lg text-gray-600">Tidak ada hardware yang diganti</p>
+                            </div>
                         </div>
                         <div class="border border-gray-300 p-4 rounded-md bg-gray-50 mt-2">
                             <h2 class="text-xl font-semibold text-gray-800 mb-4">Realisasi Hasil Pekerjaan</h2>
                             <div>
                                 <p class="text-lg text-gray-600"><strong>Realisasi: </strong>{{
-                                    assignment.realisasi.realisasi_hasil }}</p>
+                                    assignment?.realisasi?.realisasi_hasil || 'Belum ada realisasi hasil pekerjaan' }}
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-lg text-gray-600"><strong>Catatan: </strong>
+                                </p>
+                                <p class="text-lg text-gray-600">
+                                    {{ assignment?.catatan || '-' }}
+                                </p>
                             </div>
                         </div>
                         <div v-if="report.status === 'Selesai' && ($page.props.auth.user.role === 'admin' || $page.props.auth.user.id === report.user_pelapor)"

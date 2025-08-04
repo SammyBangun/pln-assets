@@ -3,6 +3,7 @@
 namespace App\Models\Reports;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\HardwareReplacement;
 use App\Models\Disruptions\Disruption;
 use App\Models\Disruptions\DetailDisruption;
 
@@ -31,5 +32,10 @@ class ReportFollowUp extends Model
     public function detailDisruption()
     {
         return $this->belongsTo(DetailDisruption::class, 'id_detail_gangguan', 'id');
+    }
+
+    public function hardwareReplacement()
+    {
+        return $this->hasMany(HardwareReplacement::class, 'id_tindak_lanjut', 'id');
     }
 }

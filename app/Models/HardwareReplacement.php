@@ -11,19 +11,19 @@ class HardwareReplacement extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'detail_merek_hardware',
         'id_tindak_lanjut',
         'nama_komponen',
+        'detail_merek_hardware',
         'jumlah',
     ];
 
-    public function detailDisruption()
-    {
-        return $this->belongsTo(DetailDisruption::class, 'id_gangguan_hardware', 'id');
-    }
-
-    public function reportFollowUp()
+    public function followUp()
     {
         return $this->belongsTo(ReportFollowUp::class, 'id_tindak_lanjut', 'id');
+    }
+
+    public function detailDisruption()
+    {
+        return $this->belongsTo(DetailDisruption::class, 'nama_komponen', 'id');
     }
 }
