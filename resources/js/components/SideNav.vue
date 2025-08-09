@@ -6,93 +6,126 @@ const isOpen = ref(false)
 <template>
     <div>
         <!-- Mobile Toggle Button -->
-        <button class="md:hidden p-2 m-4 bg-gray-100 rounded" @click="isOpen = !isOpen">
-            ☰ Menu
+        <button
+            class="md:hidden flex items-center gap-2 p-2 m-4 bg-yellow-400 text-white rounded shadow hover:bg-yellow-500"
+            @click="isOpen = !isOpen">
+            <i class="fas fa-bars"></i> Menu
         </button>
 
-        <transition name="fade">
-            <!-- Mobile SideNav -->
-            <nav v-if="isOpen" class="md:hidden bg-white border border-gray-200 rounded mx-4 p-4 mb-4 shadow">
+        <!-- Mobile SideNav -->
+        <transition name="slide">
+            <nav v-if="isOpen" class="md:hidden bg-white border border-gray-200 rounded mx-4 p-4 mb-4 shadow-lg">
                 <ul class="space-y-3">
-                    <Link :href="route('assets.index')"
-                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                    Aset IT
-                    </Link>
-                    <Link :href="route('admin.lookup.asset-types')"
-                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                    Tipe Aset
-                    </Link>
-                    <Link :href="route('admin.lookup.identifications')"
-                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                    Identifikasi Masalah
-                    </Link>
-                    <Link :href="route('admin.lookup.divisions')"
-                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                    Divisi
-                    </Link>
-                    <Link :href="route('admin.lookup.disruptions')"
-                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                    Gangguan
-                    </Link>
-                    <Link :href="route('admin.lookup.detail-disruptions')"
-                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                    Detail Gangguan
-                    </Link>
-                    <Link :href="route('admin.lookup.deliverables')"
-                        class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                    Realisasi
-                    </Link>
+                    <li>
+                        <Link :href="route('assets.index')"
+                            class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
+                        <i class="fas fa-desktop text-blue-600"></i> Aset IT
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('admin.lookup.asset-types')"
+                            class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
+                        <i class="fas fa-tags text-green-600"></i> Tipe Aset
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('admin.lookup.identifications')"
+                            class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
+                        <i class="fas fa-exclamation-triangle text-red-500"></i> Identifikasi Masalah
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('admin.lookup.divisions')"
+                            class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
+                        <i class="fas fa-sitemap text-purple-500"></i> Divisi
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('admin.lookup.disruptions')"
+                            class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
+                        <i class="fas fa-bolt text-yellow-500"></i> Gangguan
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('admin.lookup.detail-disruptions')"
+                            class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
+                        <i class="fas fa-info-circle text-blue-500"></i> Detail Gangguan
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('admin.lookup.deliverables')"
+                            class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
+                        <i class="fas fa-check-circle text-green-500"></i> Realisasi
+                        </Link>
+                    </li>
                 </ul>
             </nav>
         </transition>
 
         <!-- Desktop SideNav -->
-        <nav class="hidden md:block bg-gray-100 border-r border-gray-200 w-48 h-full p-4">
-            <h2 class="text-xl font-bold text-center">Menu</h2>
-            <div class="border-b border-gray-200 mb-4"></div>
+        <nav class="hidden md:block bg-yellow-400 text-white w-56 h-full p-4 shadow-lg">
+            <h2 class="text-xl font-bold text-center mb-4">Menu</h2>
             <ul class="space-y-3">
-                <Link :href="route('assets.index')"
-                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                Aset IT
-                </Link>
-                <Link :href="route('admin.lookup.asset-types')"
-                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                Tipe Aset
-                </Link>
-                <Link :href="route('admin.lookup.identifications')"
-                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                Identifikasi Masalah
-                </Link>
-                <Link :href="route('admin.lookup.divisions')"
-                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                Divisi
-                </Link>
-                <Link :href="route('admin.lookup.disruptions')"
-                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                Gangguan
-                </Link>
-                <Link :href="route('admin.lookup.detail-disruptions')"
-                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                Detail Gangguan
-                </Link>
-                <Link :href="route('admin.lookup.deliverables')"
-                    class="block bg-gray-300 rounded-md p-2 text-gray-700 hover:text-yellow-400">
-                Realisasi
-                </Link>
+                <li>
+                    <Link :href="route('assets.index')"
+                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
+                    <i class="fas fa-desktop"></i> Aset IT
+                    </Link>
+                </li>
+                <li>
+                    <Link :href="route('admin.lookup.asset-types')"
+                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
+                    <i class="fas fa-tags"></i> Tipe Aset
+                    </Link>
+                </li>
+                <li>
+                    <Link :href="route('admin.lookup.identifications')"
+                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
+                    <i class="fas fa-exclamation-triangle"></i> Identifikasi Masalah
+                    </Link>
+                </li>
+                <li>
+                    <Link :href="route('admin.lookup.divisions')"
+                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
+                    <i class="fas fa-sitemap"></i> Divisi
+                    </Link>
+                </li>
+                <li>
+                    <Link :href="route('admin.lookup.disruptions')"
+                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
+                    <i class="fas fa-bolt"></i> Gangguan
+                    </Link>
+                </li>
+                <li>
+                    <Link :href="route('admin.lookup.detail-disruptions')"
+                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
+                    <i class="fas fa-info-circle"></i> Detail Gangguan
+                    </Link>
+                </li>
+                <li>
+                    <Link :href="route('admin.lookup.deliverables')"
+                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
+                    <i class="fas fa-check-circle"></i> Realisasi
+                    </Link>
+                </li>
             </ul>
         </nav>
     </div>
 </template>
 
 <style scoped>
-/* Simple fade animation for mobile */
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.3s ease;
+.slide-enter-active,
+.slide-leave-active {
+    transition: all 0.3s ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.slide-enter-from {
     opacity: 0;
+    transform: translateX(-20px);
+}
+
+.slide-leave-to {
+    opacity: 0;
+    transform: translateX(-20px);
 }
 </style>
