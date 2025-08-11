@@ -15,12 +15,6 @@ return new class extends Migration
             $table->unsignedInteger('id')->primary()->autoIncrement();
             $table->string('nama_divisi');
         });
-
-        Schema::create('operators', function (Blueprint $table) {
-            $table->unsignedInteger('id')->primary()->autoIncrement();
-            $table->string('nama_petugas');
-            $table->string('no_hp');
-        });
     }
 
     /**
@@ -29,6 +23,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('divisions');
-        Schema::dropIfExists('operators');
     }
 };

@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
         $this->call(\Database\Seeders\IdentificationSeeder::class);
         $this->call(\Database\Seeders\DisruptionSeeder::class);
         $this->call(\Database\Seeders\AssetTypeSeeder::class);
-        $this->call(\Database\Seeders\OperatorSeeder::class);
         $this->call(\Database\Seeders\DetailDisruptionSeeder::class);
         $this->call(\Database\Seeders\DeliverableSeeder::class);
+        $this->call(\Database\Seeders\UserSeeder::class);
     }
 }

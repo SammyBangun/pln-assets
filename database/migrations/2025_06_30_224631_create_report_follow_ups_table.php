@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('jenis_gangguan')->references('id')->on('disruptions')->onDelete('cascade');
             $table->string('id_detail_gangguan');
             $table->foreign('id_detail_gangguan')->references('id')->on('detail_disruptions')->onDelete('cascade');
-            $table->text('catatan_tambahan')->nullable();
+            $table->string('hal_lain')->nullable();
         });
     }
 

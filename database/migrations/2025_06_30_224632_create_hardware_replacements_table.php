@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('hardware_replacements', function (Blueprint $table) {
             $table->unsignedInteger('id')->primary()->autoIncrement();
-            $table->string('id_gangguan_hardware');
-            $table->foreign('id_gangguan_hardware')->references('id')->on('detail_disruptions')->onDelete('cascade');
+            $table->unsignedInteger('id_tindak_lanjut');
+            $table->foreign('id_tindak_lanjut')->references('id')->on('report_follow_ups')->onDelete('cascade');
+            $table->string('nama_komponen');
+            $table->foreign('nama_komponen')->references('id')->on('detail_disruptions')->onDelete('cascade');
             $table->string('detail_merek_hardware');
-            $table->string('jumlah');
+            $table->integer('jumlah');
         });
     }
 

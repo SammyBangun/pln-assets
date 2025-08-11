@@ -21,8 +21,6 @@ return new class extends Migration
             $table->unsignedInteger('jenis_gangguan');
             $table->foreign('jenis_gangguan')->references('id')->on('disruptions')->onDelete('cascade');
             $table->string('detail');
-            $table->string('hal_lain')->nullable();
-            $table->string('keterangan')->nullable();
         });
     }
 

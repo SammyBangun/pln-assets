@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('deliverables', function (Blueprint $table) {
             $table->unsignedInteger('id')->primary()->autoIncrement();
             $table->string('realisasi_hasil');
-            $table->text('catatan')->nullable();
         });
     }
 

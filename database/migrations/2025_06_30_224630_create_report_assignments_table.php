@@ -16,11 +16,13 @@ return new class extends Migration
             $table->string('report_id');
             $table->foreign('report_id')->references('id')->on('reports')->onDelete('cascade');
             $table->unsignedInteger('petugas');
-            $table->foreign('petugas')->references('id')->on('operators')->onDelete('cascade');
+            $table->foreign('petugas')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedInteger('realisasi');
             $table->foreign('realisasi')->references('id')->on('deliverables')->onDelete('cascade');
+            $table->text('catatan');
             $table->string('gambar_tindak_lanjut')->nullable();
             $table->date('tanggal_penugasan');
+            $table->date('tanggal_selesai');
             $table->string('lokasi');
             $table->enum('status', ['Menunggu Konfirmasi', 'Ditolak', 'Diterima', 'Ditugaskan', 'Selesai'])->default('Menunggu Konfirmasi');
             $table->string('keterangan_status')->nullable();
