@@ -169,7 +169,7 @@ onMounted(async () => {
                     <Dropdown align="right" width="32">
                         <template #trigger>
                             <button
-                                class="flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 hover:text-gray-700 focus:outline-none">
+                                class="flex items-center rounded-lg border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 hover:text-gray-700 focus:outline-none">
                                 {{ auth.user.name }}
                                 <svg class="-me-0.5 ms-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                     viewBox="0 0 20 20">
@@ -180,7 +180,7 @@ onMounted(async () => {
                         </template>
 
                         <template #content>
-                            <div class="bg-white rounded-md shadow-lg">
+                            <div class="bg-white rounded-lg shadow-lg">
                                 <DropdownLink href="/profile"><i class="fas fa-user"></i> Profile</DropdownLink>
                                 <DropdownLink href="/logout" method="post" as="button">
                                     <i class="fas fa-sign-out-alt"></i> Log Out

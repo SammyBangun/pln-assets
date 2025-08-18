@@ -49,15 +49,15 @@ function submit() {
 
     <AuthenticatedLayout>
 
-        <div class="mx-auto my-12 min-h-screen px-4">
+        <div class="mx-auto my-8 min-h-screen px-4">
             <div class="min-w-full border border-gray-200 rounded-lg p-6 shadow-sm">
                 <h1 class="text-3xl font-extrabold text-center text-gray-800">Tindak Lanjut Pekerjaan</h1>
                 <h3 class="text-lg font-semibold text-center text-gray-700 mb-8">(Penugasan yang dikerjakan)</h3>
 
-                <form @submit.prevent="submit" class="space-y-4 w-8/12 mx-auto">
+                <form @submit.prevent="submit" class="space-y-4 w-10/12 h-full mx-auto">
 
                     <h1 class="mb-4 text-center">Finalisasi</h1>
-                    <div class="border border-gray-300 p-4 rounded-md bg-gray-50 ">
+                    <div class="w-full mx-auto border border-gray-300 p-4 rounded-md bg-gray-50 ">
 
                         <div>
                             <h3 class="text-lg font-semibold text-center text-gray-700 mb-4">Gambar Tindak
@@ -92,18 +92,23 @@ function submit() {
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-4">
                             <div>
-                                <h3 class="text-lg font-semibold text-center text-gray-700 mb-4">Realisasi Hasil
-                                    Pekerjaan
+                                <h3 class="text-lg font-semibold text-center text-gray-700 mb-4">
+                                    Realisasi Hasil Pekerjaan
                                 </h3>
-                                <div v-if="deliverables.length > 0" class="">
+
+                                <div v-if="deliverables.length > 0" class="space-y-2">
                                     <label v-for="deliverable in deliverables" :key="deliverable.id"
-                                        class="flex items-center space-x-2">
+                                        class="flex items-start space-x-2">
+
                                         <input type="radio" :value="deliverable.id" v-model="form.realisasi_hasil"
-                                            class="rounded border-gray-300 text-[#98c01d] shadow-sm focus:ring-[#98c01d]"
+                                            class="mt-1 rounded border-gray-300 text-[#98c01d] shadow-sm focus:ring-[#98c01d]"
                                             required />
-                                        <span class="text-gray-700 text-center">{{ deliverable.realisasi_hasil }}</span>
+
+                                        <span class="text-gray-700 leading-snug">
+                                            {{ deliverable.realisasi_hasil }}
+                                        </span>
                                     </label>
                                 </div>
                             </div>

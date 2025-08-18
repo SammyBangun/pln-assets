@@ -24,13 +24,15 @@
             TINDAK LANJUTNYA</h1>
 
         <div class="text-sm text-gray-700">
+            <p class=""><strong>Debug:</strong> {{ $report }}</p>
             <p class=""><strong>User Pelapor:</strong> {{ $report->user->name }}</p>
-            <p class=""><strong>Nama Aset:</strong> {{ $report->asset->name }}</p>
-            <p class=""><strong>SN:</strong> {{ $report->aset }}</p>
-            <p class="text-right mb-2"><strong>Tanggal Laporan:</strong> {{ $report->created_at->format('d/m/Y') }}</p>
+            {{-- <p class=""><strong>Nama Aset:</strong> {{ $report->aset->nama }}</p>
+            <p class=""><strong>Serial Number:</strong> {{ $report->aset }}</p> --}}
+            <p class="text-right mb-2"><strong>Tanggal Laporan:</strong> {{ $report->created_at->format('d/m/Y') }}
+            </p>
         </div>
 
-        <div class="mb-3 mt-4">
+        {{-- <div class="mb-3 mt-4">
             <div class="bg-gray-200 p-3 rounded-xl h-8">
                 <h2 class="font-semibold text-gray-700 text-center">Berita Gangguan</h2>
             </div>
@@ -101,7 +103,7 @@
 
         <div class="text-center text-gray-500 text-sm">
             Laporan ini dibuat secara otomatis oleh sistem pada {{ \Carbon\Carbon::now()->format('d/m/Y') }}.
-        </div>
+        </div> --}}
     </div>
 </body>
 

@@ -65,7 +65,7 @@ const isOpen = ref(false)
         </transition>
 
         <!-- Desktop SideNav -->
-        <nav class="hidden md:block bg-yellow-400 text-white w-52 h-full p-4 pt-6 shadow-lg">
+        <nav class="hidden md:block bg-yellow-400 text-white w-56 h-full p-4 pt-6 shadow-lg">
             <ul class="space-y-3">
                 <li>
                     <SideNavLink :href="route('assets.index')" :active="route().current('assets.index')">

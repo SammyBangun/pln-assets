@@ -107,8 +107,7 @@ class ReportController extends Controller
         $tipe = AssetType::where('id', $aset->tipe)->first();
         $assignment = ReportAssignment::with('petugas', 'realisasi')->where('report_id', $report->id)->first();
         $followUp = ReportFollowUp::with('disruption', 'detailDisruption', 'hardwareReplacement')->where('id_penugasan', $assignment->id)->get();
-        $hardwareReplacement = HardwareReplacement::where('id_tindak_lanjut')->get();
-
+        $hardwareReplacement = HardwareReplacement::with('detailDisruption')->where('id_tindak_lanjut', $followUp[0]->id)->get();
 
         return Inertia::render('Reports/Detail', [
             'previousURL' => url()->previous(),
@@ -198,14 +197,20 @@ class ReportController extends Controller
 
     public function exportPdf($id)
     {
-        $report = Report::with('user', 'aset', 'assignment')->get();
+        $report = Report::with('user', 'aset', 'assignment')
+            ->where('id', $id)
+            ->firstOrFail();
 
         $no_tiket = 'WG-' . strtoupper(uniqid());
 
-        $pdf = Pdf::loadView('pdf.report', ['report' => $report, 'no_tiket' => $no_tiket])->setPaper('A4', 'portrait');
+        $pdf = Pdf::loadView('pdf.report', [
+            'report' => $report,
+            'no_tiket' => $no_tiket
+        ])->setPaper('A4', 'portrait');
 
         return $pdf->stream('laporan_gangguan_' . $id . '.pdf');
     }
+
 
     public function exportAllPdf()
     {

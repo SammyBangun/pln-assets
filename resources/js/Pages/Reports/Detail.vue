@@ -14,6 +14,8 @@ const props = defineProps({
     previousURL: String
 });
 
+console.log(props.hardwareReplacement);
+
 const showModal = ref(false);
 const selectedImage = ref('');
 
@@ -41,10 +43,16 @@ const printPdf = (id) => {
                     <h1 class="text-3xl font-extrabold text-gray-800 mb-2">Detail Laporan</h1>
                     <p class="text-md font-semibold text-gray-600">Detail dari laporan gangguan</p>
                 </div>
-                <button @click="$inertia.visit(previousURL)"
-                    class="bg-yellow-500 hover:bg-yellow-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-all">
-                    <i class="fas fa-arrow-left"></i> Kembali
-                </button>
+                <div class="flex space-x-2">
+                    <button @click="$inertia.visit(previousURL)"
+                        class="bg-yellow-500 hover:bg-yellow-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-all">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </button>
+                    <!-- <button @click="$inertia.visit(previousURL)"
+                        class="bg-green-500 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-all">
+                        <i class="fas fa-print"></i> Print
+                    </button> -->
+                </div>
             </div>
 
             <div class="max-w-full mx-auto bg-white shadow-xl rounded-2xl p-8 border border-gray-200">
@@ -115,7 +123,7 @@ const printPdf = (id) => {
                             </div>
                             <!-- Tanggal di baris baru -->
                             <div v-if="report.assignment?.status === 'Selesai'" class=" mt-1 text-sm text-gray-600">
-                                Pada Tanggal {{ formatDate(report.assignment?.tanggal_selesai) }}
+                                <p>(Pada Tanggal {{ formatDate(report.assignment?.tanggal_selesai) }})</p>
                             </div>
                         </div>
                         <div v-if="report.assignment?.status === 'Ditolak'"
@@ -161,6 +169,10 @@ const printPdf = (id) => {
                                 <div v-for="(item, index) in hardwareReplacement" :key="item.id"
                                     class="mb-4 border-b pb-2">
                                     <p class="text-lg text-gray-700">
+                                        <strong>Komponen:</strong>
+                                        {{ item.detail_disruption?.detail }}
+                                    </p>
+                                    <p class="text-lg text-gray-700">
                                         <strong>Merek:</strong>
                                         {{ item.detail_merek_hardware }}
                                     </p>
@@ -189,7 +201,7 @@ const printPdf = (id) => {
                                 </p>
                             </div>
                         </div>
-                        <div v-if="report.status === 'Selesai' && ($page.props.auth.user.role === 'admin' || $page.props.auth.user.id === report.user_pelapor)"
+                        <div v-if="report.assignment?.status === 'Selesai' && ($page.props.auth.user.role === 'admin' || $page.props.auth.user.id === report.user_pelapor)"
                             class="mt-12">
                             <button @click="printPdf(report.id)"
                                 class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-lg transition-all">

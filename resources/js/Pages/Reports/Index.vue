@@ -177,7 +177,7 @@ const changePage = (page) => {
                                 class="text-yellow-500 font-semibold">Ditugaskan</span>
                             <span v-else-if="report.assignment?.status === 'Selesai'"
                                 class="text-green-500 font-semibold">Selesai,
-                                <span v-if="report.assignment?.status === 'Selesai'">Pada tanggal:
+                                <span v-if="report.assignment?.status === 'Selesai'">pada tanggal:
                                     {{ formatDate(report.assignment?.tanggal_selesai) }}</span>
                             </span>
                             <span v-else-if="report.assignment?.status === 'Diterima'"
@@ -202,11 +202,11 @@ const changePage = (page) => {
                                 <div class="flex justify-center gap-2">
                                     <button @click.stop="$inertia.get(`/riwayat/${report.id}/edit`)"
                                         class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md">
-                                        ✏️
+                                        <i class="fas fa-edit"></i>
                                     </button>
                                     <button @click.stop="deleteReport(report.id)"
                                         class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">
-                                        🗑️
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
