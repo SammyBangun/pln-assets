@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue'
+import SideNavLink from './SideNavLink.vue';
+
 const isOpen = ref(false)
 </script>
 
@@ -63,50 +65,48 @@ const isOpen = ref(false)
         </transition>
 
         <!-- Desktop SideNav -->
-        <nav class="hidden md:block bg-yellow-400 text-white w-56 h-full p-4 shadow-lg">
-            <h2 class="text-xl font-bold text-center mb-4">Menu</h2>
+        <nav class="hidden md:block bg-yellow-400 text-white w-52 h-full p-4 pt-6 shadow-lg">
             <ul class="space-y-3">
                 <li>
-                    <Link :href="route('assets.index')"
-                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
-                    <i class="fas fa-desktop"></i> Aset IT
-                    </Link>
+                    <SideNavLink :href="route('assets.index')" :active="route().current('assets.index')">
+                        <i class="fas fa-desktop pr-5"></i> Aset IT
+                    </SideNavLink>
                 </li>
                 <li>
-                    <Link :href="route('admin.lookup.asset-types')"
-                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
-                    <i class="fas fa-tags"></i> Tipe Aset
-                    </Link>
+                    <SideNavLink :href="route('admin.lookup.asset-types')"
+                        :active="route().current('admin.lookup.asset-types')">
+                        <i class="fas fa-tags pr-5"></i> Tipe Aset
+                    </SideNavLink>
                 </li>
                 <li>
-                    <Link :href="route('admin.lookup.identifications')"
-                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
-                    <i class="fas fa-exclamation-triangle"></i> Identifikasi Masalah
-                    </Link>
+                    <SideNavLink :href="route('admin.lookup.identifications')"
+                        :active="route().current('admin.lookup.identifications')">
+                        <i class="fas fa-exclamation-triangle pr-5"></i> Identifikasi Masalah
+                    </SideNavLink>
                 </li>
                 <li>
-                    <Link :href="route('admin.lookup.divisions')"
-                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
-                    <i class="fas fa-sitemap"></i> Divisi
-                    </Link>
+                    <SideNavLink :href="route('admin.lookup.divisions')"
+                        :active="route().current('admin.lookup.divisions')">
+                        <i class="fas fa-sitemap pr-5"></i> Divisi
+                    </SideNavLink>
                 </li>
                 <li>
-                    <Link :href="route('admin.lookup.disruptions')"
-                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
-                    <i class="fas fa-bolt"></i> Gangguan
-                    </Link>
+                    <SideNavLink :href="route('admin.lookup.disruptions')"
+                        :active="route().current('admin.lookup.disruptions')">
+                        <i class="fas fa-bolt pr-5"></i> Gangguan
+                    </SideNavLink>
                 </li>
                 <li>
-                    <Link :href="route('admin.lookup.detail-disruptions')"
-                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
-                    <i class="fas fa-info-circle"></i> Detail Gangguan
-                    </Link>
+                    <SideNavLink :href="route('admin.lookup.detail-disruptions')"
+                        :active="route().current('admin.lookup.detail-disruptions')">
+                        <i class="fas fa-info-circle pr-5"></i> Detail Gangguan
+                    </SideNavLink>
                 </li>
                 <li>
-                    <Link :href="route('admin.lookup.deliverables')"
-                        class="flex items-center gap-2 p-2 rounded-md hover:bg-yellow-500 transition">
-                    <i class="fas fa-check-circle"></i> Realisasi
-                    </Link>
+                    <SideNavLink :href="route('admin.lookup.deliverables')"
+                        :active="route().current('admin.lookup.deliverables')">
+                        <i class="fas fa-check-circle pr-5"></i> Realisasi
+                    </SideNavLink>
                 </li>
             </ul>
         </nav>

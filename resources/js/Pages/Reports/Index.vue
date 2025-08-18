@@ -94,31 +94,37 @@ const changePage = (page) => {
 </script>
 
 <template>
-    <div class="container-fluid mx-3 my-8 min-h-screen">
-        <div class="text-center my-4 print-header">
-            <h1 class="text-2xl font-bold text-center">Riwayat</h1>
-            <h2 class="text-xl font-bold">Laporan Gangguan</h2>
-            <p>{{ new Date().toLocaleDateString('id-ID') }}</p>
+    <div class="container-fluid mx-3 my-8 min-h-screen border border-gray-200 p-3 rounded-lg shadow-md">
+        <div class="my-6 print-header text-center">
+            <h3 class="text-2xl font-extrabold text-gray-800">Riwayat Laporan Gangguan</h3>
+            <p class="text-gray-500 text-lg mt-1">
+                {{ new Date().toLocaleDateString('id-ID', {
+                    day: '2-digit', month: 'long', year: 'numeric'
+                }).replace(/\s/g, '/') }}
+            </p>
         </div>
-        <div class="flex justify-evenly">
-            <div class="mb-4 w-3/12 ">
-                <input v-model="searchQuery" type="text" placeholder="Cari sesuatu..."
-                    class="w-full px-4 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-300 no-print">
+
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+            <!-- Search Box -->
+            <div class="w-full md:w-4/12">
+                <input v-model="searchQuery" type="text" placeholder="🔍 Cari sesuatu..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition">
             </div>
+
+            <!-- Action Buttons -->
             <template v-if="$page.props.auth.user.role === 'admin'">
-                <div class="flex gap-2 mb-8 mr-10">
+                <div class="flex gap-3">
                     <button @click="$inertia.get('/admin/performance-monitoring')"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow-md no-print">
-                        📊 Pemantauan Kinerja
+                        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition">
+                        📊 <span>Pemantauan Kinerja</span>
                     </button>
                     <button @click="printPage"
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow-md no-print">
-                        🖨️ Print
+                        class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-md transition">
+                        🖨️ <span>Print</span>
                     </button>
                 </div>
             </template>
         </div>
-
 
         <div class="overflow-x-auto mb-32 rounded-lg">
             <table class="min-w-full text-sm bg-white border border-gray-200 shadow-lg rounded-lg">
@@ -134,7 +140,7 @@ const changePage = (page) => {
                         <!-- <th class="py-3 px-4 text-left">Deskripsi</th> -->
                         <th class="py-3 px-4 text-left">Tanggal</th>
                         <th class="py-3 px-4 text-left">Status</th>
-                        <th class="py-3 px-4 text-left">Gambar</th>
+                        <!-- <th class="py-3 px-4 text-left">Gambar</th> -->
                         <template
                             v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin' || $page.props.auth.user.role === 'user'">
                             <th class="py-3 px-4 text-center no-print">Aksi</th>
@@ -157,11 +163,9 @@ const changePage = (page) => {
                         <td class="py-3 px-4">{{ report.aset?.nama }}</td>
                         <td class="py-3 px-4">
                             <ul>
-                                <li v-for="item in report.report_identifications.slice(0, 2)" :key="item.id">
+                                <li v-for="(item, index) in report.report_identifications.slice(0, 1)" :key="item.id">
                                     {{ item.identification?.identifikasi_masalah ?? 'Tidak ditemukan' }}
-                                </li>
-                                <li v-if="report.report_identifications.length > 2">
-                                    ...
+                                    <span v-if="report.report_identifications.length > 1"> ...</span>
                                 </li>
                             </ul>
                         </td>
@@ -186,11 +190,11 @@ const changePage = (page) => {
                                 class="text-gray-500 font-semibold">Finalisasi</span>
                             <span v-else class="text-gray-400 italic">Belum ada status</span>
                         </td>
-                        <td class="py-3 px-4">
+                        <!-- <td class="py-3 px-4">
                             <img v-if="report.gambar" :src="report.gambar" alt="Gambar Laporan"
                                 class="w-20 h-20 object-cover rounded-md">
                             <span v-else class="text-gray-500">Tidak ada gambar</span>
-                        </td>
+                        </td> -->
                         <template v-if="$page.props.auth.user &&
                             ($page.props.auth.user.role === 'admin' ||
                                 report.user_pelapor === $page.props.auth.user.id)">

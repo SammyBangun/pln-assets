@@ -23,9 +23,9 @@ onMounted(async () => {
 </script>
 
 <template>
-    <nav class="border-b border-gray-100 bg-yellow-400 w-full">
+    <nav class=" bg-yellow-400 w-full">
         <!-- Primary Navigation Menu -->
-        <div class="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
+        <div class="w-full px-2 md:px-4">
             <div class="flex h-16 justify-between">
                 <div class="flex">
                     <!-- Logo -->
@@ -79,45 +79,50 @@ onMounted(async () => {
                                 </template>
 
                                 <template #content>
-                                    <div class="w-[42rem] bg-white shadow-lg rounded-lg p-4 mx-auto">
+                                    <div class="w-[42rem] bg-gray-100 shadow-lg rounded-lg p-4 mx-auto">
                                         <div class="grid grid-cols-3">
                                             <div>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Proyektor' })">
-                                                    Proyektor
+                                                <DropdownLink icon="fas fa-video"
+                                                    :href="route('Item.Show', { tipe: 'Proyektor' })">Proyektor
                                                 </DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Keyboard' })">Keyboard
+                                                <DropdownLink icon="fas fa-keyboard"
+                                                    :href="route('Item.Show', { tipe: 'Keyboard' })">Keyboard
                                                 </DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Kamera' })">Kamera
+                                                <DropdownLink icon="fas fa-camera"
+                                                    :href="route('Item.Show', { tipe: 'Kamera' })">Kamera</DropdownLink>
+                                                <DropdownLink icon="fas fa-print"
+                                                    :href="route('Item.Show', { tipe: 'Printer' })">Printer
                                                 </DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Printer' })">Printer
-                                                </DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'PC' })">PC
-                                                </DropdownLink>
+                                                <DropdownLink icon="fas fa-desktop"
+                                                    :href="route('Item.Show', { tipe: 'PC' })">PC</DropdownLink>
                                             </div>
+
                                             <div>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Monitor' })">Monitor
+                                                <DropdownLink icon="fas fa-tv"
+                                                    :href="route('Item.Show', { tipe: 'Monitor' })">Monitor
                                                 </DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Switch' })">Switch
-                                                </DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Mouse' })">Mouse
-                                                </DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Audio' })">Audio
-                                                </DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Hub' })">Hub
-                                                </DropdownLink>
+                                                <DropdownLink icon="fas fa-exchange-alt"
+                                                    :href="route('Item.Show', { tipe: 'Switch' })">Switch</DropdownLink>
+                                                <DropdownLink icon="fas fa-mouse"
+                                                    :href="route('Item.Show', { tipe: 'Mouse' })">Mouse</DropdownLink>
+                                                <DropdownLink icon="fas fa-headphones"
+                                                    :href="route('Item.Show', { tipe: 'Audio' })">Audio</DropdownLink>
+                                                <DropdownLink icon="fas fa-network-wired"
+                                                    :href="route('Item.Show', { tipe: 'Hub' })">Hub</DropdownLink>
                                             </div>
+
                                             <div>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Access Point' })">
-                                                    Access
-                                                    Point</DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Laptop' })">Laptop
+                                                <DropdownLink icon="fas fa-wifi"
+                                                    :href="route('Item.Show', { tipe: 'Access Point' })">Access Point
                                                 </DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'Router' })">Router
-                                                </DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'TV' })">TV
-                                                </DropdownLink>
-                                                <DropdownLink :href="route('Item.Show', { tipe: 'DLL' })">DLL
-                                                </DropdownLink>
+                                                <DropdownLink icon="fas fa-laptop"
+                                                    :href="route('Item.Show', { tipe: 'Laptop' })">Laptop</DropdownLink>
+                                                <DropdownLink icon="fas fa-route"
+                                                    :href="route('Item.Show', { tipe: 'Router' })">Router</DropdownLink>
+                                                <DropdownLink icon="fas fa-tv"
+                                                    :href="route('Item.Show', { tipe: 'TV' })">TV</DropdownLink>
+                                                <DropdownLink icon="fas fa-tags"
+                                                    :href="route('Item.Show', { tipe: 'DLL' })">DLL</DropdownLink>
                                             </div>
                                         </div>
 
@@ -131,7 +136,7 @@ onMounted(async () => {
                                             <div v-else class="grid sm:grid-cols-1 md:grid-cols-2 gap-4 justify-center">
                                                 <Link v-for="asset in latestAssets" :key="asset.id_asset"
                                                     :href="`/item/${asset.tipe.tipe}/${asset.serial_number}`"
-                                                    class="flex items-center mx-auto bg-white rounded-lg shadow-md p-4 cursor-pointer hover:bg-gray-100 transition duration-200">
+                                                    class="flex items-center mx-auto bg-white rounded-lg shadow-md p-4 cursor-pointer transform hover:scale-105 transition">
 
                                                 <img :src="`/storage/assets/${asset.gambar}`" alt="Asset Image"
                                                     class="w-24 h-24 object-cover rounded-md border border-gray-200">
@@ -175,10 +180,10 @@ onMounted(async () => {
                         </template>
 
                         <template #content>
-                            <div class="mt-4">
-                                <DropdownLink href="/profile">Profile</DropdownLink>
+                            <div class="bg-white rounded-md shadow-lg">
+                                <DropdownLink href="/profile"><i class="fas fa-user"></i> Profile</DropdownLink>
                                 <DropdownLink href="/logout" method="post" as="button">
-                                    Log Out
+                                    <i class="fas fa-sign-out-alt"></i> Log Out
                                 </DropdownLink>
                             </div>
                         </template>

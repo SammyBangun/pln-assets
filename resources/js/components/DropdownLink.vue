@@ -6,12 +6,20 @@ defineProps({
         type: String,
         required: true,
     },
+    icon: {
+        type: String,
+        default: '',
+    }
 });
 </script>
 
 <template>
     <Link :href="href"
-        class="block bg-gray-200 w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none">
+        class="flex items-center justify-center text-center bg-gray-100 w-full h-12 px-4 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-300 focus:bg-gray-300 rounded-lg focus:outline-none">
+
+    <i v-if="icon" :class="[icon, 'mr-2']"></i>
+
+
     <slot />
     </Link>
 </template>

@@ -107,11 +107,11 @@ class ReportController extends Controller
         $tipe = AssetType::where('id', $aset->tipe)->first();
         $assignment = ReportAssignment::with('petugas', 'realisasi')->where('report_id', $report->id)->first();
         $followUp = ReportFollowUp::with('disruption', 'detailDisruption', 'hardwareReplacement')->where('id_penugasan', $assignment->id)->get();
-        $hardwareReplacement = HardwareReplacement::where('id_tindak_lanjut', $followUp[0]->id)->get();
+        $hardwareReplacement = HardwareReplacement::where('id_tindak_lanjut')->get();
 
-        // dd($hardwareReplacement);
 
         return Inertia::render('Reports/Detail', [
+            'previousURL' => url()->previous(),
             'report' => $report,
             'tipe' => $tipe,
             'assignment' => $assignment,

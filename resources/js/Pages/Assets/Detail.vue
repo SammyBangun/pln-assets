@@ -27,7 +27,7 @@ const closeModal = () => {
 
   <AuthenticatedLayout>
 
-    <div class="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+    <div class="min-h-screen flex items-center justify-center p-6">
       <div class="w-full max-w-3xl p-8 bg-white border border-gray-200 rounded-xl shadow-xl">
         <h1 class="text-2xl font-bold text-gray-800 mb-8 text-center">Detail Aset</h1>
 
@@ -49,7 +49,7 @@ const closeModal = () => {
             <p class="text-gray-700 text-lg"><span class="font-semibold">Serial:</span> {{ item.seri }}</p>
             <p class="text-gray-700 text-lg"><span class="font-semibold">Tanggal Beli:</span> {{
               formatDate(item.tanggal_beli)
-            }}</p>
+              }}</p>
             <p class="text-gray-700 text-lg">
               <span class="font-semibold">Terakhir Service:</span>
               {{ formatDate(item.terakhir_servis) || 'Belum pernah service' }}

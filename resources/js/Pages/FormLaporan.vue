@@ -54,6 +54,7 @@ const submit = () => {
         },
         onError: (errors) => {
             let errorMessage = errors[Object.keys(errors)[0]] ?? 'Terjadi kesalahan saat menyimpan data.';
+            console.log(errorMessage);
             Notify.failure(errorMessage, {
                 position: 'center-top',
                 distance: '70px',
