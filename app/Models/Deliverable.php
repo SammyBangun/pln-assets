@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Reports\ReportAssignment;
 
 class Deliverable extends Model
 {
@@ -10,6 +11,10 @@ class Deliverable extends Model
 
     protected $fillable = [
         'realisasi_hasil',
-        'catatan'
     ];
+
+    public function reportAssignment()
+    {
+        return $this->hasOne(ReportAssignment::class, 'realisasi', 'id');
+    }
 }

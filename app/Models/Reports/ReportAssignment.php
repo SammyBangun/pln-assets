@@ -11,6 +11,11 @@ class ReportAssignment extends Model
 {
     public $timestamps = false;
 
+    protected $casts = [
+        'tanggal_penugasan' => 'date',
+        'tanggal_selesai'   => 'date',
+    ];
+
     public $keyType = 'string';
 
     protected $fillable = [
@@ -45,7 +50,7 @@ class ReportAssignment extends Model
         return $this->belongsTo(Report::class, 'report_id', 'id');
     }
 
-    public function petugas()
+    public function petugasUser()
     {
         return $this->belongsTo(User::class, 'petugas', 'id');
     }
@@ -55,7 +60,7 @@ class ReportAssignment extends Model
         return $this->hasMany(ReportFollowUp::class, 'id_penugasan', 'id');
     }
 
-    public function realisasi()
+    public function realisasiHasil()
     {
         return $this->belongsTo(Deliverable::class, 'realisasi', 'id');
     }

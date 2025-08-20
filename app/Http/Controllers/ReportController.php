@@ -6,6 +6,7 @@ use App\Models\HardwareReplacement;
 use App\Models\Reports\Report;
 use App\Models\Assets\Asset;
 use App\Models\Assets\AssetType;
+use App\Models\Deliverable;
 use App\Models\Identification;
 use App\Models\Reports\ReportFollowUp;
 use App\Models\Reports\ReportIdentification;
@@ -15,7 +16,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
@@ -105,7 +106,7 @@ class ReportController extends Controller
         $report = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->findOrFail($id);
         $aset = Asset::find($report->aset);
         $tipe = AssetType::where('id', $aset->tipe)->first();
-        $assignment = ReportAssignment::with('petugas', 'realisasi')->where('report_id', $report->id)->first();
+        $assignment = ReportAssignment::with('petugasUser', 'realisasiHasil')->where('report_id', $report->id)->first();
         $followUp = ReportFollowUp::with('disruption', 'detailDisruption', 'hardwareReplacement')->where('id_penugasan', $assignment->id)->get();
         $hardwareReplacement = HardwareReplacement::with('detailDisruption')->where('id_tindak_lanjut', $followUp[0]->id)->get();
 
@@ -197,34 +198,66 @@ class ReportController extends Controller
 
     public function exportPdf($id)
     {
-        $report = Report::with('user', 'aset', 'assignment')
-            ->where('id', $id)
-            ->firstOrFail();
+        $report = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->findOrFail($id);
+        $aset = Asset::find($report->aset);
+        $tipe = AssetType::where('id', $aset->tipe)->first();
+        $assignment = ReportAssignment::with('petugasUser', 'realisasiHasil')->where('report_id', $report->id)->first();
+        $followUp = ReportFollowUp::with('disruption', 'detailDisruption', 'hardwareReplacement')
+            ->where('id_penugasan', $assignment->id)
+            ->get();
+        $hardwareReplacement = HardwareReplacement::with('detailDisruption')
+            ->where('id_tindak_lanjut', $followUp[0]->id)
+            ->get();
+
+        // dd($assignment->petugas);
 
         $no_tiket = 'WG-' . strtoupper(uniqid());
 
-        $pdf = Pdf::loadView('pdf.report', [
+        // Render blade view ke HTML string
+        $html = view('pdf.report', [
             'report' => $report,
+            'aset' => $aset,
+            'tipe' => $tipe,
+            'assignment' => $assignment,
+            'followUp' => $followUp,
+            'hardwareReplacement' => $hardwareReplacement,
             'no_tiket' => $no_tiket
-        ])->setPaper('A4', 'portrait');
+        ])->render();
 
-        return $pdf->stream('laporan_gangguan_' . $id . '.pdf');
+        // Path simpan PDF
+        $filePath = storage_path('app/public/laporan_gangguan_' . $id . '.pdf');
+
+        // Generate PDF pakai Browsershot
+        Browsershot::html($html)
+            ->showBackground()   // penting biar warna bg ikut dicetak
+            ->format('A4')
+            ->margins(5, 5, 5, 5)
+            ->noSandbox()
+            ->setOption('timeout', 0)
+            ->save($filePath);
+
+
+
+        // Return download/stream
+        return response()->file($filePath, [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
 
 
-    public function exportAllPdf()
-    {
-        $reports = Report::with(['user', 'aset', 'assignment', 'reportIdentifications.identification'])->latest()->get();
+    // public function exportAllPdf()
+    // {
+    //     $reports = Report::with(['user', 'aset', 'assignment', 'reportIdentifications.identification'])->latest()->get();
 
-        $no_tiket = 'WG-' . strtoupper(uniqid());
+    //     $no_tiket = 'WG-' . strtoupper(uniqid());
 
-        $pdf = Pdf::loadView('pdf.reports-all', [
-            'reports' => $reports,
-            'no_tiket' => $no_tiket
-        ])->setPaper('A4', 'landscape');
+    //     $pdf = Pdf::loadView('pdf.reports-all', [
+    //         'reports' => $reports,
+    //         'no_tiket' => $no_tiket
+    //     ])->setPaper('A4', 'landscape');
 
-        return $pdf->stream('laporan_gangguan.pdf');
-    }
+    //     return $pdf->stream('laporan_gangguan.pdf');
+    // }
 
     public function getAssetBySerial($serialNumber)
     {

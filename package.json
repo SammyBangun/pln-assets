@@ -30,6 +30,7 @@
         "flowbite-vue": "^0.2.1",
         "lucide-vue-next": "^0.475.0",
         "notiflix": "^3.2.8",
+        "puppeteer": "^24.16.2",
         "signature_pad": "^5.0.7",
         "vue-router": "^4.5.0"
     }

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, defineProps } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { FwbProgress } from 'flowbite-vue'
 import formatDate from '@/functions/formatDate';
 
 const pdfUrl = ref(null);
@@ -14,7 +15,7 @@ const props = defineProps({
     previousURL: String
 });
 
-console.log(props.hardwareReplacement);
+console.log(props.assignment);
 
 const showModal = ref(false);
 const selectedImage = ref('');
@@ -38,6 +39,7 @@ const printPdf = (id) => {
     <AuthenticatedLayout>
 
         <div class="container mx-auto my-12 min-h-screen px-4">
+            <fwb-progress :progress="100" label-position="inside" label-progress size="lg" class="text-white" />
             <div class="flex justify-between items-center my-6">
                 <div>
                     <h1 class="text-3xl font-extrabold text-gray-800 mb-2">Detail Laporan</h1>
@@ -60,7 +62,7 @@ const printPdf = (id) => {
                     <div class="space-y-4">
                         <div class="border border-gray-300 p-4 rounded-md bg-gray-50">
                             <p class="text-lg text-gray-600">
-                                <strong>Tanggal:</strong>
+                                <strong>Tanggal Laporan:</strong>
                                 {{ report.created_at ? formatDate(report.created_at) : 'Tidak diketahui' }}
                             </p>
                             <p class="text-lg font-semibold text-gray-700"><strong>Pelapor:</strong> {{
@@ -135,7 +137,7 @@ const printPdf = (id) => {
                         <div class="border border-gray-300 p-4 rounded-md bg-gray-50">
                             <h2 class="text-xl font-semibold text-gray-800">Petugas</h2>
                             <p class="text-lg text-gray-700"><strong>Nama Petugas:</strong> {{
-                                assignment?.petugas?.name || 'Belum ditugaskan admin' }}</p>
+                                assignment?.petugas_user?.name || 'Belum ditugaskan admin' }}</p>
                             <p class="text-lg text-gray-700"><strong>Tanggal Penugasan:</strong> {{
                                 formatDate(assignment?.tanggal_penugasan) || 'Belum ditugaskan admin' }}</p>
                             <!-- <p class="text-lg text-gray-700"><strong>Lokasi Penugasan:</strong> {{ assignment?.lokasi
