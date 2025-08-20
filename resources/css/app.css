@@ -8,3 +8,24 @@
         display: none !important;
     }
 }
+
+#nprogress .spinner {
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+#nprogress .spinner-icon {
+  width: 80px !important;  
+  height: 80px !important; 
+  border-width: 6px !important; 
+}
+
+#nprogress:before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4); 
+  z-index: 1031; 
+}

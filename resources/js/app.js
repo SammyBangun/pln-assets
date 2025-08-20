@@ -1,11 +1,13 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "../css/app.css";
 import "./bootstrap";
+import "../css/app.css";
 
 import { createInertiaApp, Link } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { createApp, h } from "vue";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy";
+import { InertiaProgress } from "@inertiajs/progress";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
@@ -23,7 +25,12 @@ createInertiaApp({
             .component("Link", Link)
             .mount(el);
     },
-    progress: {
-        color: "#4B5563",
-    },
+});
+
+InertiaProgress.init({
+    color: "#4B5563",
+    showSpinner: true,
+    delay: 100,
+    throttle: 0,
+    includeCSS: true,
 });

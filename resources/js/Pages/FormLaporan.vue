@@ -4,6 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { fetchAssets, assets } from '@/functions/fetchAssets';
 import { useForm } from '@inertiajs/vue3';
 import { Notify } from 'notiflix';
+import SignaturePad from '@/components/SignaturePad.vue'
 
 onMounted(fetchAssets);
 
@@ -153,6 +154,7 @@ const submit = () => {
                                 </div>
                             </div>
 
+                            <SignaturePad class="w-full md:w-full px-3 mb-6" :options="signatureOptions" />
 
                             <div class="w-full md:w-full px-3 mb-6">
                                 <button
