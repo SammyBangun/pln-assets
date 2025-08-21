@@ -27,6 +27,20 @@ const saveSignature = () => {
 };
 </script>
 
+<template>
+    <div>
+        <div class="flex justify-center">
+            <canvas ref="signatureCanvas" class="signature-canvas mt-5 rounded-lg"></canvas>
+        </div>
+        <div class="flex justify-around">
+            <button type="button" @click="clearSignature"
+                class="mt-5 border transform hover:scale-105 transition p-3 rounded-lg bg-red-500 text-white">Reset</button>
+            <button type="button" @click="saveSignature"
+                class="mt-5 border transform hover:scale-105 transition p-3 rounded-lg bg-green-500 text-white">Simpan</button>
+        </div>
+    </div>
+</template>
+
 <style>
 .signature-canvas {
     border: 1px solid #000;
@@ -34,42 +48,3 @@ const saveSignature = () => {
     height: 200px;
 }
 </style>
-
-<template>
-    <div>
-        <canvas ref="signatureCanvas" class="signature-canvas"></canvas>
-        <button @click="clearSignature">Clear</button>
-        <button @click="saveSignature">Save</button>
-    </div>
-</template>
-
-<!-- <script>
-import SignaturePad from "signature_pad";
-
-export default {
-    data() {
-        return {
-            signaturePad: null
-        };
-    },
-    mounted() {
-        const canvas = this.$refs.signatureCanvas;
-        canvas.width = 400;
-        canvas.height = 200;
-        this.signaturePad = new SignaturePad(canvas);
-    },
-    methods: {
-        clearSignature() {
-            this.signaturePad.clear();
-        },
-        saveSignature() {
-            if (!this.signaturePad.isEmpty()) {
-                const signatureData = this.signaturePad.toDataURL("image/png");
-                this.$emit("signatureSaved", signatureData); // Kirim data ke parent
-            } else {
-                alert("Silakan buat tanda tangan terlebih dahulu!");
-            }
-        }
-    }
-};
-</script> -->

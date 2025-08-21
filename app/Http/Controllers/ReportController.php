@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
 {
@@ -61,12 +62,12 @@ class ReportController extends Controller
             'gambar' => 'nullable|image|max:2048',
             'identifikasi_masalah' => 'required|array',
             'identifikasi_masalah.*' => 'exists:identifications,id',
+            'ttd_user' => 'nullable|string',
         ]);
 
         DB::beginTransaction();
 
         try {
-            // Simpan laporan ke table `reports`
             $report = new Report();
             $report->aset = $validated['aset'];
             $report->user_pelapor = Auth::id();
@@ -77,6 +78,20 @@ class ReportController extends Controller
                 $report->gambar = '/storage/' . $path;
             }
 
+            // Simpan tanda tangan (base64 -> file)
+            if (!empty($validated['ttd_user'])) {
+                $signatureData = $validated['ttd_user'];
+                $signatureData = str_replace('data:image/png;base64,', '', $signatureData);
+                $signatureData = str_replace(' ', '+', $signatureData);
+                $signatureImage = base64_decode($signatureData);
+
+                $signatureName = 'signature_' . time() . '.png';
+                $path = 'ttd/ttd_user/' . $signatureName;
+                Storage::disk('public')->put($path, $signatureImage);
+
+                $report->ttd_user = '/storage/' . $path;
+            }
+
             $report->save();
 
             ReportAssignment::create([
@@ -84,7 +99,6 @@ class ReportController extends Controller
                 'status' => 'Menunggu Konfirmasi',
             ]);
 
-            // Simpan identifikasi masalah ke table `report_identifications`
             foreach ($validated['identifikasi_masalah'] as $idMasalah) {
                 ReportIdentification::create([
                     'report_id' => $report->id,
@@ -93,7 +107,6 @@ class ReportController extends Controller
             }
 
             DB::commit();
-
             return redirect()->route('riwayat.index')->with('success', 'Laporan berhasil dikirim');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -108,7 +121,15 @@ class ReportController extends Controller
         $tipe = AssetType::where('id', $aset->tipe)->first();
         $assignment = ReportAssignment::with('petugasUser', 'realisasiHasil')->where('report_id', $report->id)->first();
         $followUp = ReportFollowUp::with('disruption', 'detailDisruption', 'hardwareReplacement')->where('id_penugasan', $assignment->id)->get();
-        $hardwareReplacement = HardwareReplacement::with('detailDisruption')->where('id_tindak_lanjut', $followUp[0]->id)->get();
+        if ($followUp->isNotEmpty()) {
+            $hardwareReplacement = HardwareReplacement::with('detailDisruption')
+                ->where('id_tindak_lanjut', $followUp->first()->id)
+                ->get();
+        } else {
+            // handle the case where $followUp is empty
+            $hardwareReplacement = collect();
+        }
+
 
         return Inertia::render('Reports/Detail', [
             'previousURL' => url()->previous(),

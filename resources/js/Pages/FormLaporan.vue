@@ -13,12 +13,14 @@ defineProps({
 });
 
 const gambarPreview = ref(null);
+const signatureData = ref(null);
 
 const form = useForm({
     aset: '',
     identifikasi_masalah: [],
     deskripsi: '',
-    gambar: null
+    gambar: null,
+    signature: null,
 });
 
 const handleFileUpload = (event) => {
@@ -28,6 +30,11 @@ const handleFileUpload = (event) => {
     if (file) {
         gambarPreview.value = URL.createObjectURL(file);
     }
+};
+
+const handleSignatureSaved = (data) => {
+    signatureData.value = data;
+    form.ttd_user = data;
 };
 
 const submit = () => {
@@ -41,8 +48,12 @@ const submit = () => {
     if (form.gambar) {
         formData.append('gambar', form.gambar);
     }
+    if (form.ttd_user) {
+        formData.append('ttd_user', form.ttd_user);
+    }
 
     form.post(route("riwayat.store"), {
+        data: formData,
         forceFormData: true,
         preserveScroll: true,
         onSuccess: () => {
@@ -52,6 +63,7 @@ const submit = () => {
             });
             form.reset();
             gambarPreview.value = null;
+            signatureData.value = null;
         },
         onError: (errors) => {
             let errorMessage = errors[Object.keys(errors)[0]] ?? 'Terjadi kesalahan saat menyimpan data.';
@@ -154,7 +166,20 @@ const submit = () => {
                                 </div>
                             </div>
 
-                            <SignaturePad class="w-full md:w-full px-3 mb-6" :options="signatureOptions" />
+                            <!-- Signature Pad -->
+                            <div class="w-full md:w-full px-3 mb-6">
+                                <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2">
+                                    Tanda Tangan
+                                </label>
+
+                                <SignaturePad @signatureSaved="handleSignatureSaved" />
+
+                                <div v-if="signatureData" class="mt-4">
+                                    <p class="text-gray-700">Preview Tanda Tangan:</p>
+                                    <img :src="signatureData" alt="Preview Signature"
+                                        class="max-w-full h-auto rounded-lg shadow-md">
+                                </div>
+                            </div>
 
                             <div class="w-full md:w-full px-3 mb-6">
                                 <button

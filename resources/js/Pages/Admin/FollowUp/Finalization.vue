@@ -3,19 +3,28 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import Notiflix from 'notiflix';
+import SignaturePad from '@/components/SignaturePad.vue'
 
 const props = defineProps({
     assignment: Object,
     deliverables: Array
 });
 
+const signatureData = ref(null);
+
 const gambarPreview = ref(null);
 
 const form = useForm({
     realisasi_hasil: [],
     gambar_tindak_lanjut: null,
-    catatan: ''
+    catatan: '',
+    ttd_user_it: null,
 });
+
+const handleSignatureSaved = (data) => {
+    signatureData.value = data;
+    form.ttd_user_it = data;
+};
 
 const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -117,6 +126,23 @@ function submit() {
                                 <textarea v-model="form.catatan"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md"
                                     placeholder="Masukkan catatan"></textarea>
+                            </div>
+                        </div>
+
+
+                        <!-- Signature Pad -->
+                        <div class="w-full md:w-full text-center mt-8 px-3 mb-6">
+                            <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2">
+                                Tanda Tangan
+                            </label>
+                            <SignaturePad @signatureSaved="handleSignatureSaved" />
+
+                            <div v-if="signatureData" class="mt-4">
+                                <p class="text-gray-700">Preview Tanda Tangan:</p>
+                                <div class="flex justify-center">
+                                    <img :src="signatureData" alt="Preview Signature"
+                                        class="max-w-full h-auto rounded-lg shadow-md">
+                                </div>
                             </div>
                         </div>
                     </div>

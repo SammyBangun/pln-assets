@@ -153,25 +153,19 @@
             </div>
         </div>
 
-        <table class="w-full border-collapse border border-gray-400 my-8">
-            <tr>
-                <td class="border border-gray-400 p-4 text-center bg-gray-300 text-gray-700 font-semibold">
-                    Tanda Tangan User
-                    <br>
-                    <br>
-                    <br>
-                    <p style="word-spacing: 65px; letter-spacing: 0px;">( <span> )</span>
-                </td>
-                <td class="border border-gray-400 p-4 text-center bg-gray-300 text-gray-700 font-semibold">
-                    Tanda Tangan Admin
-                    <br>
-                    <br>
-                    <br>
-                    <p style="word-spacing: 65px; letter-spacing: 0px;">( <span> )</span>
-                    </p>
-                </td>
-            </tr>
-        </table>
+        <div class="flex justify-between my-8 gap-4">
+            <div class="w-1/2 text-center items-center text-gray-700 font-semibold border border-gray-100 py-4">
+                TTD User Pelapor
+                <br>
+                <img src="{{ public_path($report->ttd_user) }}" width="200" class="mx-auto">
+            </div>
+
+            <div class="w-1/2 text-center items-center text-gray-700 font-semibold border border-gray-100 py-4">
+                TTD User IT
+                <br>
+                <img src="{{ public_path($assignment->ttd_user_it) }}" width="200" class="mx-auto">
+            </div>
+        </div>
 
         <div class="text-center text-gray-500 text-sm">
             Laporan ini dibuat secara otomatis oleh sistem pada {{ \Carbon\Carbon::now()->format('d/m/Y') }}.

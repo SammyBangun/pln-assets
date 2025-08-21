@@ -12,6 +12,7 @@ use App\Models\HardwareReplacement;
 use App\Models\Deliverable;
 use Illuminate\Support\Facades\DB;
 use App\Models\Reports\ReportAssignment;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Operator;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -226,6 +227,7 @@ class AdminFollowUpController extends Controller
             'realisasi_hasil' => 'required|exists:deliverables,id',
             'catatan' => 'nullable|string|max:1000',
             'gambar_tindak_lanjut' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'ttd_user_it' =>  'nullable|string',
         ]);
 
         // Ambil data penugasan
@@ -234,6 +236,20 @@ class AdminFollowUpController extends Controller
         $gambarPath = null;
         if ($request->hasFile('gambar_tindak_lanjut')) {
             $gambarPath = $request->file('gambar_tindak_lanjut')->store('tindak_lanjut', 'public');
+        }
+
+        // Simpan tanda tangan (base64 -> file)
+        if (!empty($validated['ttd_user_it'])) {
+            $signatureData = $validated['ttd_user_it'];
+            $signatureData = str_replace('data:image/png;base64,', '', $signatureData);
+            $signatureData = str_replace(' ', '+', $signatureData);
+            $signatureImage = base64_decode($signatureData);
+
+            $signatureName = 'signature_' . time() . '.png';
+            $path = 'ttd/ttd_user_it/' . $signatureName;
+            Storage::disk('public')->put($path, $signatureImage);
+
+            $assignment->ttd_user_it = '/storage/' . $path;
         }
 
         // Update data ke assignment

@@ -1,7 +1,6 @@
 <script setup>
 import { ref, defineProps } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { FwbProgress } from 'flowbite-vue'
 import formatDate from '@/functions/formatDate';
 
 const pdfUrl = ref(null);
@@ -39,7 +38,6 @@ const printPdf = (id) => {
     <AuthenticatedLayout>
 
         <div class="container mx-auto my-12 min-h-screen px-4">
-            <fwb-progress :progress="100" label-position="inside" label-progress size="lg" class="text-white" />
             <div class="flex justify-between items-center my-6">
                 <div>
                     <h1 class="text-3xl font-extrabold text-gray-800 mb-2">Detail Laporan</h1>
