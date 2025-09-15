@@ -6,14 +6,13 @@ use App\Models\HardwareReplacement;
 use App\Models\Reports\Report;
 use App\Models\Assets\Asset;
 use App\Models\Assets\AssetType;
-use App\Models\Deliverable;
 use App\Models\Identification;
 use App\Models\Reports\ReportFollowUp;
 use App\Models\Reports\ReportIdentification;
 use App\Models\Reports\ReportAssignment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Spatie\Browsershot\Browsershot;
@@ -38,6 +37,7 @@ class ReportController extends Controller
 
         if ($user->role === 'admin') {
             $reports = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->get();
+            $users = User::where('role', 'user')->get(['id', 'name']);
         } elseif ($user->role === 'petugas') {
             $reports = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')
                 ->whereHas('assignment', function ($query) use ($user) {
@@ -48,8 +48,11 @@ class ReportController extends Controller
                 ->where('user_pelapor', $user->id)->get();
         }
 
+        dd($users);
+
         return Inertia::render('Dashboard', [
             'reports' => $reports,
+            'users' => $users
         ]);
     }
 
@@ -126,7 +129,6 @@ class ReportController extends Controller
                 ->where('id_tindak_lanjut', $followUp->first()->id)
                 ->get();
         } else {
-            // handle the case where $followUp is empty
             $hardwareReplacement = collect();
         }
 
@@ -227,10 +229,8 @@ class ReportController extends Controller
             ->where('id_penugasan', $assignment->id)
             ->get();
         $hardwareReplacement = HardwareReplacement::with('detailDisruption')
-            ->where('id_tindak_lanjut', $followUp[0]->id)
+            ->where('id_tindak_lanjut', optional($followUp->first())->id)
             ->get();
-
-        // dd($assignment->petugas);
 
         $no_tiket = 'WG-' . strtoupper(uniqid());
 

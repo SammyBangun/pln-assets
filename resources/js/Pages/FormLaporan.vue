@@ -20,7 +20,7 @@ const form = useForm({
     identifikasi_masalah: [],
     deskripsi: '',
     gambar: null,
-    signature: null,
+    ttd_user: null,
 });
 
 const handleFileUpload = (event) => {
@@ -35,6 +35,9 @@ const handleFileUpload = (event) => {
 const handleSignatureSaved = (data) => {
     signatureData.value = data;
     form.ttd_user = data;
+    if (data !== null) {
+        console.log(data);
+    }
 };
 
 const submit = () => {

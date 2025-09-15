@@ -26,7 +26,7 @@ class ReportAssignment extends Model
         'gambar_tindak_lanjut',
         'tanggal_penugasan',
         'tanggal_selesai',
-        // 'lokasi',
+        'lokasi',
         'status',
         'keterangan_status'
     ];

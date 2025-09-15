@@ -46,7 +46,7 @@ const submit = () => {
 <template>
     <GuestLayout>
 
-        <Head title="Log in" />
+        <Head title="Login" />
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
             {{ status }}
@@ -84,12 +84,10 @@ const submit = () => {
                 Lupa Password?
                 </Link>
 
-                <!-- <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
-                    <Link :href="route('register')"
-                        class="rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25">
-                    Buat Akun
-                    </Link>
-                </template> -->
+                <Link :href="route('register')"
+                    class="rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25">
+                Buat Akun
+                </Link>
 
                 <PrimaryButton class=" ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in

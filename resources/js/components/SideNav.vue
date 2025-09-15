@@ -24,12 +24,12 @@ const isOpen = ref(false)
                         <i class="fas fa-desktop text-blue-600"></i> Aset IT
                         </Link>
                     </li>
-                    <li>
+                    <!-- <li>
                         <Link :href="route('admin.lookup.asset-types')"
                             class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
                         <i class="fas fa-tags text-green-600"></i> Tipe Aset
                         </Link>
-                    </li>
+                    </li> -->
                     <li>
                         <Link :href="route('admin.lookup.identifications')"
                             class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
@@ -72,12 +72,12 @@ const isOpen = ref(false)
                         <i class="fas fa-desktop pr-5"></i> Aset IT
                     </SideNavLink>
                 </li>
-                <li>
+                <!-- <li>
                     <SideNavLink :href="route('admin.lookup.asset-types')"
                         :active="route().current('admin.lookup.asset-types')">
                         <i class="fas fa-tags pr-5"></i> Tipe Aset
                     </SideNavLink>
-                </li>
+                </li> -->
                 <li>
                     <SideNavLink :href="route('admin.lookup.identifications')"
                         :active="route().current('admin.lookup.identifications')">

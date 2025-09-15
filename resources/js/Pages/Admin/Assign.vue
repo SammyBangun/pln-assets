@@ -11,7 +11,7 @@ const props = defineProps({
 const form = useForm({
     petugas: '',
     tanggal_penugasan: '',
-    // lokasi: '',
+    lokasi: '',
 });
 
 function submit() {
@@ -57,11 +57,11 @@ function submit() {
                             class="w-full border border-gray-300 rounded p-2" required />
                     </div>
 
-                    <!-- <div>
+                    <div>
                         <label class="block text-gray-700">Lokasi</label>
                         <textarea v-model="form.lokasi" class="w-full border border-gray-300 rounded p-2"
                             required></textarea>
-                    </div> -->
+                    </div>
 
                     <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">
                         Simpan Penugasan

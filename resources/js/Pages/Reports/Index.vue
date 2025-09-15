@@ -22,22 +22,62 @@ Notiflix.Confirm.init({
 
 const props = defineProps({
     reports: Array,
+    users: Array,
 });
 
 const searchQuery = ref('');
+const showFilter = ref(false);
+const sortDirection = ref('desc');
+
+const filterStatus = ref('');
+const filterDateFrom = ref('');
+const filterDateTo = ref('');
+const filterAsset = ref('');
+const filterUser = ref('');
 
 const latestReports = computed(() => {
     return [...(props.reports || [])]
-        .filter(report =>
-            report.user?.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            report.identifikasi_masalah?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            report.deskripsi?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            report.assignment?.status?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            report.aset?.nama?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            formatDate(report.created_at).toLowerCase().includes(searchQuery.value.toLowerCase())
-        )
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        .filter(report => {
+            const matchesSearch =
+                report.user?.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                report.deskripsi?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                report.assignment?.status?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                report.aset?.nama?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                formatDate(report.created_at).toLowerCase().includes(searchQuery.value.toLowerCase());
+
+            const matchesStatus = filterStatus.value ? report.assignment?.status === filterStatus.value : true;
+
+            const reportDate = new Date(report.created_at);
+
+            // Tanggal dari
+            const matchesDateFrom = filterDateFrom.value
+                ? reportDate >= new Date(filterDateFrom.value)
+                : true;
+
+            // Tanggal sampai → set ke jam 23:59:59
+            const matchesDateTo = filterDateTo.value
+                ? reportDate <= new Date(new Date(filterDateTo.value).setHours(23, 59, 59, 999))
+                : true;
+
+            const matchesAsset = filterAsset.value
+                ? report.aset?.nama?.toLowerCase().includes(filterAsset.value.toLowerCase())
+                : true;
+
+            const matchesUser = filterUser.value
+                ? report.user?.name?.toLowerCase().includes(filterUser.value.toLowerCase())
+                : true;
+
+            return matchesSearch && matchesStatus && matchesDateFrom && matchesDateTo && matchesAsset && matchesUser;
+        })
+        .sort((a, b) => {
+            const dateA = new Date(a.created_at);
+            const dateB = new Date(b.created_at);
+            return sortDirection.value === 'asc'
+                ? dateA - dateB
+                : dateB - dateA;
+        });
 });
+
 
 const deleteReport = (id) => {
     Notiflix.Confirm.show(
@@ -91,6 +131,10 @@ const changePage = (page) => {
     currentPage.value = page;
 };
 
+const toggleSort = () => {
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+};
+
 </script>
 
 <template>
@@ -105,15 +149,19 @@ const changePage = (page) => {
         </div>
 
         <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-            <!-- Search Box -->
-            <div class="w-full md:w-4/12">
+            <!-- Search + Filter -->
+            <div class="flex w-full md:w-6/12 gap-2 no-print">
+                <button @click="showFilter = !showFilter"
+                    class="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg shadow-md transition">
+                    ⚙️ <span class="hidden sm:inline">Filter</span>
+                </button>
                 <input v-model="searchQuery" type="text" placeholder="🔍 Cari sesuatu..."
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition">
+                    class="flex-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition">
             </div>
 
             <!-- Action Buttons -->
             <template v-if="$page.props.auth.user.role === 'admin'">
-                <div class="flex gap-3">
+                <div class="flex gap-3 no-print">
                     <button @click="$inertia.get('/admin/performance-monitoring')"
                         class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition">
                         📊 <span>Pemantauan Kinerja</span>
@@ -126,6 +174,53 @@ const changePage = (page) => {
             </template>
         </div>
 
+
+        <!-- FILTER PANEL -->
+        <Transition name="fade-slide">
+            <div v-if="showFilter" class="bg-gray-100 p-4 rounded-lg mb-4 shadow-inner">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700">Status</label>
+                        <select v-model="filterStatus" class="w-full border rounded px-2 py-1">
+                            <option value="">Semua</option>
+                            <option>Menunggu Konfirmasi</option>
+                            <option>Ditolak</option>
+                            <option>Diterima</option>
+                            <option>Ditugaskan</option>
+                            <option>Finalisasi</option>
+                            <option>Selesai</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700">Tanggal Dari</label>
+                        <input type="date" v-model="filterDateFrom" class="w-full border rounded px-2 py-1" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700">Tanggal Sampai</label>
+                        <input type="date" v-model="filterDateTo" class="w-full border rounded px-2 py-1" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700">Nama Aset</label>
+                        <input type="text" v-model="filterAsset" class="w-full border rounded px-2 py-1" />
+                    </div>
+
+                    <div v-if="$page.props.auth.user.role === 'admin'">
+                        <label class="block text-sm font-semibold text-gray-700">Pelapor</label>
+                        <select v-model="filterUser" class="w-full border rounded px-2 py-1">
+                            <option value="">-- Semua Pelapor --</option>
+                            <option v-for="user in props.users" :key="user.id" :value="user.name">
+                                {{ user.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </Transition>
+
         <div class="overflow-x-auto mb-32 rounded-lg">
             <table class="min-w-full text-sm bg-white border border-gray-200 shadow-lg rounded-lg">
                 <thead class="bg-gray-800 text-white">
@@ -137,10 +232,12 @@ const changePage = (page) => {
                         <th class="py-3 px-4 text-left">Serial Number</th>
                         <th class="py-3 px-4 text-left">Nama</th>
                         <th class="py-3 px-4 text-left">Identifikasi Masalah</th>
-                        <!-- <th class="py-3 px-4 text-left">Deskripsi</th> -->
-                        <th class="py-3 px-4 text-left">Tanggal</th>
+                        <th class="py-3 px-4 text-left cursor-pointer" @click="toggleSort">
+                            Tanggal
+                            <span v-if="sortDirection === 'asc'">⬆️</span>
+                            <span v-else>⬇️</span>
+                        </th>
                         <th class="py-3 px-4 text-left">Status</th>
-                        <!-- <th class="py-3 px-4 text-left">Gambar</th> -->
                         <template
                             v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin' || $page.props.auth.user.role === 'user'">
                             <th class="py-3 px-4 text-center no-print">Aksi</th>
@@ -169,8 +266,6 @@ const changePage = (page) => {
                                 </li>
                             </ul>
                         </td>
-                        <!-- <td class="py-3 px-4">{{ report.deskripsi?.slice(0, 60) }}{{ report.deskripsi?.length > 60 ?
-                            '...' : '' }}</td> -->
                         <td class="py-3 px-4">{{ formatDate(report.created_at) }}</td>
                         <td class="py-3 px-4">
                             <span v-if="report.assignment?.status === 'Ditugaskan'"
@@ -190,11 +285,6 @@ const changePage = (page) => {
                                 class="text-gray-500 font-semibold">Finalisasi</span>
                             <span v-else class="text-gray-400 italic">Belum ada status</span>
                         </td>
-                        <!-- <td class="py-3 px-4">
-                            <img v-if="report.gambar" :src="report.gambar" alt="Gambar Laporan"
-                                class="w-20 h-20 object-cover rounded-md">
-                            <span v-else class="text-gray-500">Tidak ada gambar</span>
-                        </td> -->
                         <template v-if="$page.props.auth.user &&
                             ($page.props.auth.user.role === 'admin' ||
                                 report.user_pelapor === $page.props.auth.user.id)">
@@ -289,5 +379,30 @@ const changePage = (page) => {
         margin: 0;
         padding: 0;
     }
+}
+
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+    transition: all 0.3s ease;
+}
+
+.fade-slide-enter-from {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.fade-slide-enter-to {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fade-slide-leave-from {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fade-slide-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
 }
 </style>

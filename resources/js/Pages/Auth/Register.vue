@@ -14,18 +14,17 @@ defineProps({
 const form = useForm({
     id: '',
     divisi: '',
-    lokasi: '',
     name: '',
     email: '',
     password: '',
-    // password_confirmation: '',
+    password_confirmation: '',
 });
 
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => form.reset('password'),
-        onError: () => {
-            Notiflix.Notify.failure(`Pendaftaran user gagal`, {
+        onError: (error) => {
+            Notiflix.Notify.failure(`Pendaftaran user gagal ${error}`, {
                 position: 'center-top',
                 distance: '70px',
             });
@@ -79,16 +78,6 @@ const submit = () => {
             </div>
 
             <div class="mt-4 w-8/12 mx-auto">
-                <InputLabel for="lokasi" value="Lokasi" />
-
-                <textarea id="lokasi"
-                    class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                    v-model="form.lokasi" rows="2" required autocomplete="lokasi"></textarea>
-
-                <InputError class="mt-2" :message="form.errors.lokasi" />
-            </div>
-
-            <div class="mt-4 w-8/12 mx-auto">
                 <InputLabel for="email" value="Email" />
 
                 <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required
@@ -106,25 +95,25 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
-            <!-- <div class="mt-4 w-8/12 mx-auto mb-8">
+            <div class="mt-4 w-8/12 mx-auto mb-8">
                 <InputLabel for="password_confirmation" value="Konfirmasi Password" />
 
                 <TextInput id="password_confirmation" type="password" class="mt-1 block w-full"
                     v-model="form.password_confirmation" required autocomplete="new-password" />
 
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div> -->
+            </div>
 
             <div class="mt-4 flex items-center justify-end">
-                <!-- <Link :href="route('login')"
+                <Link :href="route('login')"
                     class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                 Sudah Punya Akun?
-                </Link> -->
+                </Link>
 
-                <Link :href="route('admin.dashboard')"
+                <!-- <Link :href="route('admin.dashboard')"
                     class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                 Kembali
-                </Link>
+                </Link> -->
 
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Buat

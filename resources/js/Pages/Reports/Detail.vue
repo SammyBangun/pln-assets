@@ -14,8 +14,6 @@ const props = defineProps({
     previousURL: String
 });
 
-console.log(props.assignment);
-
 const showModal = ref(false);
 const selectedImage = ref('');
 
@@ -138,8 +136,8 @@ const printPdf = (id) => {
                                 assignment?.petugas_user?.name || 'Belum ditugaskan admin' }}</p>
                             <p class="text-lg text-gray-700"><strong>Tanggal Penugasan:</strong> {{
                                 formatDate(assignment?.tanggal_penugasan) || 'Belum ditugaskan admin' }}</p>
-                            <!-- <p class="text-lg text-gray-700"><strong>Lokasi Penugasan:</strong> {{ assignment?.lokasi
-                                || 'Belum dikonfirmasi admin' }}</p> -->
+                            <p class="text-lg text-gray-700"><strong>Lokasi Penugasan:</strong> {{ assignment?.lokasi
+                                || 'Belum dikonfirmasi admin' }}</p>
                         </div>
                         <div class="border border-gray-300 p-4 rounded-md bg-gray-50 mt-2">
                             <h2 class="text-xl font-semibold text-gray-800 mb-4">Tindak Lanjut</h2>
@@ -190,14 +188,15 @@ const printPdf = (id) => {
                             <h2 class="text-xl font-semibold text-gray-800 mb-4">Realisasi Hasil Pekerjaan</h2>
                             <div>
                                 <p class="text-lg text-gray-600"><strong>Realisasi: </strong>{{
-                                    assignment?.realisasi?.realisasi_hasil || 'Belum ada realisasi hasil pekerjaan' }}
+                                    assignment?.realisasi_hasil?.realisasi_hasil ||
+                                    'Belum ada realisasi hasil pekerjaan' }}
                                 </p>
                             </div>
                             <div>
                                 <p class="text-lg text-gray-600"><strong>Catatan: </strong>
                                 </p>
                                 <p class="text-lg text-gray-600">
-                                    {{ assignment?.catatan || '-' }}
+                                    {{ assignment?.catatan || 'Tidak ada catatan tambahan' }}
                                 </p>
                             </div>
                         </div>

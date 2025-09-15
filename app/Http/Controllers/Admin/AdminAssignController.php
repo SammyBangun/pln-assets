@@ -39,14 +39,14 @@ class AdminAssignController extends Controller
         $validated = $request->validate([
             'petugas' => 'required|exists:users,id',
             'tanggal_penugasan' => 'required|date',
-            // 'lokasi' => 'required|string|max:255',
+            'lokasi' => 'required|string|max:255',
         ]);
 
         $assignment = ReportAssignment::findOrFail($id);
         $assignment->update([
             'petugas' => $validated['petugas'],
             'tanggal_penugasan' => $validated['tanggal_penugasan'],
-            // 'lokasi' => $validated['lokasi'],
+            'lokasi' => $validated['lokasi'],
             'status' => 'Ditugaskan'
         ]);
 

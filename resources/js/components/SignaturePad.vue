@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, defineEmits } from "vue";
 import SignaturePad from "signature_pad";
+import Notiflix from "notiflix";
 
 const signatureCanvas = ref(null);
 let signaturePad = null;
@@ -22,7 +23,10 @@ const saveSignature = () => {
         const signatureData = signaturePad.toDataURL("image/png");
         emit("signatureSaved", signatureData);
     } else {
-        alert("Silakan buat tanda tangan terlebih dahulu!");
+        Notiflix.Notify.failure("Tanda tangan belum dibuat!", {
+            position: 'center-top',
+            distance: '70px',
+        });
     }
 };
 </script>

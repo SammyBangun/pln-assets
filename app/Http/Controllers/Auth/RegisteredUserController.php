@@ -38,7 +38,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'id' => 'required|string|max:16|unique:users',
             'divisi' => 'required|exists:divisions,id',
-            'lokasi' => 'required|string',
+            // 'lokasi' => 'required|string',
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:users',
             'password' => ['required', Rules\Password::defaults()],
@@ -47,7 +47,7 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'id' => $request->id,
             'divisi' => $request->divisi,
-            'lokasi' => $request->lokasi,
+            // 'lokasi' => $request->lokasi,
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),

@@ -3,14 +3,17 @@ import Index from '../Reports/Index.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const props = defineProps({
-    reports: Array
+    reports: Array,
+    users: Array
 })
+
+console.log(props.users);
 </script>
 
 <template>
 
     <AuthenticatedLayout>
-        <Index :reports="reports" />
+        <Index :reports="reports" :users="users" />
     </AuthenticatedLayout>
 
 </template>

@@ -2,16 +2,21 @@
 import { reactive } from 'vue';
 import { router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Notify, Confirm } from 'notiflix';
+import Notiflix from "notiflix";
 import formatDate from '@/functions/formatDate';
+import { useForm } from '@inertiajs/vue3';
+
+const form = useForm();
 
 const previousRoles = reactive({});
 
-defineProps({
+const props = defineProps({
   users: Array
 })
 
-Confirm.init({
+console.log(props.users);
+
+Notiflix.Confirm.init({
   width: "400px",
   borderRadius: "10px",
   titleColor: "#D32F2F",
@@ -44,7 +49,7 @@ const updateRole = async (user) => {
 }
 
 const confirmRoleUpdate = (user) => {
-  Confirm.show(
+  Notiflix.Confirm.show(
     'Konfirmasi Perubahan Role',
     `Apakah Anda yakin ingin mengubah role ${user.name} menjadi "${user.role}"?`,
     'Ya, Ubah',
@@ -54,13 +59,44 @@ const confirmRoleUpdate = (user) => {
     },
     () => {
       user.role = previousRoles[user.id] || 'user';
-      Notify.info('Perubahan role dibatalkan', {
+      Notiflix.Notify.info('Perubahan role dibatalkan', {
         position: "center-top",
         distance: "70px",
       });
     }
   );
 };
+
+const deleteUser = async (user) => {
+  Notiflix.Confirm.show(
+    'Hapus Pengguna',
+    'Apakah Anda yakin ingin menghapus pengguna ini?',
+    'Ya',
+    'Tidak',
+    () => {
+      form.delete(`/users/${user.id}`, {
+        onSuccess: () => {
+          Notiflix.Notify.success('Pengguna berhasil dihapus', {
+            position: 'center-top',
+            distance: '70px',
+          });
+        },
+        onError: () => {
+          Notiflix.Notify.failure('Terjadi kesalahan saat menghapus pengguna', {
+            position: 'center-top',
+            distance: '70px',
+          });
+        }
+      });
+    },
+    () => {
+      Notiflix.Notify.warning('Pengguna tidak jadi dihapus', {
+        position: 'center-top',
+        distance: '70px',
+      });
+    }
+  );
+}
 </script>
 
 <template>
@@ -77,46 +113,62 @@ const confirmRoleUpdate = (user) => {
             <Link :href="route('register')">Buat Akun</Link>
           </div>
         </div>
-        <div class="bg-white overflow-hidden shadow-sm rounded-lg">
-          <div class="p-6 bg-white border-b border-gray-200">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIP</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal
-                    Register</th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="user in users" :key="user.id" class="hover:bg-gray-200 ">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <Link :href="route('admin.users.show', user.id)"
-                      class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow">
-                    {{ user.id }}
-                    </Link>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ user.name }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ user.email }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <select v-model="user.role" @change="confirmRoleUpdate(user)" @focus="storePreviousRole(user)"
-                      class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                      <option value="user">User</option>
-                      <option value="admin">Admin</option>
-                      <option value="petugas">Petugas</option>
-                    </select>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    {{ formatDate(user.created_at) }}
-                  </td>
-                </tr>
+        <div class="bg-white shadow rounded-lg overflow-hidden mt-4">
+          <div class="p-6">
+            <div class="overflow-x-auto">
+              <table class="min-w-full border-collapse">
+                <thead>
+                  <tr class="bg-gradient-to-r from-gray-500 to-gray-600 text-white">
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">NIP</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Nama</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Email</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Role</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Tanggal Register</th>
+                    <th class="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr v-for="user in users" :key="user.id" class="hover:bg-indigo-50 transition-colors duration-200">
 
-              </tbody>
-            </table>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">
+                      {{ user.id }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {{ user.name }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {{ user.email }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <select v-model="user.role" @change="confirmRoleUpdate(user)" @focus="storePreviousRole(user)"
+                        class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="petugas">Petugas</option>
+                      </select>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {{ formatDate(user.created_at) }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex justify-center space-x-3">
+                        <Link :href="route('admin.users.show', user.id)"
+                          class="p-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full shadow transition duration-150 ease-in-out">
+                        <i class="fas fa-eye"></i>
+                        </Link>
+                        <button @click.stop="deleteUser(user)"
+                          class="p-2 bg-red-500 hover:bg-red-600 text-white rounded-full shadow transition duration-150 ease-in-out">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
 

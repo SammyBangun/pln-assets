@@ -59,6 +59,10 @@ Route::put('/users/{user}/role', function (Request $request, User $user) {
     return redirect()->route('login');
 });
 
+Route::delete('/users/{user}', [UserController::class, 'destroy'])
+    ->middleware(['auth']);
+
+
 //laporan
 Route::middleware(['auth'])->group(function () {
     Route::get('/form', [ReportController::class, 'create'])->name('form');
@@ -84,8 +88,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route khusus admin dengan middleware role:admin
     Route::middleware([CheckRole::class . ':admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
+            $users = User::where('role', 'user')->get(['id', 'name']);
             return Inertia::render('Admin/Dashboard', [
-                'reports' => Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->get()
+                'reports' => Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->get(),
+                'users' => $users
             ]);
         })->name('admin.dashboard');
 

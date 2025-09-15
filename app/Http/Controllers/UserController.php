@@ -6,9 +6,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
+
     // Menampilkan data pengguna (admin only)
     public function index()
     {
@@ -38,5 +42,12 @@ class UserController extends Controller
         ]);
 
         return back()->with('success', 'Role berhasil diupdate');
+    }
+
+    public function destroy(User $user)
+    {
+
+        $user->delete();
+        return redirect()->route('admin.users');
     }
 }
