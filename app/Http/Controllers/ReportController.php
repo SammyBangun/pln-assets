@@ -10,14 +10,13 @@ use App\Models\Identification;
 use App\Models\Reports\ReportFollowUp;
 use App\Models\Reports\ReportIdentification;
 use App\Models\Reports\ReportAssignment;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Browsershot\Browsershot;
+use Inertia\Inertia;
 
 class ReportController extends Controller
 {
@@ -37,7 +36,6 @@ class ReportController extends Controller
 
         if ($user->role === 'admin') {
             $reports = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->get();
-            $users = User::where('role', 'user')->get(['id', 'name']);
         } elseif ($user->role === 'petugas') {
             $reports = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')
                 ->whereHas('assignment', function ($query) use ($user) {
@@ -48,11 +46,8 @@ class ReportController extends Controller
                 ->where('user_pelapor', $user->id)->get();
         }
 
-        dd($users);
-
         return Inertia::render('Dashboard', [
             'reports' => $reports,
-            'users' => $users
         ]);
     }
 
@@ -189,7 +184,6 @@ class ReportController extends Controller
                 'gambar' => $validated['gambar'],
             ]);
 
-            // Update relasi identifikasi_masalah:
             // Hapus dulu semua relasi lama
             ReportIdentification::where('report_id', $report->id)->delete();
 

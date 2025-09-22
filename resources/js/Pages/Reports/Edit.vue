@@ -162,7 +162,7 @@ function handleFileUpload(event) {
                         <div v-if="gambarPreview" class="mt-4 mx-auto">
                             <p class="text-gray-700 text-center">Preview Gambar:</p>
                             <img :src="gambarPreview" alt="Preview Gambar"
-                                class="max-w-full h-auto mx-auto text-center rounded-lg shadow-md">
+                                class="max-w-64 h-64 mx-auto text-center rounded-lg shadow-md">
                         </div>
                     </div>
 

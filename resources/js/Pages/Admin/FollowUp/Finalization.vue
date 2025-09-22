@@ -96,7 +96,7 @@ function submit() {
                                 <div v-if="gambarPreview" class="mt-4">
                                     <p class="text-gray-700 text-center">Preview Gambar:</p>
                                     <img :src="gambarPreview" alt="Preview Gambar"
-                                        class="max-w-full h-auto rounded-lg shadow-md mx-auto">
+                                        class="max-w-80 h-80 rounded-lg shadow-md mx-auto">
                                 </div>
                             </div>
                         </div>

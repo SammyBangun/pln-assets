@@ -49,12 +49,10 @@ const latestReports = computed(() => {
 
             const reportDate = new Date(report.created_at);
 
-            // Tanggal dari
             const matchesDateFrom = filterDateFrom.value
                 ? reportDate >= new Date(filterDateFrom.value)
                 : true;
 
-            // Tanggal sampai → set ke jam 23:59:59
             const matchesDateTo = filterDateTo.value
                 ? reportDate <= new Date(new Date(filterDateTo.value).setHours(23, 59, 59, 999))
                 : true;
@@ -78,6 +76,13 @@ const latestReports = computed(() => {
         });
 });
 
+const resetFilter = () => {
+    filterStatus.value = '';
+    filterDateFrom.value = '';
+    filterDateTo.value = '';
+    filterAsset.value = '';
+    filterUser.value = '';
+}
 
 const deleteReport = (id) => {
     Notiflix.Confirm.show(
@@ -150,10 +155,10 @@ const toggleSort = () => {
 
         <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
             <!-- Search + Filter -->
-            <div class="flex w-full md:w-6/12 gap-2 no-print">
+            <div class="flex w-full md:w-5/12 gap-2 no-print">
                 <button @click="showFilter = !showFilter"
                     class="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg shadow-md transition">
-                    ⚙️ <span class="hidden sm:inline">Filter</span>
+                    <i class="fas fa-filter"></i><span class="hidden sm:inline">Filter</span>
                 </button>
                 <input v-model="searchQuery" type="text" placeholder="🔍 Cari sesuatu..."
                     class="flex-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition">
@@ -164,11 +169,11 @@ const toggleSort = () => {
                 <div class="flex gap-3 no-print">
                     <button @click="$inertia.get('/admin/performance-monitoring')"
                         class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition">
-                        📊 <span>Pemantauan Kinerja</span>
+                        <i class="fa fa-chart-line"></i><span>Pemantauan Kinerja</span>
                     </button>
                     <button @click="printPage"
                         class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-md transition">
-                        🖨️ <span>Print</span>
+                        <i class="fa fa-print"></i><span>Print</span>
                     </button>
                 </div>
             </template>
@@ -180,7 +185,7 @@ const toggleSort = () => {
             <div v-if="showFilter" class="bg-gray-100 p-4 rounded-lg mb-4 shadow-inner">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Status</label>
+                        <label class="block text-gray-700 text-sm font-bold mb-1">Status</label>
                         <select v-model="filterStatus" class="w-full border rounded px-2 py-1">
                             <option value="">Semua</option>
                             <option>Menunggu Konfirmasi</option>
@@ -193,28 +198,32 @@ const toggleSort = () => {
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Tanggal Dari</label>
+                        <label class="block text-gray-700 text-sm font-bold mb-1">Tanggal Dari</label>
                         <input type="date" v-model="filterDateFrom" class="w-full border rounded px-2 py-1" />
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Tanggal Sampai</label>
+                        <label class="block text-gray-700 text-sm font-bold mb-1">Tanggal Sampai</label>
                         <input type="date" v-model="filterDateTo" class="w-full border rounded px-2 py-1" />
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Nama Aset</label>
+                        <label class="block text-gray-700 text-sm font-bold mb-1">Nama Aset</label>
                         <input type="text" v-model="filterAsset" class="w-full border rounded px-2 py-1" />
                     </div>
 
                     <div v-if="$page.props.auth.user.role === 'admin'">
-                        <label class="block text-sm font-semibold text-gray-700">Pelapor</label>
+                        <label class="block text-gray-700 text-sm font-bold mb-1">Pelapor</label>
                         <select v-model="filterUser" class="w-full border rounded px-2 py-1">
-                            <option value="">-- Semua Pelapor --</option>
+                            <option value="">Semua Pelapor</option>
                             <option v-for="user in props.users" :key="user.id" :value="user.name">
                                 {{ user.name }}
                             </option>
                         </select>
+                    </div>
+                    <div @click.stop="resetFilter" class="flex justify-end">
+                        <button
+                            class="border text-white bg-red-500 hover:bg-white hover:text-red-600 hover:border-red-600 w-200 p-3 rounded-lg shadow-md transition">Reset</button>
                     </div>
                 </div>
             </div>
@@ -234,8 +243,8 @@ const toggleSort = () => {
                         <th class="py-3 px-4 text-left">Identifikasi Masalah</th>
                         <th class="py-3 px-4 text-left cursor-pointer" @click="toggleSort">
                             Tanggal
-                            <span v-if="sortDirection === 'asc'">⬆️</span>
-                            <span v-else>⬇️</span>
+                            <span v-if="sortDirection === 'asc'"><i class="fa fa-arrow-up"></i></span>
+                            <span v-else><i class="fa fa-arrow-down"></i></span>
                         </th>
                         <th class="py-3 px-4 text-left">Status</th>
                         <template
