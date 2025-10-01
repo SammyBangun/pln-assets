@@ -31,7 +31,9 @@ const deleteDivision = (id) => {
     <AuthenticatedLayout>
         <div class="p-6 min-h-screen bg-gray-50">
             <div class="max-w-4xl mx-auto">
-                <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Detail Gangguan</h1>
+                <h1 class="text-3xl font-bold text-gray-800 text-center">Detail Gangguan</h1>
+                <p class="text-gray-600 text-center mb-5 underline">Tindak lanjut dari setiap jenis gangguan yang
+                    diselesaikan</p>
 
                 <!-- Form Tambah Detail -->
                 <div class="bg-white border border-gray-200 rounded-xl shadow p-6 mb-8">

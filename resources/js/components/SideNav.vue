@@ -24,6 +24,12 @@ const isOpen = ref(false)
                         <i class="fas fa-desktop text-blue-600"></i> Aset IT
                         </Link>
                     </li>
+                    <li>
+                        <Link :href="route('admin.lookup.divisions')"
+                            class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
+                        <i class="fas fa-sitemap text-purple-500"></i> Divisi
+                        </Link>
+                    </li>
                     <!-- <li>
                         <Link :href="route('admin.lookup.asset-types')"
                             class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
@@ -34,12 +40,6 @@ const isOpen = ref(false)
                         <Link :href="route('admin.lookup.identifications')"
                             class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
                         <i class="fas fa-exclamation-triangle text-red-500"></i> Identifikasi Masalah
-                        </Link>
-                    </li>
-                    <li>
-                        <Link :href="route('admin.lookup.divisions')"
-                            class="flex items-center gap-2 p-2 bg-blue-100 rounded-md hover:bg-yellow-300 transition">
-                        <i class="fas fa-sitemap text-purple-500"></i> Divisi
                         </Link>
                     </li>
                     <li>
@@ -72,6 +72,12 @@ const isOpen = ref(false)
                         <i class="fas fa-desktop pr-5"></i> Aset IT
                     </SideNavLink>
                 </li>
+                <li>
+                    <SideNavLink :href="route('admin.lookup.divisions')"
+                        :active="route().current('admin.lookup.divisions')">
+                        <i class="fas fa-sitemap pr-5"></i> Divisi
+                    </SideNavLink>
+                </li>
                 <!-- <li>
                     <SideNavLink :href="route('admin.lookup.asset-types')"
                         :active="route().current('admin.lookup.asset-types')">
@@ -82,12 +88,6 @@ const isOpen = ref(false)
                     <SideNavLink :href="route('admin.lookup.identifications')"
                         :active="route().current('admin.lookup.identifications')">
                         <i class="fas fa-exclamation-triangle pr-5"></i> Identifikasi Masalah
-                    </SideNavLink>
-                </li>
-                <li>
-                    <SideNavLink :href="route('admin.lookup.divisions')"
-                        :active="route().current('admin.lookup.divisions')">
-                        <i class="fas fa-sitemap pr-5"></i> Divisi
                     </SideNavLink>
                 </li>
                 <li>

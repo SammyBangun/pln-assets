@@ -180,7 +180,7 @@ onMounted(async () => {
                         </template>
 
                         <template #content>
-                            <div class="bg-white rounded-lg shadow-lg">
+                            <div class="rounded-lg shadow-lg">
                                 <DropdownLink href="/profile"><i class="fas fa-user"></i> Profile</DropdownLink>
                                 <DropdownLink href="/logout" method="post" as="button">
                                     <i class="fas fa-sign-out-alt"></i> Log Out

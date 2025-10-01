@@ -28,7 +28,8 @@ const deleteDivision = (id) => {
     <AuthenticatedLayout>
         <div class="p-6 min-h-screen bg-gray-50">
             <div class="max-w-3xl mx-auto">
-                <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Identifikasi Masalah</h1>
+                <h1 class="text-3xl font-bold text-gray-800 text-center">Identifikasi Masalah</h1>
+                <p class="text-gray-600 text-center mb-5 underline">Identifikasi masalah yang umum dijumpai user</p>
 
                 <!-- Form Card -->
                 <div class="bg-white shadow-md rounded-xl p-6 mb-8 border border-gray-200">
