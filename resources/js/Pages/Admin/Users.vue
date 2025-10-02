@@ -104,7 +104,7 @@ const deleteUser = async (user) => {
   <AuthenticatedLayout>
 
     <div class="py-6 min-h-screen">
-      <div class="max-w-7xl mx-auto px-4 rounded-md shadow-md">
+      <div class="max-w-7xl mx-auto p-4 rounded-md shadow-lg">
         <div class="flex justify-between">
           <div class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 mt-3 w-fit">
             <Link :href="route('admin.dashboard')">Kembali</Link>
@@ -114,58 +114,57 @@ const deleteUser = async (user) => {
           </div>
         </div>
         <div class="bg-white shadow rounded-lg overflow-hidden mt-4">
-          <div class="p-6">
-            <div class="overflow-x-auto">
-              <table class="min-w-full border-collapse">
-                <thead>
-                  <tr class="bg-gradient-to-r from-gray-500 to-gray-600 text-white">
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">NIP</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Nama</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Email</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Role</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Tanggal Register</th>
-                    <th class="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                  <tr v-for="user in users" :key="user.id" class="hover:bg-indigo-50 transition-colors duration-200">
 
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">
-                      {{ user.id }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {{ user.name }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {{ user.email }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <select v-model="user.role" @change="confirmRoleUpdate(user)" @focus="storePreviousRole(user)"
-                        class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                        <option value="petugas">Petugas</option>
-                      </select>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {{ formatDate(user.created_at) }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="flex justify-center space-x-3">
-                        <Link :href="route('admin.users.show', user.id)"
-                          class="p-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full shadow transition duration-150 ease-in-out">
-                        <i class="fas fa-eye"></i>
-                        </Link>
-                        <button @click.stop="deleteUser(user)"
-                          class="p-2 bg-red-500 hover:bg-red-600 text-white rounded-full shadow transition duration-150 ease-in-out">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm bg-white border border-gray-200 shadow-lg rounded-lg">
+              <thead class="bg-gray-800 text-white">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">NIP</th>
+                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Nama</th>
+                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Email</th>
+                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Role</th>
+                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Tanggal Register</th>
+                  <th class="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider">Aksi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                <tr v-for="user in users" :key="user.id" class="hover:bg-indigo-50 transition-colors duration-200">
+
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">
+                    {{ user.id }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {{ user.name }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {{ user.email }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <select v-model="user.role" @change="confirmRoleUpdate(user)" @focus="storePreviousRole(user)"
+                      class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                      <option value="petugas">Petugas</option>
+                    </select>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {{ formatDate(user.created_at) }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex justify-center space-x-3">
+                      <Link :href="route('admin.users.show', user.id)"
+                        class="p-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full shadow transition duration-150 ease-in-out">
+                      <i class="fas fa-eye"></i>
+                      </Link>
+                      <button @click.stop="deleteUser(user)"
+                        class="p-2 bg-red-500 hover:bg-red-600 text-white rounded-full shadow transition duration-150 ease-in-out">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 

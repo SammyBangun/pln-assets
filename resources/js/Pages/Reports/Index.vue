@@ -119,7 +119,7 @@ const printPage = () => {
     window.print();
 };
 
-const perPage = ref(20);
+const perPage = ref(10);
 const currentPage = ref(1);
 
 const paginatedReports = computed(() => {

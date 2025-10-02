@@ -1,19 +1,31 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import SignaturePad from '@/components/SignaturePad.vue'
 import { fetchAssets, assets } from '@/functions/fetchAssets';
 import { useForm } from '@inertiajs/vue3';
 import { Notify } from 'notiflix';
-import SignaturePad from '@/components/SignaturePad.vue'
 
 onMounted(fetchAssets);
 
-defineProps({
+const props = defineProps({
     identifications: Array,
+    assets: Array,
+    assetTypes: Array
 });
 
 const gambarPreview = ref(null);
 const signatureData = ref(null);
+
+const showDropdown = ref(false);
+const selectedType = ref(null);
+const selectedAsset = ref(null);
+
+const selectAsset = (asset) => {
+    selectedAsset.value = asset;
+    form.aset = asset.serial_number;
+    showDropdown.value = false;
+};
 
 const form = useForm({
     aset: '',
@@ -98,23 +110,41 @@ const submit = () => {
                     <form class="w-full bg-white shadow-md p-6" @submit.prevent="submit">
                         <div class="flex flex-wrap -mx-3 mb-6">
 
-                            <div class="w-full md:w-full px-3 mb-6">
-                                <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
-                                    for="aset">
-                                    Pilih Aset
-                                </label>
+                            <div class="w-80 px-3 mb-6 relative mx-auto">
+                                <!-- Trigger -->
+                                <button @click.prevent="showDropdown = !showDropdown"
+                                    class="w-full bg-white border border-gray-400 rounded-lg px-4 py-2 flex justify-between items-center shadow-sm">
+                                    <span>{{ selectedAsset?.nama || "Pilih Aset IT" }}</span>
+                                    <span class="ml-2" v-if="showDropdown"><i class="fa fa-caret-up"></i></span>
+                                    <span class="ml-2" v-if="!showDropdown"><i class="fa fa-caret-down"></i></span>
+                                </button>
 
-                                <!-- Jika data tersedia, tampilkan select -->
-                                <select v-if="assets.length > 0" v-model="form.aset" name="aset"
-                                    class="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]">
-                                    <option v-for="asset in assets" :key="asset.serial_number"
-                                        :value="asset.serial_number">
-                                        {{ asset.serial_number }} - {{ asset.nama }}
-                                    </option>
-                                </select>
+                                <!-- Dropdown -->
+                                <div v-if="showDropdown"
+                                    class="absolute mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg flex z-50">
 
-                                <!-- Jika data kosong, tampilkan pesan -->
-                                <p v-else class="text-gray-500 text-sm italic">Aset tidak tersedia</p>
+                                    <!-- Kolom Kiri: Tipe Aset -->
+                                    <div class="w-1/2 border-r border-gray-200">
+                                        <ul>
+                                            <li v-for="type in assetTypes" :key="type.id"
+                                                @click="selectedType = type.id" :class="['px-4 py-2 cursor-pointer hover:bg-gray-100',
+                                                    selectedType === type.id ? 'bg-gray-200 font-bold' : '']">
+                                                {{ type.tipe }}
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Kolom Kanan: Aset -->
+                                    <div class="w-1/2">
+                                        <ul v-if="selectedType">
+                                            <li v-for="asset in assetTypes.find(t => t.id === selectedType)?.assets || []"
+                                                :key="asset.serial_number" @click="selectAsset(asset)"
+                                                class="px-4 py-2 cursor-pointer hover:bg-blue-100">
+                                                {{ asset.nama }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="w-full md:w-full px-3 mb-6">

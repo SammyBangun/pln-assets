@@ -25,8 +25,12 @@ class ReportController extends Controller
     public function create()
     {
         $identifications = Identification::select('id', 'identifikasi_masalah')->get();
+        $assets = Asset::select('serial_number')->get();
+        $assetTypes = AssetType::with('assets')->get();
         return Inertia::render('FormLaporan', [
-            'identifications' => $identifications
+            'identifications' => $identifications,
+            'assets' => $assets,
+            'assetTypes' => $assetTypes
         ]);
     }
 
