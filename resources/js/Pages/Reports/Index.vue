@@ -259,7 +259,6 @@ const toggleSort = () => {
                 </thead>
                 <tbody>
                     <tr v-for="(report, index) in paginatedReports" :key="report.id"
-                        @click="$inertia.get(`/riwayat/${report.id}`)"
                         class="border-b hover:bg-gray-100 cursor-pointer">
                         <td class="py-3 px-4">{{ index + 1 }}</td>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
@@ -298,17 +297,22 @@ const toggleSort = () => {
                             ($page.props.auth.user.role === 'admin' ||
                                 report.user_pelapor === $page.props.auth.user.id)">
                             <td class="py-3 px-4 text-center no-print">
-                                <div class="flex justify-center gap-2">
+                                <div class="flex justify-center gap-1">
+                                    <button @click.stop="$inertia.get(`/riwayat/${report.id}`)"
+                                        class="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded-md text-sm">
+                                        <i class="fas fa-eye fa-sm"></i>
+                                    </button>
                                     <button @click.stop="$inertia.get(`/riwayat/${report.id}/edit`)"
-                                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md">
-                                        <i class="fas fa-edit"></i>
+                                        class="bg-yellow-500 hover:bg-yellow-600 text-white p-1 rounded-md text-sm">
+                                        <i class="fas fa-edit fa-sm"></i>
                                     </button>
                                     <button @click.stop="deleteReport(report.id)"
-                                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md">
-                                        <i class="fas fa-trash"></i>
+                                        class="bg-red-500 hover:bg-red-600 text-white p-1 rounded-md text-sm">
+                                        <i class="fas fa-trash fa-sm"></i>
                                     </button>
                                 </div>
                             </td>
+
                         </template>
                         <template
                             v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin' || $page.props.auth.user.role === 'petugas'">
