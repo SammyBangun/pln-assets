@@ -14,7 +14,8 @@ class DivisionSeeder extends Seeder
             'Operasi',
             'Pemeliharaan',
             'Business Support',
-            'IT',
+            'K3',
+            'Lingkungan'
         ];
 
         foreach ($divisions as $name) {

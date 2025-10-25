@@ -33,8 +33,8 @@ class AssetsController extends Controller
             abort(404, 'Tipe aset tidak ditemukan');
         }
 
-        $items = Asset::with('tipe')
-            ->where('tipe', $tipeModel->id) // karena kolom 'tipe' di table Asset menyimpan ID
+        $items = Asset::with('tipe', 'division')
+            ->where('tipe', $tipeModel->id)
             ->get();
 
         return Inertia::render('Assets/Item', [

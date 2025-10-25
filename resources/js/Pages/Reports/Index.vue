@@ -221,10 +221,10 @@ const toggleSort = () => {
                             </option>
                         </select>
                     </div>
-                    <div @click.stop="resetFilter" class="flex justify-end">
-                        <button
-                            class="border text-white bg-red-500 hover:bg-white hover:text-red-600 hover:border-red-600 w-200 p-3 rounded-lg shadow-md transition">Reset</button>
-                    </div>
+                </div>
+                <div @click.stop="resetFilter" class="flex justify-end">
+                    <button
+                        class="border text-white bg-red-500 hover:bg-white hover:text-red-600 hover:border-red-600 w-200 p-3 rounded-lg shadow-md transition">Reset</button>
                 </div>
             </div>
 

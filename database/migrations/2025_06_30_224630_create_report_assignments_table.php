@@ -15,16 +15,17 @@ return new class extends Migration
             $table->string('id')->primary();
             $table->string('report_id');
             $table->foreign('report_id')->references('id')->on('reports')->onDelete('cascade');
-            $table->unsignedInteger('petugas');
+            $table->unsignedInteger('petugas')->nullable();
             $table->foreign('petugas')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedInteger('realisasi');
+            $table->unsignedInteger('realisasi')->nullable();
             $table->foreign('realisasi')->references('id')->on('deliverables')->onDelete('cascade');
-            $table->text('catatan');
+            $table->text('catatan')->nullable();
             $table->string('gambar_tindak_lanjut')->nullable();
-            $table->date('tanggal_penugasan');
-            $table->date('tanggal_selesai');
-            $table->string('lokasi');
-            $table->enum('status', ['Menunggu Konfirmasi', 'Ditolak', 'Diterima', 'Ditugaskan', 'Selesai'])->default('Menunggu Konfirmasi');
+            $table->date('tanggal_penugasan')->nullable();
+            $table->date('tanggal_selesai')->nullable();
+            $table->string('lokasi')->nullable();
+            $table->string('ttd_user_it')->nullable();
+            $table->enum('status', ['Menunggu Konfirmasi', 'Ditolak', 'Diterima', 'Ditugaskan', 'Finalisasi', 'Pending', 'Selesai'])->default('Menunggu Konfirmasi');
             $table->string('keterangan_status')->nullable();
         });
     }

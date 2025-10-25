@@ -65,7 +65,6 @@ function submit() {
 
                 <form @submit.prevent="submit" class="space-y-4 w-10/12 h-full mx-auto">
 
-                    <h1 class="mb-4 text-center">Finalisasi</h1>
                     <div class="w-full mx-auto border border-gray-300 p-4 rounded-md bg-gray-50 ">
 
                         <div>
@@ -131,11 +130,14 @@ function submit() {
 
 
                         <!-- Signature Pad -->
-                        <div class="w-full md:w-full text-center mt-8 px-3 mb-6">
+                        <div class="w-full text-center mt-8 px-3 mb-6">
                             <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2">
                                 Tanda Tangan
                             </label>
-                            <SignaturePad @signatureSaved="handleSignatureSaved" />
+
+                            <div class="mx-auto max-w-sm">
+                                <SignaturePad @signatureSaved="handleSignatureSaved" />
+                            </div>
 
                             <div v-if="signatureData" class="mt-4">
                                 <p class="text-gray-700">Preview Tanda Tangan:</p>
@@ -149,7 +151,7 @@ function submit() {
 
                     <div class="flex justify-center space-x-4">
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">
-                            Simpan
+                            Selesai
                         </button>
                     </div>
                 </form>

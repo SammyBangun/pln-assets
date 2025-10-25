@@ -97,7 +97,8 @@ const printPdf = (id) => {
                             <p class="text-lg font-semibold text-gray-700">Gambar Tindak Lanjut:</p>
                             <div v-if="report.assignment?.gambar_tindak_lanjut" class="mt-3 flex justify-center">
                                 <img :src="`/storage/${report.assignment?.gambar_tindak_lanjut}`"
-                                    alt="Gambar Konfirmasi" @click="openImage(report.assignment?.gambar_tindak_lanjut)"
+                                    alt="Gambar Konfirmasi"
+                                    @click="openImage(`/storage/${report.assignment?.gambar_tindak_lanjut}`)"
                                     class="cursor-pointer max-w-64 max-h-64 rounded-lg shadow-md">
                             </div>
                             <span v-else class="text-gray-500">Tidak ada gambar</span>
@@ -219,7 +220,7 @@ const printPdf = (id) => {
                     class="max-w-full max-h-screen rounded-lg shadow-lg" />
                 <button @click="closeModal"
                     class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-2">
-                    &times;
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
         </div>
@@ -228,7 +229,7 @@ const printPdf = (id) => {
             <div class="bg-white p-4 rounded-lg shadow-lg w-4/5 h-4/5 relative">
                 <button @click="pdfUrl = null"
                     class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full">
-                    &times;
+                    <i class="fas fa-times"></i>
                 </button>
                 <iframe :src="pdfUrl" class="w-full h-full"></iframe>
             </div>

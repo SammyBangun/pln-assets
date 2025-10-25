@@ -27,8 +27,8 @@ const closeModal = () => {
 
   <AuthenticatedLayout>
 
-    <div class="min-h-screen flex items-center justify-center p-6">
-      <div class="w-full max-w-3xl p-8 bg-white border border-gray-200 rounded-xl shadow-xl">
+    <div class="min-h-screen flex items-center justify-center">
+      <div class="w-full max-w-3xl p-4 bg-white border border-gray-200 rounded-xl shadow-xl">
         <h1 class="text-2xl font-bold text-gray-800 mb-8 text-center">Detail Aset</h1>
 
         <div class="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
@@ -49,9 +49,9 @@ const closeModal = () => {
             <p class="text-gray-700 text-lg"><span class="font-semibold">Serial:</span> {{ item.seri }}</p>
             <p class="text-gray-700 text-lg"><span class="font-semibold">Tanggal Beli:</span> {{
               formatDate(item.tanggal_beli)
-              }}</p>
+            }}</p>
             <p class="text-gray-700 text-lg">
-              <span class="font-semibold">Terakhir Service:</span>
+              <span class="font-semibold">Terakhir Servis:</span>
               {{ formatDate(item.terakhir_servis) || 'Belum pernah service' }}
             </p>
           </div>
@@ -73,7 +73,7 @@ const closeModal = () => {
         <img :src="selectedImage" alt="Gambar Diperbesar" class="max-w-full max-h-screen rounded-lg shadow-lg" />
         <button @click="closeModal"
           class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-2">
-          &times;
+          <i class="fas fa-times"></i>
         </button>
       </div>
     </div>
