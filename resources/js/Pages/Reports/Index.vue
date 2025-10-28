@@ -232,6 +232,8 @@ const toggleSort = () => {
                             <option>Diterima</option>
                             <option>Ditugaskan</option>
                             <option>Finalisasi</option>
+                            <option>Menunggu Verifikasi</option>
+                            <option>Pending</option>
                             <option>Selesai</option>
                         </select>
                     </div>
