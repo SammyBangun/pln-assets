@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Assets\AssetType;
 use App\Models\Reports\ReportAssignment;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Inertia\Response;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Reports\Report;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
 
 class AdminConfirmController extends Controller
 {
@@ -27,6 +23,7 @@ class AdminConfirmController extends Controller
         $report = Report::with([
             'user',
             'aset.tipe',
+            'aset.division',
             'reportIdentifications.identification',
             'assignment'
         ])->findOrFail($id);
@@ -44,6 +41,10 @@ class AdminConfirmController extends Controller
             return redirect()->route('admin.tindak_lanjut.indexHardware', ['id' => $report_assign->id]);
         } else if (in_array($report->assignment?->status, ['Finalisasi'])) {
             return redirect()->route('admin.tindak_lanjut.finalization', ['id' => $report_assign->id]);
+        } else if (in_array($report->assignment?->status, ['Pending'])) {
+            return redirect()->route('admin.tindak_lanjut.finalization', ['id' => $report_assign->id]);
+        } else if (in_array($report->assignment?->status, ['Menunggu Verifikasi'])) {
+            return redirect()->route('admin.tindak_lanjut.verification', ['id' => $report_assign->id]);
         } else if (in_array($report->assignment?->status, ['Selesai'])) {
             return redirect()->route('admin.dashboard');
         }
@@ -65,14 +66,12 @@ class AdminConfirmController extends Controller
             'keterangan_status' => 'nullable|string'
         ]);
 
-        // Cari report_assignments berdasarkan id_pelaporan (foreign key)
         $assignment = ReportAssignment::where('report_id', $report_id)->firstOrFail();
         $assignment->update([
             'status' => $request->status,
             'keterangan_status' => $request->keterangan_status
         ]);
 
-        // Update status
         $assignment->status = $validatedData['status'];
         $assignment->save();
 

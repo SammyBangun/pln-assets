@@ -222,7 +222,6 @@ class AdminFollowUpController extends Controller
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
-        // Validasi data
         $validated = $request->validate([
             'realisasi_hasil' => 'required|exists:deliverables,id',
             'catatan' => 'nullable|string|max:1000',
@@ -230,15 +229,21 @@ class AdminFollowUpController extends Controller
             'ttd_user_it' =>  'nullable|string',
         ]);
 
-        // Ambil data penugasan
         $assignment = ReportAssignment::findOrFail($id);
+
+        $deliverable = Deliverable::find($validated['realisasi_hasil']);
+
+        $status = 'Menunggu Verifikasi';
+
+        if (stripos($deliverable->realisasi_hasil, 'Tidak Dapat Dilaksanakan (Tuliskan Catatan)') !== false) {
+            $status = 'Pending';
+        }
 
         $gambarPath = null;
         if ($request->hasFile('gambar_tindak_lanjut')) {
             $gambarPath = $request->file('gambar_tindak_lanjut')->store('tindak_lanjut', 'public');
         }
 
-        // Simpan tanda tangan (base64 -> file)
         if (!empty($validated['ttd_user_it'])) {
             $signatureData = $validated['ttd_user_it'];
             $signatureData = str_replace('data:image/png;base64,', '', $signatureData);
@@ -252,16 +257,77 @@ class AdminFollowUpController extends Controller
             $assignment->ttd_user_it = '/storage/' . $path;
         }
 
-        // Update data ke assignment
+        // Update ke database
         $assignment->update([
             'realisasi' => $validated['realisasi_hasil'],
             'catatan' => $validated['catatan'],
             'gambar_tindak_lanjut' => $gambarPath,
-            'status' => 'Selesai',
-            'tanggal_selesai' => now()
+            'status' => $status,
+            'tanggal_selesai' => now(),
         ]);
 
         return redirect()->route('riwayat.index')
             ->with('success', 'Finalisasi berhasil disimpan.');
+    }
+
+    public function updateFinalization(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'realisasi_hasil' => 'required|exists:deliverables,id',
+            'catatan' => 'nullable|string|max:1000',
+            'gambar_tindak_lanjut' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            // 'ttd_user_it' => 'nullable|string',
+        ]);
+
+        $assignment = ReportAssignment::findOrFail($id);
+
+        if ($request->hasFile('gambar_tindak_lanjut')) {
+            $validated['gambar_tindak_lanjut'] = $request->file('gambar_tindak_lanjut')
+                ->store('tindak_lanjut', 'public');
+        }
+
+        $assignment->update([
+            'realisasi' => $validated['realisasi_hasil'],
+            'catatan' => $validated['catatan'],
+            'gambar_tindak_lanjut' => $validated['gambar_tindak_lanjut'] ?? $assignment->gambar_tindak_lanjut,
+            // 'ttd_user_it' => $validated['ttd_user_it'] ?? $assignment->ttd_user_it,
+            'status' => 'Menunggu Verifikasi',
+            'tanggal_selesai' => now(),
+        ]);
+
+        return redirect()->route('riwayat.index')->with('success', 'Finalisasi berhasil diperbarui.');
+    }
+
+    public function verify(Request $request, $id)
+    {
+        if (Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
+            abort(403, 'Akses ditolak');
+        }
+
+        // dd($id);
+
+        $validated = $request->validate([
+            'ttd_user_it' => 'required|string',
+        ]);
+
+        $assignment = ReportAssignment::findOrFail($id);
+
+        $signatureData = $validated['ttd_user_it'];
+        $signatureData = str_replace('data:image/png;base64,', '', $signatureData);
+        $signatureData = str_replace(' ', '+', $signatureData);
+        $signatureImage = base64_decode($signatureData);
+
+        $signatureName = 'signature_verifikasi_' . time() . '.png';
+        $path = 'ttd/ttd_user_it/' . $signatureName;
+
+        Storage::disk('public')->put($path, $signatureImage);
+
+        $assignment->update([
+            'ttd_user_it' => '/storage/' . $path,
+            'status' => 'Selesai',
+            'tanggal_selesai' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Verifikasi berhasil disimpan!');
     }
 }

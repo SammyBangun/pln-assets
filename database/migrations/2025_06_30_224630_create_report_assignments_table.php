@@ -25,7 +25,7 @@ return new class extends Migration
             $table->date('tanggal_selesai')->nullable();
             $table->string('lokasi')->nullable();
             $table->string('ttd_user_it')->nullable();
-            $table->enum('status', ['Menunggu Konfirmasi', 'Ditolak', 'Diterima', 'Ditugaskan', 'Finalisasi', 'Pending', 'Selesai'])->default('Menunggu Konfirmasi');
+            $table->enum('status', ['Menunggu Konfirmasi', 'Ditolak', 'Diterima', 'Ditugaskan', 'Finalisasi', 'Menunggu Verifikasi', 'Pending', 'Selesai'])->default('Menunggu Konfirmasi');
             $table->string('keterangan_status')->nullable();
         });
     }

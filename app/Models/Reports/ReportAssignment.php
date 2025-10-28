@@ -28,7 +28,8 @@ class ReportAssignment extends Model
         'tanggal_selesai',
         'lokasi',
         'status',
-        'keterangan_status'
+        'keterangan_status',
+        'ttd_user_it',
     ];
 
     protected static function boot()

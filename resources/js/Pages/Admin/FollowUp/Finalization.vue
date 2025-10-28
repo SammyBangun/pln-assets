@@ -1,9 +1,23 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import Notiflix from 'notiflix';
-import SignaturePad from '@/components/SignaturePad.vue'
+import SignaturePad from '@/components/SignaturePad.vue';
+
+Notiflix.Confirm.init({
+    width: "400px",
+    borderRadius: "10px",
+    titleColor: "#D32F2F",
+    okButtonBackground: "#D32F2F",
+    okButtonColor: "#FFF",
+    cancelButtonBackground: "#757575",
+    cancelButtonColor: "#FFF",
+    backgroundColor: "#FFF",
+    titleFontSize: "18px",
+    messageFontSize: "16px",
+    cssAnimationStyle: "zoom",
+});
 
 const props = defineProps({
     assignment: Object,
@@ -11,14 +25,34 @@ const props = defineProps({
 });
 
 const signatureData = ref(null);
-
 const gambarPreview = ref(null);
 
 const form = useForm({
-    realisasi_hasil: [],
+    realisasi_hasil: props.assignment.realisasi || null,
     gambar_tindak_lanjut: null,
-    catatan: '',
-    ttd_user_it: null,
+    catatan: props.assignment.catatan || '',
+    ttd_user_it: props.assignment.ttd_user_it || null,
+});
+
+onMounted(() => {
+    if (props.assignment.gambar_tindak_lanjut) {
+        gambarPreview.value = `/storage/${props.assignment.gambar_tindak_lanjut}`;
+    }
+    if (props.assignment.ttd_user_it) {
+        signatureData.value = props.assignment.ttd_user_it;
+    }
+});
+
+const selectedDeliverableText = computed(() => {
+    const selected = props.deliverables.find(d => d.id === form.realisasi_hasil);
+    return selected ? selected.realisasi_hasil : '';
+});
+
+const showCatatanField = computed(() => {
+    return (
+        selectedDeliverableText.value.includes('Catatan') ||
+        selectedDeliverableText.value.includes('Tidak Dapat Dilaksanakan')
+    );
 });
 
 const handleSignatureSaved = (data) => {
@@ -35,24 +69,70 @@ const handleFileUpload = (event) => {
     }
 };
 
+const canSubmit = computed(() => {
+    const selected = props.deliverables.find(d => d.id === form.realisasi_hasil);
+    if (!selected) return false;
+    const text = selected.realisasi_hasil.toLowerCase();
+    return text.includes('selesai');
+});
+
+
 function submit() {
-    form.post(`/admin/tindak-lanjut/finalization/${props.assignment.id}`, {
-        onSuccess: () => {
-            Notiflix.Notify.success('Data Finalisasi berhasil disimpan!', {
-                position: 'center-top',
-                distance: '70px',
-            });
-        },
-        onError: (errors) => {
-            const allErrors = Object.values(errors).join('\n');
-            Notiflix.Notify.failure(`Gagal menyimpan:\n${allErrors}`, {
-                position: 'center-top',
-                distance: '70px',
-            });
-        }
-    });
+    const url = `/admin/tindak-lanjut/finalization/${props.assignment.id}`;
+    const isPending = props.assignment.status === 'Pending';
+    const method = isPending ? form.put : form.post;
+
+    if (isPending) {
+        Notiflix.Confirm.show(
+            'Konfirmasi Pembaruan',
+            'Finalisasi ini masih berstatus Pending. Apakah Anda yakin ingin memperbaruinya?',
+            'Ya, Perbarui',
+            'Batal',
+            () => {
+                method.call(form, url, {
+                    onSuccess: () => {
+                        Notiflix.Notify.success('Finalisasi berhasil diperbarui!', {
+                            position: 'center-top',
+                            distance: '70px',
+                        });
+                    },
+                    onError: (errors) => {
+                        const allErrors = Object.values(errors).join('\n');
+                        Notiflix.Notify.failure(`Gagal memperbarui:\n${allErrors}`, {
+                            position: 'center-top',
+                            distance: '70px',
+                        });
+                    }
+                });
+            },
+            () => {
+                Notiflix.Notify.info('Pembaruan dibatalkan.', {
+                    position: 'center-top',
+                    distance: '70px',
+                });
+            },
+        );
+    } else {
+        method.call(form, url, {
+            onSuccess: () => {
+                Notiflix.Notify.success('Data finalisasi berhasil disimpan!', {
+                    position: 'center-top',
+                    distance: '70px',
+                });
+            },
+            onError: (errors) => {
+                const allErrors = Object.values(errors).join('\n');
+                Notiflix.Notify.failure(`Gagal menyimpan:\n${allErrors}`, {
+                    position: 'center-top',
+                    distance: '70px',
+                });
+            }
+        });
+    }
 }
+
 </script>
+
 
 <template>
 
@@ -60,8 +140,14 @@ function submit() {
 
         <div class="mx-auto my-8 min-h-screen px-4">
             <div class="min-w-full border border-gray-200 rounded-lg p-6 shadow-sm">
-                <h1 class="text-3xl font-extrabold text-center text-gray-800">Tindak Lanjut Pekerjaan</h1>
-                <h3 class="text-lg font-semibold text-center text-gray-700 mb-8">(Penugasan yang dikerjakan)</h3>
+                <h1 class="text-3xl font-extrabold text-center text-gray-800">
+                    {{ props.assignment.status === 'Pending' ? 'Edit Finalisasi Pending' : 'Finalisasi Pekerjaan' }}
+                </h1>
+
+                <h3 class="text-lg font-semibold text-center text-gray-700 mb-8">
+                    ({{ props.assignment.status === 'Pending' ? 'Perbarui data finalisasi' : 'Isi data finalisasi baru'
+                    }})
+                </h3>
 
                 <form @submit.prevent="submit" class="space-y-4 w-10/12 h-full mx-auto">
 
@@ -95,42 +181,38 @@ function submit() {
                                 <div v-if="gambarPreview" class="mt-4">
                                     <p class="text-gray-700 text-center">Preview Gambar:</p>
                                     <img :src="gambarPreview" alt="Preview Gambar"
-                                        class="max-w-80 h-80 rounded-lg shadow-md mx-auto">
+                                        class="max-w-full h-80 rounded-lg shadow-md mx-auto">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-4">
-                            <div>
-                                <h3 class="text-lg font-semibold text-center text-gray-700 mb-4">
-                                    Realisasi Hasil Pekerjaan
-                                </h3>
+                        <div class="flex flex-col items-center mb-8">
+                            <h3 class="text-lg font-semibold text-center text-gray-700 mb-4">
+                                Realisasi Hasil Pekerjaan
+                            </h3>
 
-                                <div v-if="deliverables.length > 0" class="space-y-2">
-                                    <label v-for="deliverable in deliverables" :key="deliverable.id"
-                                        class="flex items-start space-x-2">
-
-                                        <input type="radio" :value="deliverable.id" v-model="form.realisasi_hasil"
-                                            class="mt-1 rounded border-gray-300 text-[#98c01d] shadow-sm focus:ring-[#98c01d]"
-                                            required />
-
-                                        <span class="text-gray-700 leading-snug">
-                                            {{ deliverable.realisasi_hasil }}
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-center text-gray-700 mb-4">Catatan</h3>
-                                <textarea v-model="form.catatan"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                    placeholder="Masukkan catatan"></textarea>
+                            <div v-if="deliverables.length > 0" class="space-y-3 flex flex-col items-center">
+                                <label v-for="deliverable in deliverables" :key="deliverable.id"
+                                    class="flex items-center space-x-2">
+                                    <input type="radio" :value="deliverable.id" v-model="form.realisasi_hasil"
+                                        class="mt-0.5 rounded border-gray-300 text-[#98c01d] shadow-sm focus:ring-[#98c01d]"
+                                        required />
+                                    <span class="text-gray-700 leading-snug text-center">
+                                        {{ deliverable.realisasi_hasil }}
+                                    </span>
+                                </label>
                             </div>
                         </div>
 
+                        <div v-if="showCatatanField"
+                            class="flex flex-col items-center mb-8 transition-all duration-300">
+                            <h3 class="text-lg font-semibold text-center text-gray-700 mb-4">Catatan</h3>
+                            <textarea v-model="form.catatan" class="w-3/6 px-3 py-2 border border-gray-300 rounded-md"
+                                placeholder="Masukkan catatan">
+                            </textarea>
+                        </div>
 
-                        <!-- Signature Pad -->
-                        <div class="w-full text-center mt-8 px-3 mb-6">
+                        <!-- <div class="w-full text-center mt-8 px-3 mb-6">
                             <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2">
                                 Tanda Tangan
                             </label>
@@ -146,14 +228,16 @@ function submit() {
                                         class="max-w-full h-auto rounded-lg shadow-md">
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="flex justify-center space-x-4">
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">
-                            Selesai
+                        <button type="submit" :disabled="!canSubmit" class="px-4 py-2 rounded text-white transition bg-blue-500 hover:bg-blue-700
+                            disabled:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-50">
+                            {{ props.assignment.status === 'Pending' ? 'Perbarui Finalisasi' : 'Selesai' }}
                         </button>
                     </div>
+
                 </form>
                 <button @click="$inertia.get(route('admin.dashboard'))" type="submit"
                     class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">

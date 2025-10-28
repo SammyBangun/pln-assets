@@ -3,8 +3,7 @@ import { ref, computed } from 'vue';
 import Notiflix from "notiflix";
 import formatDate from '@/functions/formatDate';
 import { useForm } from '@inertiajs/vue3';
-
-const form = useForm();
+import SignatureModal from '@/components/SignatureModal.vue';
 
 Notiflix.Confirm.init({
     width: "400px",
@@ -34,6 +33,47 @@ const filterDateFrom = ref('');
 const filterDateTo = ref('');
 const filterAsset = ref('');
 const filterUser = ref('');
+
+const showSignatureModal = ref(false);
+const currentAssignmentId = ref(null);
+
+const form = useForm({
+    ttd_user_it: null,
+});
+
+function openSignatureModal(id) {
+    currentAssignmentId.value = id;
+    showSignatureModal.value = true;
+}
+
+function handleSignatureConfirmed(signatureData) {
+    if (!currentAssignmentId.value) {
+        Notiflix.Notify.failure('ID tidak ditemukan!', {
+            position: 'center-top',
+            distance: '70px',
+        });
+        return;
+    }
+
+    form.ttd_user_it = signatureData;
+
+    form.post(`/admin/verifikasi/${currentAssignmentId.value}`, {
+        onSuccess: () => {
+            Notiflix.Notify.success('TTD verifikasi berhasil disimpan, pelaporan telah terselesaikan', {
+                position: 'center-top',
+                distance: '70px',
+            });
+            showSignatureModal.value = false;
+        },
+        onError: () => {
+            Notiflix.Notify.failure('Gagal menyimpan tanda tangan.', {
+                position: 'center-top',
+                distance: '70px',
+            });
+        },
+    });
+}
+
 
 const latestReports = computed(() => {
     return [...(props.reports || [])]
@@ -179,7 +219,6 @@ const toggleSort = () => {
             </template>
         </div>
 
-
         <!-- FILTER PANEL -->
         <Transition name="fade-slide">
             <div v-if="showFilter" class="bg-gray-100 p-4 rounded-lg mb-4 shadow-inner">
@@ -237,6 +276,7 @@ const toggleSort = () => {
                         <th class="py-3 px-4 text-left">No</th>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
                             <th class="py-3 px-4 text-left">Pelapor</th>
+                            <!-- <th class="py-3 px-4 text-left">Divisi</th> -->
                         </template>
                         <th class="py-3 px-4 text-left">Serial Number</th>
                         <th class="py-3 px-4 text-left">Nama</th>
@@ -263,6 +303,7 @@ const toggleSort = () => {
                         <td class="py-3 px-4">{{ index + 1 }}</td>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
                             <td class="py-3 px-4">{{ report.user?.name }}</td>
+                            <!-- <td class="py-3 px-4">{{ report }}</td> -->
                         </template>
                         <td class="py-3 px-4">{{ report.aset?.serial_number }}</td>
                         <td class="py-3 px-4">{{ report.aset?.nama }}</td>
@@ -291,6 +332,10 @@ const toggleSort = () => {
                                 class="text-gray-500 font-semibold">Menunggu Konfirmasi</span>
                             <span v-else-if="report.assignment?.status === 'Finalisasi'"
                                 class="text-gray-500 font-semibold">Finalisasi</span>
+                            <span v-else-if="report.assignment?.status === 'Pending'"
+                                class="text-gray-500 font-semibold">Pending</span>
+                            <span v-else-if="report.assignment?.status === 'Menunggu Verifikasi'"
+                                class="text-gray-500 font-semibold">Menunggu Verifikasi</span>
                             <span v-else class="text-gray-400 italic">Belum ada status</span>
                         </td>
                         <template v-if="$page.props.auth.user &&
@@ -318,23 +363,47 @@ const toggleSort = () => {
                             v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin' || $page.props.auth.user.role === 'petugas'">
                             <td class="py-3 px-4 no-print text-center">
                                 <div class="flex justify-center">
-                                    <button @click.stop="$inertia.get(`/admin/konfirmasi/${report.id}`)"
-                                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 disabled:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
-                                        :disabled="report.assignment?.status === 'Selesai' || report.assignment?.status === 'Ditolak'">
-                                        <span
-                                            v-if="report.assignment?.status === 'Menunggu Konfirmasi'">Konfirmasi</span>
-                                        <span v-if="report.assignment?.status === 'Ditolak'">Ditolak</span>
-                                        <span v-if="report.assignment?.status === 'Diterima'">Penugasan</span>
+                                    <button v-if="report.assignment" @click.stop="
+                                        report.assignment.status === 'Menunggu Verifikasi'
+                                            ? openSignatureModal(report.assignment.id)
+                                            : $inertia.get(`/admin/konfirmasi/${report.id}`)
+                                        " :class="[
+                                            'px-3 py-1 rounded-md mr-2 text-white',
+                                            {
+                                                'bg-yellow-500 hover:bg-yellow-600':
+                                                    report.assignment.status !== 'Menunggu Verifikasi',
+                                                'bg-green-600 hover:bg-green-700':
+                                                    report.assignment.status === 'Menunggu Verifikasi',
+                                                'disabled:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-50':
+                                                    true,
+                                            },
+                                        ]"
+                                        :disabled="report.assignment.status === 'Selesai' || report.assignment.status === 'Ditolak'">
+                                        <span v-if="report.assignment.status === 'Menunggu Konfirmasi'">
+                                            Konfirmasi
+                                        </span>
+                                        <span v-else-if="report.assignment.status === 'Ditolak'">
+                                            Ditolak
+                                        </span>
+                                        <span v-else-if="report.assignment.status === 'Diterima'">
+                                            Penugasan
+                                        </span>
                                         <template
-                                            v-if="$page.props.auth.user.role === 'petugas' || $page.props.auth.user.role === 'admin'">
-                                            <span v-if="report.assignment?.status === 'Ditugaskan'">Tindak Lanjut</span>
-                                            <span v-if="report.assignment?.status === 'Finalisasi'">Finalisasi</span>
+                                            v-else-if="$page.props.auth.user.role === 'petugas' || $page.props.auth.user.role === 'admin'">
+                                            <span v-if="report.assignment.status === 'Ditugaskan'">Tindak Lanjut</span>
+                                            <span
+                                                v-else-if="report.assignment.status === 'Finalisasi'">Finalisasi</span>
+                                            <span v-else-if="report.assignment.status === 'Pending'">Pending</span>
+                                            <span
+                                                v-else-if="report.assignment.status === 'Menunggu Verifikasi'">Verifikasi</span>
                                         </template>
-                                        <span v-if="report.assignment?.status === 'Selesai'">Selesai</span>
+                                        <span v-if="report.assignment.status === 'Selesai'">Selesai</span>
                                     </button>
                                 </div>
                             </td>
                         </template>
+                        <SignatureModal :show="showSignatureModal" @close="showSignatureModal = false"
+                            @confirmed="handleSignatureConfirmed" />
                     </tr>
                 </tbody>
             </table>

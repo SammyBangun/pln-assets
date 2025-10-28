@@ -26,6 +26,10 @@ Route::post('/admin/tindak-lanjut/{id}', [AdminFollowUpController::class, 'mark'
 
 Route::get('/tindak-lanjut/finalization/{id}', [AdminFollowUpController::class, 'finalization'])->name('admin.tindak_lanjut.finalization');
 Route::post('/admin/tindak-lanjut/finalization/{id}', [AdminFollowUpController::class, 'storeFinalization'])->name('admin.tindak_lanjut.storeFinalization');
+Route::put('/admin/tindak-lanjut/finalization/{id}', [AdminFollowUpController::class, 'updateFinalization'])
+    ->name('admin.finalization.update');
+
+Route::post('/admin/verifikasi/{id}', [AdminFollowUpController::class, 'verify'])->name('admin.verify');
 
 Route::get('/admin/divisions/', [AdminLookupController::class, 'divisions'])->name('admin.lookup.divisions');
 Route::post('/admin/divisions/', [AdminLookupController::class, 'storeDivisions'])->name('admin.divisions.store');

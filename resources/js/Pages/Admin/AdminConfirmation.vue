@@ -56,10 +56,13 @@ function submit() {
                     <div class="space-y-4">
                         <div class="border border-gray-300 p-4 rounded-md bg-gray-50">
                             <p class="text-lg text-gray-600"><strong>Tanggal:</strong> {{ formatDate(report.created_at)
-                                }}
+                            }}
                             </p>
                             <p class="text-lg font-semibold text-gray-700"><strong>Pelapor:</strong> {{
                                 report.user?.name }}
+                            </p>
+                            <p class="text-lg font-semibold text-gray-700"><strong>Divisi:</strong> {{
+                                report.aset?.division?.nama_divisi }}
                             </p>
                             <p class="text-lg text-gray-600"><strong>Serial Number:</strong> {{
                                 report.aset?.serial_number
