@@ -278,7 +278,7 @@ const toggleSort = () => {
                         <th class="py-3 px-4 text-left">No</th>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
                             <th class="py-3 px-4 text-left">Pelapor</th>
-                            <!-- <th class="py-3 px-4 text-left">Divisi</th> -->
+                            <th class="py-3 px-4 text-left">Divisi</th>
                         </template>
                         <th class="py-3 px-4 text-left">Serial Number</th>
                         <th class="py-3 px-4 text-left">Nama</th>
@@ -305,7 +305,7 @@ const toggleSort = () => {
                         <td class="py-3 px-4">{{ index + 1 }}</td>
                         <template v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'">
                             <td class="py-3 px-4">{{ report.user?.name }}</td>
-                            <!-- <td class="py-3 px-4">{{ report }}</td> -->
+                            <td class="py-3 px-4">{{ report.user?.division?.nama_divisi }}</td>
                         </template>
                         <td class="py-3 px-4">{{ report.aset?.serial_number }}</td>
                         <td class="py-3 px-4">{{ report.aset?.nama }}</td>

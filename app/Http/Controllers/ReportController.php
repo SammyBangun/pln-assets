@@ -39,7 +39,7 @@ class ReportController extends Controller
         $user = Auth::user();
 
         if ($user->role === 'admin') {
-            $reports = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->get();
+            $reports = Report::with('user.division', 'aset', 'reportIdentifications.identification', 'assignment')->get();
         } elseif ($user->role === 'petugas') {
             $reports = Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')
                 ->whereHas('assignment', function ($query) use ($user) {
