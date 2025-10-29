@@ -169,13 +169,18 @@ onMounted(async () => {
                     <Dropdown align="right" width="32">
                         <template #trigger>
                             <button
-                                class="flex items-center rounded-lg border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 hover:text-gray-700 focus:outline-none">
-                                {{ auth.user.name }}
-                                <svg class="-me-0.5 ms-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                    viewBox="0 0 20 20">
-                                    <path
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                </svg>
+                                class="flex items-center justify-between w-full rounded-lg border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-600 hover:text-gray-800 focus:outline-none">
+                                <div class="flex flex-col items-start text-left">
+                                    <p class="font-medium text-gray-800">{{ auth.user.name }}</p>
+                                    <p class="text-xs text-gray-500">Divisi: {{ auth.user.divisi }}</p>
+                                </div>
+                                <div>
+                                    <svg class="ms-2 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                    </svg>
+                                </div>
                             </button>
                         </template>
 
