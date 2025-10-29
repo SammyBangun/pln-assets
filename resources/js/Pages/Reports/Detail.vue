@@ -64,7 +64,7 @@ const printPdf = (id) => {
                             <p class="text-lg font-semibold text-gray-700"><strong>Pelapor:</strong> {{
                                 report.user?.name }}
                             </p>
-                            <p class="text-lg text-gray-600"><strong>Lokasi:</strong> {{ report.user?.lokasi }}</p>
+                            <p class="text-lg text-gray-600"><strong>Lokasi:</strong> {{ report.aset?.lokasi }}</p>
                             <p class="text-lg text-gray-600"><strong>Serial Number:</strong> {{
                                 report.aset?.serial_number
                                 ?? 'Tidak ditemukan' }}</p>
