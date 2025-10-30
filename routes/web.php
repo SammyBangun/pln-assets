@@ -90,7 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', function () {
             $users = User::where('role', 'user')->get(['id', 'name']);
             return Inertia::render('Admin/Dashboard', [
-                'reports' => Report::with('user', 'aset', 'reportIdentifications.identification', 'assignment')->get(),
+                'reports' => Report::with('user.division', 'aset', 'reportIdentifications.identification', 'assignment')->get(),
                 'users' => $users
             ]);
         })->name('admin.dashboard');
