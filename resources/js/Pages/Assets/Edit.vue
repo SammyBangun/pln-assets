@@ -41,6 +41,10 @@ const form = useForm({
   status_aset: props.item.status_aset,
 });
 
+const goBack = () => {
+  window.history.back();
+};
+
 const gambarLama = props.item.gambar;
 
 function submit() {
@@ -281,15 +285,17 @@ function handleFileUpload(event) {
           </div>
 
           <div class="flex justify-between">
-            <Link :href="route('Item.Show', { tipe: form.tipe })"
+            <button type="button" @click="goBack"
               class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2">
-            Kembali
-            </Link>
+              Kembali
+            </button>
+
             <div class="flex space-x-3">
-              <Link :href="route('Item.Show', { tipe: form.tipe })"
+              <button type="button" @click="goBack"
                 class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-              Batalkan
-              </Link>
+                Batalkan
+              </button>
+
               <button type="submit"
                 class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 :disabled="form.processing">
@@ -297,6 +303,7 @@ function handleFileUpload(event) {
               </button>
             </div>
           </div>
+
         </form>
         <div v-if="form.errors.error" class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           {{ form.errors.error }}
