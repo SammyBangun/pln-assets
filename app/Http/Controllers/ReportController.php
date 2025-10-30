@@ -24,9 +24,22 @@ class ReportController extends Controller
 
     public function create()
     {
+        $user = Auth::user();
+
         $identifications = Identification::select('id', 'identifikasi_masalah')->get();
-        $assets = Asset::select('serial_number')->get();
-        $assetTypes = AssetType::with('assets')->get();
+
+        $assetTypes = AssetType::with(['assets' => function ($query) use ($user) {
+            if ($user->role !== 'admin') {
+                $query->where('id_divisi', $user->divisi);
+            }
+        }])->get();
+
+        $assets = Asset::select('serial_number', 'id_divisi')
+            ->when($user->role !== 'admin', function ($query) use ($user) {
+                $query->where('id_divisi', $user->divisi);
+            })
+            ->get();
+
         return Inertia::render('FormLaporan', [
             'identifications' => $identifications,
             'assets' => $assets,
@@ -232,7 +245,6 @@ class ReportController extends Controller
 
         $no_tiket = 'WG-' . strtoupper(uniqid());
 
-        // Render blade view ke HTML string
         $html = view('pdf.report', [
             'report' => $report,
             'aset' => $aset,
@@ -243,40 +255,20 @@ class ReportController extends Controller
             'no_tiket' => $no_tiket
         ])->render();
 
-        // Path simpan PDF
         $filePath = storage_path('app/public/laporan_gangguan_' . $id . '.pdf');
 
-        // Generate PDF pakai Browsershot
         Browsershot::html($html)
-            ->showBackground()   // penting biar warna bg ikut dicetak
+            ->showBackground()
             ->format('A4')
             ->margins(5, 5, 5, 5)
             ->noSandbox()
             ->setOption('timeout', 0)
             ->save($filePath);
 
-
-
-        // Return download/stream
         return response()->file($filePath, [
             'Content-Type' => 'application/pdf',
         ]);
     }
-
-
-    // public function exportAllPdf()
-    // {
-    //     $reports = Report::with(['user', 'aset', 'assignment', 'reportIdentifications.identification'])->latest()->get();
-
-    //     $no_tiket = 'WG-' . strtoupper(uniqid());
-
-    //     $pdf = Pdf::loadView('pdf.reports-all', [
-    //         'reports' => $reports,
-    //         'no_tiket' => $no_tiket
-    //     ])->setPaper('A4', 'landscape');
-
-    //     return $pdf->stream('laporan_gangguan.pdf');
-    // }
 
     public function getAssetBySerial($serialNumber)
     {

@@ -27,22 +27,27 @@ class AssetsController extends Controller
 
     public function show($tipe)
     {
+        $user = Auth::user();
+
         $tipeModel = AssetType::with('assets')->where('tipe', $tipe)->firstOrFail();
 
         if (!$tipeModel) {
             abort(404, 'Tipe aset tidak ditemukan');
         }
 
-        $items = Asset::with('tipe', 'division')
-            ->where('tipe', $tipeModel->id)
-            ->get();
+        $query = Asset::with('tipe', 'division')->where('tipe', $tipeModel->id);
+
+        if ($user->role !== 'admin') {
+            $query->where('divisi_id', $user->divisi);
+        }
+
+        $items = $query->get();
 
         return Inertia::render('Assets/Item', [
             'items' => $items,
             'tipe' => $tipeModel->tipe,
         ]);
     }
-
 
     public function latest($serial_number)
     {
@@ -74,7 +79,6 @@ class AssetsController extends Controller
             abort(403, 'Akses ditolak. Anda bukan admin.');
         }
 
-        // Validasi input
         $validated = $request->validate([
             'serial_number' => 'required|string|max:50|unique:assets',
             'id_divisi' => 'required|exists:divisions,id',
@@ -108,11 +112,19 @@ class AssetsController extends Controller
 
     public function detail($tipe, $serial_number)
     {
+        $user = Auth::user();
+
         $tipeModel = AssetType::with('assets')->where('tipe', $tipe)->firstOrFail();
-        $item = Asset::with('division', 'tipe')
+
+        $query = Asset::with('division', 'tipe')
             ->where('tipe', $tipeModel->id)
-            ->where('serial_number', $serial_number)
-            ->firstOrFail();
+            ->where('serial_number', $serial_number);
+
+        if ($user->role !== 'admin') {
+            $query->where('divisi_id', $user->divisi);
+        }
+
+        $item = $query->firstOrFail();
 
         return Inertia::render('Assets/Detail', [
             'item' => $item,

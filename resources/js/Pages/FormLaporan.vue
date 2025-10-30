@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SignaturePad from '@/components/SignaturePad.vue'
 import { fetchAssets, assets } from '@/functions/fetchAssets';
@@ -19,6 +19,7 @@ const signatureData = ref(null);
 
 const showDropdown = ref(false);
 const selectedType = ref(null);
+const selectedSeri = ref(null);
 const selectedAsset = ref(null);
 
 const selectAsset = (asset) => {
@@ -110,42 +111,73 @@ const submit = () => {
                     <form class="w-full bg-white shadow-md p-6" @submit.prevent="submit">
                         <div class="flex flex-wrap -mx-3 mb-6">
 
-                            <div class="w-80 px-3 mb-6 relative mx-auto">
-                                <!-- Trigger -->
+                            <div class="relative w-full sm:w-auto max-w-lg mx-auto mb-6">
+                                <!-- Tombol trigger -->
                                 <button @click.prevent="showDropdown = !showDropdown"
-                                    class="w-full bg-white border border-gray-400 rounded-lg px-4 py-2 flex justify-between items-center shadow-sm">
-                                    <span>{{ selectedAsset?.nama || "Pilih Aset IT" }}</span>
-                                    <span class="ml-2" v-if="showDropdown"><i class="fa fa-caret-up"></i></span>
-                                    <span class="ml-2" v-if="!showDropdown"><i class="fa fa-caret-down"></i></span>
+                                    class="w-full bg-white border border-gray-400 rounded-lg px-4 py-2 flex justify-between items-center shadow-sm relative z-20">
+                                    <span class="mx-auto">{{ selectedAsset?.nama || "Pilih Aset IT" }}</span>
+                                    <i :class="showDropdown ? 'fa fa-caret-up ml-2' : 'fa fa-caret-down ml-2'"></i>
                                 </button>
 
                                 <!-- Dropdown -->
                                 <div v-if="showDropdown"
-                                    class="absolute mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg flex z-50">
+                                    class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[600px] max-w-[95vw] bg-white border border-gray-300 rounded-xl shadow-lg flex flex-col sm:flex-row overflow-hidden z-10">
 
-                                    <!-- Kolom Kiri: Tipe Aset -->
-                                    <div class="w-1/2 border-r border-gray-200">
+                                    <!-- Kolom 1: Tipe Aset -->
+                                    <div
+                                        class="w-full sm:w-1/4 border-b sm:border-b-0 sm:border-r border-gray-200 max-h-[250px] overflow-y-auto">
                                         <ul>
                                             <li v-for="type in assetTypes" :key="type.id"
-                                                @click="selectedType = type.id" :class="['px-4 py-2 cursor-pointer hover:bg-gray-100',
-                                                    selectedType === type.id ? 'bg-gray-200 font-bold' : '']">
+                                                @click="selectedType = type.id; selectedSeri = null; selectedAsset = null"
+                                                :class="[
+                                                    'px-4 py-2 cursor-pointer hover:bg-gray-100',
+                                                    selectedType === type.id ? 'bg-gray-200 font-bold' : '',
+                                                ]">
                                                 {{ type.tipe }}
                                             </li>
                                         </ul>
                                     </div>
 
-                                    <!-- Kolom Kanan: Aset -->
-                                    <div class="w-1/2">
-                                        <ul v-if="selectedType">
+                                    <!-- Kolom 2: Seri -->
+                                    <div v-if="selectedType"
+                                        class="w-full sm:w-1/4 border-b sm:border-b-0 sm:border-r border-gray-200 max-h-[250px] overflow-y-auto">
+                                        <ul>
                                             <li v-for="asset in assetTypes.find(t => t.id === selectedType)?.assets || []"
-                                                :key="asset.serial_number" @click="selectAsset(asset)"
+                                                :key="asset.seri"
+                                                @click="selectedSeri = asset.seri; selectedAsset = null" :class="[
+                                                    'px-4 py-2 cursor-pointer hover:bg-gray-100',
+                                                    selectedSeri === asset.seri ? 'bg-gray-200 font-semibold' : '',
+                                                ]">
+                                                {{ asset.seri }}
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Kolom 3: Nama Aset -->
+                                    <div v-if="selectedSeri"
+                                        class="w-full sm:w-1/4 border-b sm:border-b-0 sm:border-r border-gray-200 max-h-[250px] overflow-y-auto">
+                                        <ul>
+                                            <li v-for="asset in (assetTypes.find(t => t.id === selectedType)?.assets || []).filter(a => a.seri === selectedSeri)"
+                                                :key="asset.serial_number" @click="selectedAsset = asset"
                                                 class="px-4 py-2 cursor-pointer hover:bg-blue-100">
                                                 {{ asset.nama }}
                                             </li>
                                         </ul>
                                     </div>
+
+                                    <!-- Kolom 4: Serial Number -->
+                                    <div v-if="selectedAsset" class="w-full sm:w-1/4 max-h-[250px] overflow-y-auto">
+                                        <ul>
+                                            <li @click="selectAsset(selectedAsset)"
+                                                class="px-4 py-2 cursor-pointer hover:bg-blue-100 font-semibold text-gray-700">
+                                                {{ selectedAsset.serial_number }}
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
+
+
 
                             <div class="w-full md:w-full px-3 mb-6">
                                 <label class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2">
