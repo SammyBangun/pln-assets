@@ -56,6 +56,10 @@ const confirmRoleUpdate = (user) => {
     'Batal',
     () => {
       updateRole(user);
+      Notiflix.Notify.success('Role berhasil diupdate', {
+        position: "center-top",
+        distance: "70px",
+      })
     },
     () => {
       user.role = previousRoles[user.id] || 'user';
@@ -108,9 +112,6 @@ const deleteUser = async (user) => {
         <div class="flex justify-between">
           <div class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 mt-3 w-fit">
             <Link :href="route('admin.dashboard')">Kembali</Link>
-          </div>
-          <div class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md mr-2 mt-3 w-fit">
-            <Link :href="route('register')">Buat Akun</Link>
           </div>
         </div>
         <div class="bg-white shadow rounded-lg overflow-hidden mt-4">

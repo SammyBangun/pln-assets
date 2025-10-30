@@ -82,7 +82,6 @@ const confirmRoleUpdate = (user) => {
                         <p class="text-lg text-gray-600"><strong>NIP:</strong> {{ user.id }}</p>
                         <p class="text-lg text-gray-600"><strong>Nama:</strong> {{ user.name }}</p>
                         <p class="text-lg text-gray-600"><strong>Divisi:</strong> {{ user.division.nama_divisi }}</p>
-                        <p class="text-lg text-gray-600"><strong>Lokasi:</strong> {{ user.lokasi || '-' }}</p>
                         <p class="text-lg text-gray-600"><strong>Email:</strong> {{ user.email }}</p>
                         <p class="text-lg text-gray-600"><strong>Role:</strong> {{ user.role }}</p>
                         <p class="text-lg text-gray-600"><strong>Tanggal Register:</strong> {{
