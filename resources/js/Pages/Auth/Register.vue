@@ -20,7 +20,21 @@ const form = useForm({
     password_confirmation: '',
 });
 
+const onNipInput = (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '');
+    form.id = e.target.value;
+};
+
+
 const submit = () => {
+    if (!/^\d{10}$/.test(form.id)) {
+        Notiflix.Notify.failure('NIP harus berupa 10 digit angka.', {
+            position: 'center-top',
+            distance: '70px',
+        });
+        return;
+    }
+
     form.post(route('register'), {
         onFinish: () => form.reset('password'),
         onError: (error) => {
@@ -37,6 +51,7 @@ const submit = () => {
         },
     });
 };
+
 </script>
 
 <template>
@@ -48,9 +63,10 @@ const submit = () => {
 
             <div class="mt-4 w-8/12 mx-auto">
                 <InputLabel for="id" value="NIP" />
+                <p class="text-xs">NIP harus berupa 10 digit angka</p>
 
                 <TextInput id="id" type="text" class="mt-1 block w-full" v-model="form.id" required autofocus
-                    autocomplete="id" />
+                    autocomplete="id" maxlength="10" inputmode="numeric" pattern="\d*" @input="onNipInput" />
 
                 <InputError class="mt-2" :message="form.errors.id" />
             </div>
