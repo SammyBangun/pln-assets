@@ -304,8 +304,6 @@ class AdminFollowUpController extends Controller
             abort(403, 'Akses ditolak');
         }
 
-        // dd($id);
-
         $validated = $request->validate([
             'ttd_user_it' => 'required|string',
         ]);
