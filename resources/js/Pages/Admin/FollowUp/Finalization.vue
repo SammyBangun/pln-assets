@@ -70,12 +70,15 @@ const handleFileUpload = (event) => {
 };
 
 const canSubmit = computed(() => {
+    if (props.assignment.status === 'Finalisasi') {
+        return true;
+    }
+
     const selected = props.deliverables.find(d => d.id === form.realisasi_hasil);
     if (!selected) return false;
     const text = selected.realisasi_hasil.toLowerCase();
     return text.includes('selesai');
 });
-
 
 function submit() {
     const url = `/admin/tindak-lanjut/finalization/${props.assignment.id}`;
@@ -234,7 +237,7 @@ function submit() {
                     <div class="flex justify-center space-x-4">
                         <button type="submit" :disabled="!canSubmit" class="px-4 py-2 rounded text-white transition bg-blue-500 hover:bg-blue-700
                             disabled:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-50">
-                            {{ props.assignment.status === 'Pending' ? 'Perbarui Finalisasi' : 'Selesai' }}
+                            {{ props.assignment.status === 'Pending' ? 'Selesai' : 'Perbarui Finalisasi' }}
                         </button>
                     </div>
 
