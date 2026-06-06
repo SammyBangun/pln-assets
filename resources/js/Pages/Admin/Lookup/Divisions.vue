@@ -1,7 +1,10 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { router } from '@inertiajs/vue3';
+import init from '@/functions/notiflixConfirm';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+const confirm = init();
 
 const props = defineProps({
     divisions: Array,
