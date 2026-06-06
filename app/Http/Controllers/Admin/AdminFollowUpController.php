@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Disruptions\Disruption;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Disruptions\DetailDisruption;
 use App\Models\Reports\ReportFollowUp;
 use App\Models\HardwareReplacement;
@@ -23,10 +22,6 @@ class AdminFollowUpController extends Controller
 
     public function indexHardware($id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $disruption = Disruption::all();
 
         $detail_disruption = DetailDisruption::where('jenis_gangguan', 1)->get();
@@ -42,10 +37,6 @@ class AdminFollowUpController extends Controller
 
     public function storeHardware(Request $request, $id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $request->validate([
             'detail' => 'required|array|min:1',
             'hal_lain' => 'required|array|min:1',
@@ -100,10 +91,6 @@ class AdminFollowUpController extends Controller
 
     public function indexSoftware($id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $disruption = Disruption::all();
 
         $detail_disruption = DetailDisruption::where('jenis_gangguan', 2)->get();
@@ -119,10 +106,6 @@ class AdminFollowUpController extends Controller
 
     public function storeSoftware(Request $request, $id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         // Validasi data
         $validated = $request->validate([
             'detail' => 'array|required',
@@ -148,10 +131,6 @@ class AdminFollowUpController extends Controller
 
     public function indexNetwork($id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $disruption = Disruption::all();
 
         $detail_disruption = DetailDisruption::where('jenis_gangguan', 3)->get();
@@ -167,10 +146,6 @@ class AdminFollowUpController extends Controller
 
     public function storeNetwork(Request $request, $id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         // Validasi data
         $validated = $request->validate([
             'detail' => 'array|required',
@@ -189,10 +164,6 @@ class AdminFollowUpController extends Controller
 
     public function mark($id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $assignment = ReportAssignment::findOrFail($id);
         $assignment->status = 'Finalisasi';
         $assignment->save();
@@ -202,10 +173,6 @@ class AdminFollowUpController extends Controller
 
     public function finalization($id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $assignment = ReportAssignment::with('followUp')->find($id);
 
         $deliverables = Deliverable::all();
@@ -218,10 +185,6 @@ class AdminFollowUpController extends Controller
 
     public function storeFinalization(Request $request, $id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $validated = $request->validate([
             'realisasi_hasil' => 'required|exists:deliverables,id',
             'catatan' => 'nullable|string|max:1000',
@@ -300,10 +263,6 @@ class AdminFollowUpController extends Controller
 
     public function verify(Request $request, $id)
     {
-        if (Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
-            abort(403, 'Akses ditolak');
-        }
-
         $validated = $request->validate([
             'ttd_user_it' => 'required|string',
         ]);

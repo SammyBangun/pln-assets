@@ -12,16 +12,11 @@ use App\Models\Division;
 use App\Models\Identification;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Auth;
 
 class AdminLookupController extends Controller
 {
     public function divisions()
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $divisions = Division::all();
 
         return Inertia::render('Admin/Lookup/Divisions', [
@@ -50,10 +45,6 @@ class AdminLookupController extends Controller
 
     public function identifications()
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $identifications = Identification::all();
 
         return Inertia::render('Admin/Lookup/Identifications', [
@@ -82,10 +73,6 @@ class AdminLookupController extends Controller
 
     public function disruptions()
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $disruptions = Disruption::all();
 
         return Inertia::render('Admin/Lookup/Disruptions', [
@@ -114,10 +101,6 @@ class AdminLookupController extends Controller
 
     public function deliverables()
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $deliverables = Deliverable::all();
 
         return Inertia::render('Admin/Lookup/Deliverables', [
@@ -146,10 +129,6 @@ class AdminLookupController extends Controller
 
     public function assetTypes()
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $assetTypes = AssetType::all();
 
         return Inertia::render('Admin/Lookup/AssetTypes', [
@@ -178,10 +157,6 @@ class AdminLookupController extends Controller
 
     public function detailDisruptions()
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $detailDisruptions = DetailDisruption::with('disruption')->get();
         $disruptions = Disruption::all();
 

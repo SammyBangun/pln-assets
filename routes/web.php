@@ -2,7 +2,6 @@
 
 use Inertia\Inertia;
 use App\Models\User;
-use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProfileController;
@@ -10,8 +9,6 @@ use App\Http\Controllers\PerformanceMonitoringController;
 use App\Models\Reports\Report;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 
 Route::get('/operator/dashboard', function () {
     return Inertia::render('Operator/Dashboard');
@@ -27,40 +24,13 @@ Route::get('/', function () {
     ]);
 });
 
-// Rute untuk menampilkan pengguna (admin only)
-Route::get('/admin/users', function () {
-    // Mengecek apakah pengguna yang login adalah admin
-    if (Auth::check() && Auth::user()->role === 'admin') {
-        return (new UserController())->index();  // Menampilkan data pengguna
-    }
-
-    // Arahkan ke halaman login jika bukan admin
-    return redirect()->route('login');
-})->name('admin.users');
-
-Route::get('/admin/users/{user}', function (User $user) {
-    // Mengecek apakah pengguna yang login adalah admin
-    if (Auth::check() && Auth::user()->role === 'admin') {
-        return (new UserController())->show($user);  // Menampilkan detail pengguna
-    }
-
-    // Arahkan ke halaman login jika bukan admin
-    return redirect()->route('login');
-})->name('admin.users.show');
-
-// Rute untuk memperbarui role pengguna (admin only)
-Route::put('/users/{user}/role', function (Request $request, User $user) {
-    // Mengecek apakah pengguna yang login adalah admin
-    if (Auth::check() && Auth::user()->role === 'admin') {
-        return (new UserController())->updateRole($request, $user);  // Update role pengguna
-    }
-
-    // Arahkan ke halaman login jika bukan admin
-    return redirect()->route('login');
+// Manajemen pengguna (admin only)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+    Route::get('/admin/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
+    Route::put('/users/{user}/role', [UserController::class, 'updateRole'])->name('admin.users.updateRole');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 });
-
-Route::delete('/users/{user}', [UserController::class, 'destroy'])
-    ->middleware(['auth']);
 
 
 //laporan
@@ -86,7 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     // Route khusus admin dengan middleware role:admin
-    Route::middleware([CheckRole::class . ':admin'])->prefix('admin')->group(function () {
+    Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             $users = User::where('role', 'user')->get(['id', 'name']);
             return Inertia::render('Admin/Dashboard', [
@@ -106,7 +76,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/admin/performance-monitoring', [PerformanceMonitoringController::class, 'index'])->name('performance-monitoring.index');
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    Route::get('/admin/performance-monitoring', [PerformanceMonitoringController::class, 'index'])->name('performance-monitoring.index');
+});
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/assets.php';

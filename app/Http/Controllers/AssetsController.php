@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\AdminOnly;
 use App\Models\Assets\AssetType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -60,10 +59,6 @@ class AssetsController extends Controller
 
     public function create()
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $divisions = Division::select('id', 'nama_divisi')->get();
         $asset_types = AssetType::select('id', 'tipe')->get();
 
@@ -75,10 +70,6 @@ class AssetsController extends Controller
 
     public function store(Request $request)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $validated = $request->validate([
             'serial_number' => 'required|string|max:50|unique:assets',
             'id_divisi' => 'required|exists:divisions,id',
@@ -134,10 +125,6 @@ class AssetsController extends Controller
 
     public function destroy(Asset $asset, $serial_number)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $asset = Asset::findOrFail($serial_number);
         $tipe = $asset->tipe;
         $asset->delete();
@@ -146,10 +133,6 @@ class AssetsController extends Controller
 
     public function edit($tipe, $serial_number): Response
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $tipeModel = AssetType::with('assets')->where('tipe', $tipe)->firstOrFail();
         $item = Asset::findOrFail($serial_number);
         $divisions = Division::select('id', 'nama_divisi')->get();
@@ -163,10 +146,6 @@ class AssetsController extends Controller
 
     public function update(Request $request, $serial_number)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $validatedData = $request->validate([
             'serial_number' => 'required|string|max:255|unique:assets,serial_number,' . $serial_number . ',serial_number',
             'nama' => 'required|string|max:255',

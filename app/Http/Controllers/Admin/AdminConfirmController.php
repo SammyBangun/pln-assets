@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Reports\ReportAssignment;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Reports\Report;
 use Illuminate\Http\Request;
@@ -16,10 +15,6 @@ class AdminConfirmController extends Controller
 
     public function index($id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'petugas') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $report = Report::with([
             'user',
             'aset.tipe',
@@ -57,10 +52,6 @@ class AdminConfirmController extends Controller
 
     public function store(Request $request, $report_id)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Anda bukan admin.');
-        }
-
         $validatedData = $request->validate([
             'status' => 'required|string|in:Ditolak,Diterima',
             'keterangan_status' => 'nullable|string'
